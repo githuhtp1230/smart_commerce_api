@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.2.0
+    container_name: smartcommerce-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: smart_commerce
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/mysql
