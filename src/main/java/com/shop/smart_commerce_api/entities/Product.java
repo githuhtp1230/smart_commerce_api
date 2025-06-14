@@ -21,12 +21,16 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "promotion_id")
+    private Promotion promotion;
+
     @Column(name = "name", length = 200)
     private String name;
 
     @Lob
-    @Column(name = "`desc`")
-    private String desc;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "stock")
     private Integer stock;
@@ -35,13 +39,16 @@ public class Product {
     private Integer isDeleted;
 
     @OneToMany(mappedBy = "product")
+    private Set<AttributeValueDetail> attributeValueDetails = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product")
     private Set<CartDetail> cartDetails = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")
     private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")
-    private Set<Promotion> promotions = new LinkedHashSet<>();
+    private Set<ProductVariation> productVariations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")
     private Set<Review> reviews = new LinkedHashSet<>();

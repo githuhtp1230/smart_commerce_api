@@ -26,10 +26,4 @@ public class Attribute {
     @OneToMany(mappedBy = "attribute")
     private Set<AttributeValue> attributeValues = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "attribute")
-    private Set<ProductAttribute> productAttributes = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "attribute")
-    private Set<ProductVariationAttribute> productVariationAttributes = new LinkedHashSet<>();
-
 }

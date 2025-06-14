@@ -22,10 +22,6 @@ public class CartDetail {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_variation_sku", referencedColumnName = "sku")
-    private ProductVariation productVariationSku;
-
     @Column(name = "quantity")
     private Integer quantity;
 

@@ -8,6 +8,17 @@ import org.springframework.http.HttpStatusCode;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum ErrorCode {
+
+    CATEGORY_NOT_FOUND(HttpStatus.CONFLICT, "Category not found"),
+    PRODUCT_NOT_FOUND(HttpStatus.CONFLICT, "Product not found"),
+    USER_NOT_FOUND(HttpStatus.CONFLICT, "User not found"),
+
+    CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
+
+    EMAIL_OR_PASSWORD_INVALID(HttpStatus.BAD_REQUEST, "Email or password is invalid"),
+
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "You have not permission"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
 
     private HttpStatusCode statusCode;

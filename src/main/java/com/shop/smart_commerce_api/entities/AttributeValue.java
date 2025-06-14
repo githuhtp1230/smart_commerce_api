@@ -21,11 +21,14 @@ public class AttributeValue {
     @JoinColumn(name = "attribute_id")
     private Attribute attribute;
 
+    @Column(name = "value", length = 100)
+    private String value;
+
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
     @OneToMany(mappedBy = "attributeValue")
-    private Set<ProductAttribute> productAttributes = new LinkedHashSet<>();
+    private Set<AttributeValueDetail> attributeValueDetails = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "attributeValue")
     private Set<ProductVariationAttribute> productVariationAttributes = new LinkedHashSet<>();

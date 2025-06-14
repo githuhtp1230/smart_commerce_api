@@ -17,24 +17,18 @@ public class ProductVariation {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "product_id")
-    private Integer productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    @Column(name = "sku", length = 5)
-    private String sku;
-
-    @Lob
     @Column(name = "price")
-    private String price;
+    private Integer price;
 
     @Column(name = "stock")
     private Integer stock;
 
     @Column(name = "image", length = 500)
     private String image;
-
-    @OneToMany(mappedBy = "productVariationSku")
-    private Set<CartDetail> cartDetails = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "productVariation")
     private Set<ProductVariationAttribute> productVariationAttributes = new LinkedHashSet<>();

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,15 +18,11 @@ public class Promotion {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @Column(name = "description", length = 100)
+    private String description;
 
-    @Column(name = "`desc`")
-    private Integer desc;
-
-    @Column(name = "discount_value")
-    private Integer discountValue;
+    @Column(name = "discount_value_percent")
+    private Integer discountValuePercent;
 
     @Column(name = "start_date")
     private Instant startDate;
@@ -34,5 +32,8 @@ public class Promotion {
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    @OneToMany(mappedBy = "promotion")
+    private Set<Product> products = new LinkedHashSet<>();
 
 }

@@ -19,10 +19,6 @@ public class ProductVariationAttribute {
     private ProductVariation productVariation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "attribute_id")
-    private Attribute attribute;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_value_id")
     private AttributeValue attributeValue;
 

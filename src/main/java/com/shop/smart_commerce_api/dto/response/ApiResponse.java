@@ -1,4 +1,4 @@
-package com.shop.smart_commerce_api.dto;
+package com.shop.smart_commerce_api.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

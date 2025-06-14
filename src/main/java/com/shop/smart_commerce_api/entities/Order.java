@@ -27,12 +27,11 @@ public class Order {
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
 
-    @Lob
     @Column(name = "total")
-    private String total;
+    private Long total;
 
     @Column(name = "status")
-    private Integer status;
+    private Boolean status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
