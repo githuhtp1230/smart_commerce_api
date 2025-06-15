@@ -1,11 +1,61 @@
 package com.shop.smart_commerce_api.services;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.shop.smart_commerce_api.dto.attribute.AttributeRequest;
+import com.shop.smart_commerce_api.dto.attribute.AttributeUpdateRequest;
+import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
+import com.shop.smart_commerce_api.mapper.AttributeMapper;
+import com.shop.smart_commerce_api.entities.Attribute;
 import com.shop.smart_commerce_api.repositories.AttributeRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AttributeService {
+    @Autowired
     private AttributeRepository attributeRepository;
+    @Autowired
+    private AttributeMapper attributeMapper;
+
+    public AttributeResponse create(AttributeRequest request) {
+        Attribute attribute = attributeMapper.toAttribute(request);
+        attributeRepository.save(attribute);
+        return attributeMapper.toAttributeResponse(attribute);
+    }
+
+    public void delete(int id) {
+        Attribute attributeid = attributeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Attribute not found" + id));
+        attributeRepository.delete(attributeid);
+    }
+
+    public void update(int id, AttributeUpdateRequest request) {
+        Attribute attributeid = attributeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Attribute not found" + id));
+        attributeMapper.updateAttributeFromRequest(request, attributeid);
+        attributeRepository.save(attributeid);
+    }
+
+    public List<AttributeResponse> getAll() {
+        var attributes = attributeRepository.findAll();
+        return attributes.stream()
+                .map(attributeMapper::toAttributeResponse)
+                .toList();
+    }
+
+    public AttributeResponse getByName(String name) {
+        Attribute attribute = attributeRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Attribute not found" + name));
+        return attributeMapper.toAttributeResponse(attribute);
+    }
+
+    public AttributeResponse getById(int id) {
+        Attribute attribute = attributeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Attribute not found" + id));
+        return attributeMapper.toAttributeResponse(attribute);
+    }
 }
