@@ -10,6 +10,8 @@ import com.shop.smart_commerce_api.dto.attribute.AttributeUpdateRequest;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
 import com.shop.smart_commerce_api.mapper.AttributeMapper;
 import com.shop.smart_commerce_api.entities.Attribute;
+import com.shop.smart_commerce_api.exception.AppException;
+import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.repositories.AttributeRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -28,16 +30,19 @@ public class AttributeService {
     }
 
     public void delete(int id) {
-        Attribute attributeid = attributeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Attribute not found" + id));
-        attributeRepository.delete(attributeid);
+        Attribute attribute = attributeRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_NOT_FOUND));
+        attribute.setIsDeleted(true);
+        attributeRepository.save(attribute);
     }
 
-    public void update(int id, AttributeUpdateRequest request) {
-        Attribute attributeid = attributeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Attribute not found" + id));
-        attributeMapper.updateAttributeFromRequest(request, attributeid);
-        attributeRepository.save(attributeid);
+    public AttributeResponse update(int id, AttributeUpdateRequest request) {
+        Attribute attribute = attributeRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_NOT_FOUND));
+        System.out.println(attribute);
+        attributeMapper.updateAttributeFromRequest(request, attribute);
+        System.out.println(attribute);
+        return attributeMapper.toAttributeResponse(attributeRepository.save(attribute));
     }
 
     public List<AttributeResponse> getAll() {

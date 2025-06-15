@@ -12,7 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttributeUpdateRequest {
-
     private String name;
-    private Boolean isDeleted;
 }

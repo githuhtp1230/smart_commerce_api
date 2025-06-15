@@ -37,10 +37,8 @@ public class SecurityConfig {
             "api/products",
             "api/products/*",
             "api/categories",
-            "api/attributes/*",
-            "api/attributes/getById/*",
-            "api/attributes/delete/*",
-            "api/attributes/update/*"
+            "api/attributes",
+            "api/attributes/**",
 
     };
 
