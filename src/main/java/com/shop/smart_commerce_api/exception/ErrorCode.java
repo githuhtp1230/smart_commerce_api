@@ -9,9 +9,10 @@ import org.springframework.http.HttpStatusCode;
 @NoArgsConstructor
 public enum ErrorCode {
 
-    CATEGORY_NOT_FOUND(HttpStatus.CONFLICT, "Category not found"),
-    PRODUCT_NOT_FOUND(HttpStatus.CONFLICT, "Product not found"),
-    USER_NOT_FOUND(HttpStatus.CONFLICT, "User not found"),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Category not found"),
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product not found"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
+    ATTRIBUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "Attribute not found"),
 
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
 

@@ -35,7 +35,11 @@ public class SecurityConfig {
             "api/auth/login",
             "api/auth/register",
             "api/products",
-            "api/categories"
+            "api/products/*",
+            "api/categories",
+            "api/attributes",
+            "api/attributes/**",
+
     };
 
     @Bean
@@ -43,6 +47,8 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.GET, WHITE_LIST).permitAll()
                 .requestMatchers(HttpMethod.POST, WHITE_LIST).permitAll()
+                .requestMatchers(HttpMethod.DELETE, WHITE_LIST).permitAll()
+                .requestMatchers(HttpMethod.PUT, WHITE_LIST).permitAll()
                 .anyRequest().authenticated())
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
