@@ -3,6 +3,7 @@ package com.shop.smart_commerce_api.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -29,5 +30,9 @@ public class Address {
 
     @Column(name = "street_address")
     private Integer streetAddress;
+
+    @ColumnDefault("0")
+    @Column(name = "is_delete")
+    private Boolean isDelete;
 
 }
