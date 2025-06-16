@@ -3,6 +3,7 @@ package com.shop.smart_commerce_api.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -29,6 +30,10 @@ public class ProductVariation {
 
     @Column(name = "image", length = 500)
     private String image;
+
+    @ColumnDefault("0")
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "productVariation")
     private Set<ProductVariationAttribute> productVariationAttributes = new LinkedHashSet<>();
