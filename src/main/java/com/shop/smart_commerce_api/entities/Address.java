@@ -28,8 +28,8 @@ public class Address {
     @Column(name = "ward", nullable = false, length = 50)
     private String ward;
 
-    @Column(name = "street_address")
-    private Integer streetAddress;
+    @Column(name = "street_address", length = 50)
+    private String streetAddress;
 
     @ColumnDefault("0")
     @Column(name = "is_delete")
