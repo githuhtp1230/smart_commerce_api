@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shop.smart_commerce_api.dto.attribute.AttributeRequest;
-import com.shop.smart_commerce_api.dto.attribute.AttributeUpdateRequest;
+import com.shop.smart_commerce_api.dto.request.attribute.AttributeRequest;
+import com.shop.smart_commerce_api.dto.request.attribute.AttributeUpdateRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
 import com.shop.smart_commerce_api.services.AttributeService;

@@ -1,4 +1,4 @@
-package com.shop.smart_commerce_api.dto.attribute;
+package com.shop.smart_commerce_api.dto.request.attribute;
 
 import java.util.Set;
 

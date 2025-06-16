@@ -1,11 +1,10 @@
 package com.shop.smart_commerce_api.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.shop.smart_commerce_api.dto.attribute.AttributeRequest;
-import com.shop.smart_commerce_api.dto.attribute.AttributeUpdateRequest;
+import com.shop.smart_commerce_api.dto.request.attribute.AttributeRequest;
+import com.shop.smart_commerce_api.dto.request.attribute.AttributeUpdateRequest;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeValueResponse;
 import com.shop.smart_commerce_api.entities.AttributeValue;

@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shop.smart_commerce_api.dto.attribute.AttributeRequest;
-import com.shop.smart_commerce_api.dto.attribute.AttributeUpdateRequest;
+import com.shop.smart_commerce_api.dto.request.attribute.AttributeRequest;
+import com.shop.smart_commerce_api.dto.request.attribute.AttributeUpdateRequest;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
 import com.shop.smart_commerce_api.mapper.AttributeMapper;
 import com.shop.smart_commerce_api.entities.Attribute;

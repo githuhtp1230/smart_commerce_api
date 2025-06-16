@@ -14,5 +14,4 @@ public class UserResponse {
     private String name;
     private String avatar;
     private String phone;
-    private Set<Address> addresses;
 }

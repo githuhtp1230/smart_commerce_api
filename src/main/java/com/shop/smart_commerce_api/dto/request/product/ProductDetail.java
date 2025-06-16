@@ -1,4 +1,4 @@
-package com.shop.smart_commerce_api.dto.product;
+package com.shop.smart_commerce_api.dto.request.product;
 
 import java.util.List;
 

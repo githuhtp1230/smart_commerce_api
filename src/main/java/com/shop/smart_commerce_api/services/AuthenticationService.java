@@ -10,6 +10,7 @@ import com.shop.smart_commerce_api.dto.response.auth.LoginResponse;
 import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
+import com.shop.smart_commerce_api.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtGeneratorService jwtGeneratorService;
+    private final UserMapper userMapper;
 
     public LoginResponse login(LoginRequest request) {
         try {
@@ -26,7 +28,9 @@ public class AuthenticationService {
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtGeneratorService.generateAccessToken(user);
             return LoginResponse.builder()
+                    .user(userMapper.toUserResponse(user))
                     .accessToken(accessToken)
+
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
