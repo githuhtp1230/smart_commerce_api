@@ -7,4 +7,7 @@ import lombok.Data;
 @Builder
 public class ProductResponse {
 
+    private Integer id;
+
+    // Additional fields can be added as needed
 }

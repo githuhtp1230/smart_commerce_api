@@ -39,6 +39,8 @@ public class SecurityConfig {
             "api/categories",
             "api/attributes",
             "api/attributes/**",
+            "api/product-variations",
+            "api/product-variations/*",
 
     };
 
