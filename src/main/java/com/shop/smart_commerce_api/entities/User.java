@@ -3,16 +3,14 @@ package com.shop.smart_commerce_api.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,6 +40,10 @@ public class User implements UserDetails {
     @Column(name = "google_id")
     private Integer googleId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role")
+    private Role role;
+
     @Column(name = "is_active")
     private Boolean isActive;
 
@@ -57,20 +59,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<Review> reviews = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<UsersRole> usersRoles = new LinkedHashSet<>();
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-
-        for (UsersRole usersRole : this.usersRoles) {
-            for (RolePermission rolePermission : usersRole.getRole().getRolePermissions()) {
-                authorities.add(new SimpleGrantedAuthority(rolePermission.getPermission().getName()));
-            }
-        }
-
-        return authorities;
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
