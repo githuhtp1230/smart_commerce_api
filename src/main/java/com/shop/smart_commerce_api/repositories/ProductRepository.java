@@ -22,15 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                     p.name,
                     CAST(COALESCE(AVG(r.rating * 1.0), 0.0) AS double),
                     COUNT(DISTINCT r.id),
-                    CAST(MIN(pr.price) AS double),
-                    CAST(
-                        MIN(
-                            CASE
-                                WHEN po.startDate <= CURRENT_DATE THEN pr.price * (1.0 - COALESCE(po.discountValuePercent, 0.0) / 100.0)
-                                ELSE NULL
-                            END
-                        ) AS double
-                    )
+                    CAST(MIN(pr.price) AS double)
                 )
                 FROM Product p
                 LEFT JOIN p.reviews r
@@ -46,7 +38,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                     p.id,
                     p.name,
                     CAST(COALESCE(AVG(r.rating * 1.0), 0.0) AS double),
-                    COUNT(DISTINCT r.id)
+                    COUNT(DISTINCT r.id),
+                    p.createdAt,
+                    CAST(MIN(pr.price) AS double)
                 )
                 FROM Product p
                 LEFT JOIN p.reviews r

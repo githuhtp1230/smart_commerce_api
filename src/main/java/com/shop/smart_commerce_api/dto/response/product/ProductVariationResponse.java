@@ -11,8 +11,7 @@ import java.util.List;
 public class ProductVariationResponse {
     private Integer id;
     private Integer price;
-    private Integer discountedPrice;
     private Integer stock;
     private String image;
-    private List<AttributeValueResponse> attributeResponses;
+    private List<AttributeValueResponse> attributeValues;
 }

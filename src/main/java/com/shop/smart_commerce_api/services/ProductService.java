@@ -18,6 +18,7 @@ import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.AttributeMapper;
 import com.shop.smart_commerce_api.mapper.ProductVariationMapper;
+import com.shop.smart_commerce_api.mapper.PromotionMapper;
 import com.shop.smart_commerce_api.repositories.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,17 @@ public class ProductService {
         private final ProductRepository productRepository;
         private final AttributeMapper attributeMapper;
         private final ProductVariationMapper productVariationMapper;
+        private final PromotionMapper promotionMapper;
 
         public PageResponse<ProductSummaryResponse> getProductSummaries(ProductSummaryFilterRequest request,
                         int currentPage, int limit) {
                 Pageable pageable = PageRequest.of(currentPage, limit);
                 Page<ProductSummaryResponse> page = productRepository.findProductSummaries(request.getCategoryId(),
                                 pageable);
+                page.stream().forEach(productSummary -> {
+                        Product product = productRepository.findById(productSummary.getId()).get();
+                        productSummary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
+                });
                 return PageResponse.<ProductSummaryResponse>builder()
                                 .currentPage(page.getNumber() + 1)
                                 .totalPages(page.getTotalPages())
@@ -68,24 +74,15 @@ public class ProductService {
                                                                                                         .getAttributeValue()))
                                                         .toList();
 
-                                        productVariationResponse.setAttributeResponses(variations);
-
-                                        if (product.getPromotion() != null) {
-                                                double discountPercent = product.getPromotion()
-                                                                .getDiscountValuePercent();
-                                                double discountedPrice = productVariation.getPrice()
-                                                                * (1 - discountPercent / 100.0);
-
-                                                productVariationResponse
-                                                                .setDiscountedPrice((int) Math.round(discountedPrice));
-                                        }
+                                        productVariationResponse.setAttributeValues(variations);
 
                                         return productVariationResponse;
                                 }).toList();
 
                 ProductDetailResponse productDetailResponse = productRepository.findProductDetailById(productId);
-                productDetailResponse.setAttributesValues(attributeValueResponses);
+                productDetailResponse.setAttributeValues(attributeValueResponses);
                 productDetailResponse.setVariations(productVariationResponses);
+                productDetailResponse.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
                 return productDetailResponse;
         }
 

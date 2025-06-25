@@ -3,7 +3,9 @@ package com.shop.smart_commerce_api.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -34,6 +36,10 @@ public class Product {
 
     @Column(name = "stock")
     private Integer stock;
+
+    @ColumnDefault("(now())")
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @Column(name = "is_deleted")
     private Integer isDeleted;

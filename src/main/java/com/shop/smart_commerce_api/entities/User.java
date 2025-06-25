@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @Column(name = "google_id")
     private Integer googleId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role")
     private Role role;
 

@@ -1,8 +1,11 @@
 package com.shop.smart_commerce_api.dto.response.product;
 
+import java.time.Instant;
 import java.util.List;
 
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeValueResponse;
+import com.shop.smart_commerce_api.dto.response.promotion.PromotionResponse;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,14 +20,20 @@ public class ProductDetailResponse {
     private String name;
     private Double averageRating;
     private Long reviewCount;
-    private List<AttributeValueResponse> attributesValues;
+    private Instant createdAt;
+    private Integer price;
+    private PromotionResponse promotion;
+    private List<AttributeValueResponse> attributeValues;
     private List<ProductVariationResponse> variations;
 
-    public ProductDetailResponse(Integer id, String name, Double averageRating, Long reviewCount) {
+    public ProductDetailResponse(Integer id, String name, Double averageRating, Long reviewCount, Instant createdAt,
+            Double price) {
         this.id = id;
         this.name = name;
         this.averageRating = averageRating;
         this.reviewCount = reviewCount;
+        this.createdAt = createdAt;
+        this.price = price != null ? (int) Math.round(price) : null;
     }
 
 }
