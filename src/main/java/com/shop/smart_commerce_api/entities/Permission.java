@@ -20,6 +20,9 @@ public class Permission {
     @Column(name = "name", length = 50)
     private String name;
 
+    @Column(name = "value", length = 100)
+    private String value;
+
     @OneToMany(mappedBy = "permission")
     private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
 

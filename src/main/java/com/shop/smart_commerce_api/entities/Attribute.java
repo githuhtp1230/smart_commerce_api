@@ -23,7 +23,7 @@ public class Attribute {
 
     @ColumnDefault("0")
     @Column(name = "is_deleted")
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "attribute")
     private Set<AttributeValue> attributeValues = new LinkedHashSet<>();

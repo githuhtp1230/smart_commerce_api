@@ -54,6 +54,9 @@ public class Product {
     private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")
+    private Set<ProductAttributeValueImage> productAttributeValueImages = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product")
     private Set<ProductVariation> productVariations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")

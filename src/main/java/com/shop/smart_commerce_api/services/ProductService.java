@@ -1,6 +1,7 @@
 package com.shop.smart_commerce_api.services;
 
 import java.util.List;
+import java.util.Set;
 
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
@@ -14,6 +15,7 @@ import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeValueResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductVariationResponse;
 import com.shop.smart_commerce_api.entities.Product;
+import com.shop.smart_commerce_api.entities.ProductVariation;
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.AttributeMapper;
@@ -30,6 +32,7 @@ public class ProductService {
         private final AttributeMapper attributeMapper;
         private final ProductVariationMapper productVariationMapper;
         private final PromotionMapper promotionMapper;
+        private final AttributeService attributeService;
 
         public PageResponse<ProductSummaryResponse> getProductSummaries(ProductSummaryFilterRequest request,
                         int currentPage, int limit) {
@@ -54,36 +57,29 @@ public class ProductService {
                 Product product = productRepository.findById(productId)
                                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-                List<AttributeValueResponse> attributeValueResponses = product.getAttributeValueDetails().stream()
-                                .map(attributeValueDetails -> {
-                                        return attributeMapper
-                                                        .toAttributeValueResponse(
-                                                                        attributeValueDetails.getAttributeValue());
-                                }).toList();
-
-                List<ProductVariationResponse> productVariationResponses = product.getProductVariations().stream()
-                                .map(productVariation -> {
-                                        ProductVariationResponse productVariationResponse = productVariationMapper
-                                                        .toProductVariationResponse(productVariation);
-
-                                        List<AttributeValueResponse> variations = productVariation
-                                                        .getProductVariationAttributes().stream()
-                                                        .map(productVariationAttribute -> attributeMapper
-                                                                        .toAttributeValueResponse(
-                                                                                        productVariationAttribute
-                                                                                                        .getAttributeValue()))
-                                                        .toList();
-
-                                        productVariationResponse.setAttributeValues(variations);
-
-                                        return productVariationResponse;
-                                }).toList();
+                List<ProductVariationResponse> productVariationResponses = mapToProductVariationResponses(
+                                product.getProductVariations());
 
                 ProductDetailResponse productDetailResponse = productRepository.findProductDetailById(productId);
-                productDetailResponse.setAttributeValues(attributeValueResponses);
+                productDetailResponse.setAttributeValues(
+                                attributeService.maptoAttributeValueResponses(product.getAttributeValueDetails()));
                 productDetailResponse.setVariations(productVariationResponses);
                 productDetailResponse.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
                 return productDetailResponse;
         }
 
+        public List<ProductVariationResponse> mapToProductVariationResponses(Set<ProductVariation> productVariations) {
+                return productVariations.stream()
+                                .map(productVariation -> {
+                                        ProductVariationResponse productVariationResponse = productVariationMapper
+                                                        .toProductVariationResponse(productVariation);
+
+                                        productVariationResponse.setAttributeValues(attributeService
+                                                        .maptoAttributeValueResponsesFromPorudctVariationAttributes(
+                                                                        productVariation.getProductVariationAttributes(),
+                                                                        productVariation.getProduct().getId()));
+
+                                        return productVariationResponse;
+                                }).toList();
+        }
 }

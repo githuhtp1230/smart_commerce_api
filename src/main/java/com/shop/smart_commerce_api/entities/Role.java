@@ -24,6 +24,9 @@ public class Role {
     private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "role")
+    private Set<User> users = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "role")
     private Set<UsersRole> usersRoles = new LinkedHashSet<>();
 
 }

@@ -3,6 +3,7 @@ package com.shop.smart_commerce_api.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,11 +25,15 @@ public class AttributeValue {
     @Column(name = "value", length = 100)
     private String value;
 
+    @ColumnDefault("0")
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
     @OneToMany(mappedBy = "attributeValue")
     private Set<AttributeValueDetail> attributeValueDetails = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "attributeValue")
+    private Set<ProductAttributeValueImage> productAttributeValueImages = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "attributeValue")
     private Set<ProductVariationAttribute> productVariationAttributes = new LinkedHashSet<>();
