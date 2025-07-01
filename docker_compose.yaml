@@ -11,3 +11,8 @@ services:
       - "3306:3306"
     volumes:
       - ./data:/var/lib/mysql
+  redis:
+    image: redis:latest
+    container_name: smartcommerce-redis
+    ports:
+      - "6379:6379"
