@@ -18,6 +18,18 @@ spring:
   jwt:
     signer-key: "fO4/bVM+jFONS8SOvgq/KaZsZ1zauhiNxrpfMPnagasrRMlvIqguiE/0hCcKIDVI0HxulVcEeI3m8hhbZmHZkg=="
     access_token_valid_duration: 120
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: thephuongop12@gmail.com
+    password: qfwe hbib ojxv bnny
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 pagination:
   product_summaries_size: 10

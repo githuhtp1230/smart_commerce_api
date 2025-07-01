@@ -34,6 +34,7 @@ public class SecurityConfig {
     private final String[] WHITE_LIST = {
             "api/auth/login",
             "api/auth/register",
+            "api/auth/register-verify-otp",
             "api/products",
             "api/products/*",
             "api/categories",
