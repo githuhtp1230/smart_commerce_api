@@ -18,5 +18,5 @@ public class AddressResponse {
     private String ward;
     private String streetAddress;
 
-    private UserResponse user;
+    // private UserResponse user;
 }
