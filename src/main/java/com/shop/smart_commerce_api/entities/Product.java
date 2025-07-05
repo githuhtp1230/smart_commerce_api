@@ -1,6 +1,8 @@
 package com.shop.smart_commerce_api.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,6 +21,7 @@ public class Product {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -27,6 +30,10 @@ public class Product {
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
+    @Column(name = "price")
+    private Integer price;
+
+    @Size(max = 200)
     @Column(name = "name", length = 200)
     private String name;
 
