@@ -40,14 +40,14 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                     CAST(COALESCE(AVG(r.rating * 1.0), 0.0) AS double),
                     COUNT(DISTINCT r.id),
                     p.createdAt,
-                    CAST(MIN(pr.price) AS double)
+                    CAST(COALESCE(MIN(pr.price), p.price) AS double)
                 )
                 FROM Product p
                 LEFT JOIN p.reviews r
                 LEFT JOIN p.promotion po
                 LEFT JOIN p.productVariations pr
                 WHERE p.id = :productId
-                GROUP BY p.id, p.name
+                GROUP BY p.id, p.name, p.createdAt, p.price
             """)
     ProductDetailResponse findProductDetailById(@Param("productId") Integer productId);
 }
