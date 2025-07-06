@@ -17,11 +17,14 @@ public class ProductSummaryResponse {
     private Double averageRating;
     private Long reviewCount;
     private Integer price;
+    private String image;
     private PromotionResponse promotion;
 
-    public ProductSummaryResponse(Integer id, String name, Double averageRating, Long reviewCount, Double price) {
+    public ProductSummaryResponse(Integer id, String name, String image, Double averageRating, Long reviewCount,
+            Double price) {
         this.id = id;
         this.name = name;
+        this.image = image;
         this.averageRating = averageRating;
         this.reviewCount = reviewCount;
         this.price = price != null ? (int) Math.round(price) : null;

@@ -58,6 +58,9 @@ public class Product {
     private Set<CartDetail> cartDetails = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")
+    private Set<ImageProduct> imageProducts = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product")
     private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")
