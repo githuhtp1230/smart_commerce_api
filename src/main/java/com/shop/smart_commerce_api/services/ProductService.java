@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
+import com.shop.smart_commerce_api.mapper.ProductMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,14 +13,13 @@ import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
-import com.shop.smart_commerce_api.dto.response.attribute.AttributeValueResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductVariationResponse;
+import com.shop.smart_commerce_api.entities.ImageProduct;
 import com.shop.smart_commerce_api.entities.Product;
 import com.shop.smart_commerce_api.entities.ProductVariation;
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.AttributeMapper;
-import com.shop.smart_commerce_api.mapper.ProductVariationMapper;
 import com.shop.smart_commerce_api.mapper.PromotionMapper;
 import com.shop.smart_commerce_api.repositories.ProductRepository;
 
@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
         private final ProductRepository productRepository;
         private final AttributeMapper attributeMapper;
-        private final ProductVariationMapper productVariationMapper;
+        private final ProductMapper productMapper;
         private final PromotionMapper promotionMapper;
         private final AttributeService attributeService;
 
@@ -65,13 +65,14 @@ public class ProductService {
                                 attributeService.maptoAttributeValueResponses(product.getAttributeValueDetails()));
                 productDetailResponse.setVariations(productVariationResponses);
                 productDetailResponse.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
+                productDetailResponse.setImages(mapImageProductToStringImages(product.getImageProducts()));
                 return productDetailResponse;
         }
 
         public List<ProductVariationResponse> mapToProductVariationResponses(Set<ProductVariation> productVariations) {
                 return productVariations.stream()
                                 .map(productVariation -> {
-                                        ProductVariationResponse productVariationResponse = productVariationMapper
+                                        ProductVariationResponse productVariationResponse = productMapper
                                                         .toProductVariationResponse(productVariation);
 
                                         productVariationResponse.setAttributeValues(attributeService
@@ -81,5 +82,9 @@ public class ProductService {
 
                                         return productVariationResponse;
                                 }).toList();
+        }
+
+        public List<String> mapImageProductToStringImages(Set<ImageProduct> imageProducts) {
+                return imageProducts.stream().map(imageProduct -> imageProduct.getImageUrl()).toList();
         }
 }

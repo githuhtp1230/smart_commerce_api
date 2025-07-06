@@ -23,6 +23,7 @@ public class ProductDetailResponse {
     private Instant createdAt;
     private Integer price;
     private PromotionResponse promotion;
+    private List<String> images;
     private List<AttributeValueResponse> attributeValues;
     private List<ProductVariationResponse> variations;
 
