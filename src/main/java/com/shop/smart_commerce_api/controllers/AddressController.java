@@ -69,4 +69,13 @@ public class AddressController {
                 .data(addressService.update(id, request))
                 .build();
     }
+
+    @GetMapping("/user/{userId}")
+    ApiResponse<List<AddressResponse>> getAddressesByUserIdApiResponse(@PathVariable Integer userId) {
+        return ApiResponse.<List<AddressResponse>>builder()
+                .code(200)
+                .message("Addresses retrieved successfully for user")
+                .data(addressService.getByUserId(userId))
+                .build();
+    }
 }
