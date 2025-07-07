@@ -21,17 +21,15 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AddressServicer {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AddressRepository addressRepository;
-    @Autowired
-    private AddressMapper addressMapper;
+public class AddressService {
+    private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
+    private final AddressMapper addressMapper;
+    private final UserService userService;
 
     public AddressResponse create(AddressRequest request) {
         Address address = addressMapper.toAddress(request);
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(userService.getCurrentUser().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         address.setUser(user);
         addressRepository.save(address);
@@ -48,27 +46,13 @@ public class AddressServicer {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
         addressMapper.updateAddressFromRequest(request, address);
-        System.out.println(address);
         return addressMapper.toAddressResponse(addressRepository.save(address));
     }
 
-    public List<AddressResponse> getAll() {
-        var addresses = addressRepository.findAll();
-        return addresses.stream()
-                .map(addressMapper::toAddressResponse)
-                .toList();
-    }
-
-    public AddressResponse getById(int id) {
-        Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
-        return addressMapper.toAddressResponse(address);
-    }
-
-    public List<AddressResponse> getByUserId(Integer userId) {
-        User user = userRepository.findById(userId)
+    public List<AddressResponse> getMyAddress() {
+        User user = userRepository.findById(userService.getCurrentUser().getId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        List<Address> addresses = addressRepository.findByUserId(userId);
+        List<Address> addresses = addressRepository.findByUserId(user.getId());
         return addresses.stream()
                 .map(addressMapper::toAddressResponse)
                 .toList();

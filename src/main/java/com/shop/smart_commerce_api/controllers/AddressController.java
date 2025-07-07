@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shop.smart_commerce_api.dto.request.address.AddressRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.address.AddressResponse;
-import com.shop.smart_commerce_api.services.AddressServicer;
+import com.shop.smart_commerce_api.services.AddressService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 @RequestMapping("/api/addresses")
 public class AddressController {
-    private final AddressServicer addressService;
+    private final AddressService addressService;
 
     @PostMapping
     ApiResponse<AddressResponse> createAddressApiResponse(@RequestBody AddressRequest request) {
@@ -34,48 +34,50 @@ public class AddressController {
     }
 
     @GetMapping
-    ApiResponse<List<AddressResponse>> getAllAddressesApiResponse() {
+    ApiResponse<List<AddressResponse>> getMyAddress() {
         return ApiResponse.<List<AddressResponse>>builder()
                 .code(200)
                 .message("Addresses retrieved successfully")
-                .data(addressService.getAll())
+                .data(addressService.getMyAddress())
                 .build();
     }
 
-    @GetMapping("/{id}")
-    ApiResponse<AddressResponse> getAddressByIdApiResponse(int id) {
-        return ApiResponse.<AddressResponse>builder()
-                .code(200)
-                .message("Address retrieved successfully")
-                .data(addressService.getById(id))
-                .build();
-    }
+    // @GetMapping("/{id}")
+    // ApiResponse<AddressResponse> getAddressByIdApiResponse(int id) {
+    // return ApiResponse.<AddressResponse>builder()
+    // .code(200)
+    // .message("Address retrieved successfully")
+    // .data(addressService.getById(id))
+    // .build();
+    // }
 
-    @PostMapping("/{id}/delete")
-    ApiResponse<Void> deleteAddressApiResponse(@PathVariable int id) {
-        addressService.delete(id);
-        return ApiResponse.<Void>builder()
-                .code(200)
-                .message("Address deleted successfully")
-                .build();
-    }
+    // @PostMapping("/{id}/delete")
+    // ApiResponse<Void> deleteAddressApiResponse(@PathVariable int id) {
+    // addressService.delete(id);
+    // return ApiResponse.<Void>builder()
+    // .code(200)
+    // .message("Address deleted successfully")
+    // .build();
+    // }
 
-    @PostMapping("/{id}")
-    ApiResponse<AddressResponse> updateAddressApiResponse(@PathVariable Integer id,
-            @RequestBody AddressRequest request) {
-        return ApiResponse.<AddressResponse>builder()
-                .code(200)
-                .message("Address updated successfully")
-                .data(addressService.update(id, request))
-                .build();
-    }
+    // @PostMapping("/{id}")
+    // ApiResponse<AddressResponse> updateAddressApiResponse(@PathVariable Integer
+    // id,
+    // @RequestBody AddressRequest request) {
+    // return ApiResponse.<AddressResponse>builder()
+    // .code(200)
+    // .message("Address updated successfully")
+    // .data(addressService.update(id, request))
+    // .build();
+    // }
 
-    @GetMapping("/user/{userId}")
-    ApiResponse<List<AddressResponse>> getAddressesByUserIdApiResponse(@PathVariable Integer userId) {
-        return ApiResponse.<List<AddressResponse>>builder()
-                .code(200)
-                .message("Addresses retrieved successfully for user")
-                .data(addressService.getByUserId(userId))
-                .build();
-    }
+    // @GetMapping("/user/{userId}")
+    // ApiResponse<List<AddressResponse>>
+    // getAddressesByUserIdApiResponse(@PathVariable Integer userId) {
+    // return ApiResponse.<List<AddressResponse>>builder()
+    // .code(200)
+    // .message("Addresses retrieved successfully for user")
+    // .data(addressService.getByUserId(userId))
+    // .build();
+    // }
 }
