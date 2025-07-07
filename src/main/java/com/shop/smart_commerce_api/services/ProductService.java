@@ -62,7 +62,7 @@ public class ProductService {
 
                 ProductDetailResponse productDetailResponse = productRepository.findProductDetailById(productId);
                 productDetailResponse.setAttributeValues(
-                                attributeService.maptoAttributeValueResponses(product.getAttributeValueDetails()));
+                                attributeService.mapToAttributeValueResponses(product.getAttributeValueDetails()));
                 productDetailResponse.setVariations(productVariationResponses);
                 productDetailResponse.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
                 productDetailResponse.setImages(mapImageProductToStringImages(product.getImageProducts()));
@@ -76,7 +76,7 @@ public class ProductService {
                                                         .toProductVariationResponse(productVariation);
 
                                         productVariationResponse.setAttributeValues(attributeService
-                                                        .maptoAttributeValueResponsesFromPorudctVariationAttributes(
+                                                        .mapToAttributeValueResponsesFromProductVariationAttributes(
                                                                         productVariation.getProductVariationAttributes(),
                                                                         productVariation.getProduct().getId()));
 
