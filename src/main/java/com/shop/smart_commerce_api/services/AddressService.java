@@ -45,6 +45,9 @@ public class AddressService {
     public AddressResponse update(Integer id, AddressRequest request) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+        if (!address.getUser().getId().equals(userService.getCurrentUser().getId())) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
         addressMapper.updateAddressFromRequest(request, address);
         return addressMapper.toAddressResponse(addressRepository.save(address));
     }

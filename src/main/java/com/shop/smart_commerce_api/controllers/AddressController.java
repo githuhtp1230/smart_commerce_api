@@ -60,16 +60,15 @@ public class AddressController {
     // .build();
     // }
 
-    // @PostMapping("/{id}")
-    // ApiResponse<AddressResponse> updateAddressApiResponse(@PathVariable Integer
-    // id,
-    // @RequestBody AddressRequest request) {
-    // return ApiResponse.<AddressResponse>builder()
-    // .code(200)
-    // .message("Address updated successfully")
-    // .data(addressService.update(id, request))
-    // .build();
-    // }
+    @PostMapping("/{id}")
+    ApiResponse<AddressResponse> updateAddressApiResponse(@PathVariable Integer id,
+            @RequestBody AddressRequest request) {
+        return ApiResponse.<AddressResponse>builder()
+                .code(200)
+                .message("Address updated successfully")
+                .data(addressService.update(id, request))
+                .build();
+    }
 
     // @GetMapping("/user/{userId}")
     // ApiResponse<List<AddressResponse>>
