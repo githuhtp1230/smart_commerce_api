@@ -28,9 +28,6 @@ public class ProductVariation {
     @Column(name = "stock")
     private Integer stock;
 
-    @Column(name = "image", length = 500)
-    private String image;
-
     @ColumnDefault("0")
     @Column(name = "is_deleted")
     private Boolean isDeleted;
