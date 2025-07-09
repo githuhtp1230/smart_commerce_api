@@ -1,14 +1,11 @@
 package com.shop.smart_commerce_api.services;
 
-import java.text.AttributedCharacterIterator.Attribute;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.request.address.AddressRequest;
 import com.shop.smart_commerce_api.dto.response.address.AddressResponse;
-import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
 import com.shop.smart_commerce_api.entities.Address;
 import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.mapper.AddressMapper;
