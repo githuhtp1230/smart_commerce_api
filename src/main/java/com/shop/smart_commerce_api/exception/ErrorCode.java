@@ -3,6 +3,7 @@ package com.shop.smart_commerce_api.exception;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.access.method.P;
 
 @Getter
 @AllArgsConstructor
@@ -13,6 +14,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     ATTRIBUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "Attribute not found"),
     ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "Address not found"),
+    PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Promotion not found"),
 
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),
