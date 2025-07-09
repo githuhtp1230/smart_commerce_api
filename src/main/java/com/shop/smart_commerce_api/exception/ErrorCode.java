@@ -21,6 +21,8 @@ public enum ErrorCode {
 
     VERIFY_OTP_FAILED(HttpStatus.BAD_REQUEST, "Verify otp failed"),
     OTP_WRONG(HttpStatus.BAD_REQUEST, "Otp is wrong"),
+    INVALID_OTP(HttpStatus.BAD_REQUEST, "Invalid otp"),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "Wrong current password"),
 
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "You have not permission"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
