@@ -36,7 +36,7 @@ public class AppInitConfig {
     }
 
     private void createUser(String name, Role role) {
-        if (userRepository.findByName(name) == null) {
+        if (userRepository.findByEmail(name + "@gmail.com") == null) {
             User user = User.builder()
                     .name(name)
                     .email(name + "@gmail.com")

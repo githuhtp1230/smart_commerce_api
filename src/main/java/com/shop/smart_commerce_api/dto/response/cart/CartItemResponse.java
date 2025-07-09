@@ -16,9 +16,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class CartItemResponse {
     private Integer id;
     private ProductResponse product;
@@ -26,8 +23,6 @@ public class CartItemResponse {
     private ProductVariationResponse productVariation;
     private String image;
     private Integer quantity;
-    @Builder.Default
-    private List<AttributeValueResponse> attributesValues = new ArrayList<>();
 
     public CartItemResponse(Integer id, Integer productId, Integer productVariationId, String image, Integer quantity) {
         this.id = id;
