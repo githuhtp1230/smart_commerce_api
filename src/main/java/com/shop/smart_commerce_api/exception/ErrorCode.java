@@ -3,6 +3,7 @@ package com.shop.smart_commerce_api.exception;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.access.method.P;
 
 import com.shop.smart_commerce_api.entities.Payment;
 
@@ -21,6 +22,7 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order not found"),
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
     CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart items not found"),
+    PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Promotion not found"),
 
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),
