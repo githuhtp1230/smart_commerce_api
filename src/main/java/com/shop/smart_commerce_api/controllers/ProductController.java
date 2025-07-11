@@ -3,13 +3,16 @@ package com.shop.smart_commerce_api.controllers;
 import java.util.List;
 
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
+import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
+import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.services.ProductService;
+import com.shop.smart_commerce_api.services.ReviewService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductService productService;
+    private final ReviewService reviewService;
 
     @GetMapping
     public ApiResponse<PageResponse<ProductSummaryResponse>> getProductSummaries(
@@ -43,6 +47,33 @@ public class ProductController {
                 .code(200)
                 .message("Get product detail successfully")
                 .data(productService.getProductDetail(productId))
+                .build();
+    }
+
+    @PostMapping("/{productId}/reviews")
+    ApiResponse<ReviewResponse> create(@PathVariable("productId") int productId, @RequestBody ReviewRequest request) {
+        return ApiResponse.<ReviewResponse>builder()
+                .code(200)
+                .message("Create review successfully")
+                .data(reviewService.create(request, productId))
+                .build();
+    }
+
+    @GetMapping("/{productId}/reviews")
+    ApiResponse<List<ReviewResponse>> getListReviews(@PathVariable Integer productId) {
+        return ApiResponse.<List<ReviewResponse>>builder()
+                .code(200)
+                .message("Get list reviews successfully")
+                .data(reviewService.getListReviewsByProductId(productId))
+                .build();
+    }
+
+    @DeleteMapping("/{reviewId}")
+    ApiResponse<?> delete(@PathVariable Integer reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ApiResponse.builder()
+                .code(200)
+                .message("delete successfully")
                 .build();
     }
 

@@ -43,6 +43,8 @@ public class SecurityConfig {
             "api/categories",
             "api/attributes",
             "api/attributes/**",
+            "api/products/*/reviews",
+            "api/reviews/**"
     };
 
     @Bean
