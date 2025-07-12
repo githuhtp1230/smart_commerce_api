@@ -19,14 +19,17 @@ public class OrderDetail {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_variation_id")
+    private ProductVariation productVariation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
     @Column(name = "quantity")
     private Integer quantity;
 
-    @Lob
     @Column(name = "price")
-    private String price;
+    private Integer price;
 
 }

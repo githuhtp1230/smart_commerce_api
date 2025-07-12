@@ -40,11 +40,12 @@ public class SecurityConfig {
             "api/auth/reset-password",
             "api/products",
             "api/products/*",
+            "api/products/*/reviews",
             "api/categories",
             "api/attributes",
             "api/attributes/**",
-            "api/products/*/reviews",
-            "api/reviews/**"
+            "api/reviews/**",
+            "api/payments"
     };
 
     @Bean
