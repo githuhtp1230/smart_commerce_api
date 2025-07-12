@@ -52,13 +52,12 @@ public class CartController {
     }
 
     @PostMapping("/{cartItemId}")
-    public ApiResponse<UpdateCartItemQuantityResponse> updateQuantity(
+    public ApiResponse<UpdateCartItemQuantityResponse> changeQuantity(
             @RequestBody UpdateCartItemQuantityRequest request, @PathVariable Integer cartItemId) {
         return ApiResponse.<UpdateCartItemQuantityResponse>builder()
                 .code(200)
                 .message("Update quantity cart item successfully")
-                .data(cartService.updateQuantity(request.getQuantity(), cartItemId))
+                .data(cartService.changeQuantity(request.getChange(), cartItemId))
                 .build();
     }
-
 }

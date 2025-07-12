@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class UpdateCartItemQuantityRequest {
-    private Integer quantity;
+    private Integer change;
 }
