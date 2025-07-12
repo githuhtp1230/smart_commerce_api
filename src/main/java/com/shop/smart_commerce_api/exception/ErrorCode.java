@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatusCode;
 public enum ErrorCode {
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Category not found"),
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product not found"),
+    PRODUCT_VARIATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Product variation not found"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     ATTRIBUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "Attribute not found"),
     ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "Address not found"),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart item not found"),
 
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),
