@@ -125,4 +125,9 @@ public class CartService {
                 return cartItemResponse;
         }
 
+        public void deleteItem(Integer cartItemId) {
+                CartDetail cartDetail = cartDetailRepository.findById(cartItemId)
+                                .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
+                cartDetailRepository.delete(cartDetail);
+        }
 }
