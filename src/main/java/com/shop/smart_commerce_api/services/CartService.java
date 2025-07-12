@@ -132,10 +132,10 @@ public class CartService {
                 cartDetailRepository.delete(cartDetail);
         }
 
-        public UpdateCartItemQuantityResponse updateQuantity(Integer quantity, Integer cartItemId) {
+        public UpdateCartItemQuantityResponse changeQuantity(Integer change, Integer cartItemId) {
                 CartDetail cartDetail = cartDetailRepository.findById(cartItemId)
                                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
-                cartDetail.setQuantity(cartDetail.getQuantity() + quantity);
+                cartDetail.setQuantity(cartDetail.getQuantity() + change);
                 cartDetailRepository.save(cartDetail);
                 return UpdateCartItemQuantityResponse.builder()
                                 .quantity(cartDetail.getQuantity())
