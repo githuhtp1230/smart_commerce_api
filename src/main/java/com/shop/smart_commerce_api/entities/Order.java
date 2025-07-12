@@ -1,6 +1,7 @@
 package com.shop.smart_commerce_api.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,6 +20,7 @@ public class Order {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -26,6 +28,11 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id", nullable = false)
+    private Payment payment;
 
     @Column(name = "total")
     private Long total;
