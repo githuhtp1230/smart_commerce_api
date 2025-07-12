@@ -1,8 +1,10 @@
 package com.shop.smart_commerce_api.controllers;
 
 import com.shop.smart_commerce_api.dto.request.cart.AddCartItemRequest;
+import com.shop.smart_commerce_api.dto.request.cart.UpdateCartItemQuantityRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.cart.CartItemResponse;
+import com.shop.smart_commerce_api.dto.response.cart.UpdateCartItemQuantityResponse;
 import com.shop.smart_commerce_api.services.CartService;
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +48,16 @@ public class CartController {
         return ApiResponse.<CartItemResponse>builder()
                 .code(200)
                 .message("Delete item from cart successfully")
+                .build();
+    }
+
+    @PostMapping("/{cartItemId}")
+    public ApiResponse<UpdateCartItemQuantityResponse> updateQuantity(
+            @RequestBody UpdateCartItemQuantityRequest request, @PathVariable Integer cartItemId) {
+        return ApiResponse.<UpdateCartItemQuantityResponse>builder()
+                .code(200)
+                .message("Update quantity cart item successfully")
+                .data(cartService.updateQuantity(request.getQuantity(), cartItemId))
                 .build();
     }
 

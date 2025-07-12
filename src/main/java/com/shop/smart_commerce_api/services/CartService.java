@@ -2,6 +2,7 @@ package com.shop.smart_commerce_api.services;
 
 import com.shop.smart_commerce_api.dto.request.cart.AddCartItemRequest;
 import com.shop.smart_commerce_api.dto.response.cart.CartItemResponse;
+import com.shop.smart_commerce_api.dto.response.cart.UpdateCartItemQuantityResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductVariationResponse;
 import com.shop.smart_commerce_api.entities.AttributeValue;
 import com.shop.smart_commerce_api.entities.CartDetail;
@@ -129,5 +130,16 @@ public class CartService {
                 CartDetail cartDetail = cartDetailRepository.findById(cartItemId)
                                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
                 cartDetailRepository.delete(cartDetail);
+        }
+
+        public UpdateCartItemQuantityResponse updateQuantity(Integer quantity, Integer cartItemId) {
+                CartDetail cartDetail = cartDetailRepository.findById(cartItemId)
+                                .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
+                cartDetail.setQuantity(cartDetail.getQuantity() + quantity);
+                cartDetailRepository.save(cartDetail);
+                return UpdateCartItemQuantityResponse.builder()
+                                .quantity(cartDetail.getQuantity())
+                                .product(productMapper.toProductResponse(cartDetail.getProduct()))
+                                .build();
         }
 }
