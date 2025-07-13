@@ -31,6 +31,7 @@ public class UserService {
         return (User) authentication.getPrincipal();
     }
 
+<<<<<<< HEAD
     public UserResponse toggleIsActiveUser(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -39,6 +40,8 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
+=======
+>>>>>>> b5d0e90 (save)
     public UserResponse updateProfile(UserUpdateProfileRequest request) {
         User user = getCurrentUser();
 
