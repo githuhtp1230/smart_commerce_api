@@ -19,7 +19,7 @@ public class MeController {
 
     @GetMapping("/profile")
     public ApiResponse<UserResponse> getProfile() {
-        return ApiResponse.<UserResponse>builder()
+        return ApiResponse.<UserResponse>builder()  
                 .code(200)
                 .message("Get profile successfully")
                 .data(userService.getCurrentProfile())
