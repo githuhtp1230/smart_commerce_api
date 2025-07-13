@@ -22,7 +22,7 @@ public interface ReviewMapper {
     @Mapping(source = "parentReview.id", target = "parentReviewId")
     @Mapping(source = "user.name", target = "name")
     @Mapping(source = "parentReview.user.name", target = "parentReviewName")
-
+    @Mapping(source = "user.avatar", target = "avatar")
     ReviewResponse toResponse(Review review);
 
     List<ReviewResponse> toResponseList(List<Review> reviews);

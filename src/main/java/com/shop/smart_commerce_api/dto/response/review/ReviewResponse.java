@@ -19,4 +19,5 @@ public class ReviewResponse {
     private Boolean isRepliesExisting;
     private String name;
     private String parentReviewName;
+    private String avatar;
 }

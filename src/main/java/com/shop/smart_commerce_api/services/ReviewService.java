@@ -53,7 +53,7 @@ public class ReviewService {
 
     public List<ReviewResponse> getListReviewsByProductId(Integer productId) {
         // Lấy tất cả comment gốc (parentReviewId = null)
-        List<Review> rootReviews = reviewRepository.findByProductIdAndParentReviewIsNull(productId);
+        List<Review> rootReviews = reviewRepository.findByProductIdAndParentReviewIsNullOrderByCreatedAtDesc(productId);
         List<ReviewResponse> responses = rootReviews.stream().map(review -> {
             boolean isRepliesExisting = review.getReviews().size() > 0;
             ReviewResponse response = reviewMapper.toResponse(review);
@@ -65,7 +65,13 @@ public class ReviewService {
 
     public List<ReviewResponse> getListReviewReply(Integer reviewId) {
         List<Review> reviewReplies = reviewRepository.findByParentReviewId(reviewId);
-        return reviewMapper.toResponseList(reviewReplies);
+
+        return reviewReplies.stream().map(reply -> {
+            ReviewResponse response = reviewMapper.toResponse(reply);
+            boolean hasSubReplies = reply.getReviews().size() > 0;
+            response.setIsRepliesExisting(hasSubReplies);
+            return response;
+        }).toList();
     }
 
     public List<ReviewResponse> mapToReviewResponseList(Set<Review> reviews) {
