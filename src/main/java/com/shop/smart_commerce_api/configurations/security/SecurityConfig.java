@@ -44,6 +44,9 @@ public class SecurityConfig {
             "api/categories",
             "api/attributes",
             "api/attributes/**",
+            "api/attribute-values",
+            "api/attribute-values/**",
+            "api/attributes/*/attribute-values",
             "api/reviews/**",
             "api/payments"
     };
