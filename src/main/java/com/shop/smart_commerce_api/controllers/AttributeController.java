@@ -15,7 +15,9 @@ import com.shop.smart_commerce_api.dto.request.attribute.AttributeRequest;
 import com.shop.smart_commerce_api.dto.request.attribute.AttributeUpdateRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
+import com.shop.smart_commerce_api.dto.response.attribute.AttributeValueResponse;
 import com.shop.smart_commerce_api.services.AttributeService;
+import com.shop.smart_commerce_api.services.AttributeValueService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/attributes")
 public class AttributeController {
     private final AttributeService attributeService;
+    private final AttributeValueService attributeValueService;
 
     @PostMapping
     ApiResponse<AttributeResponse> createAttributeApiResponse(@RequestBody AttributeRequest request) {
@@ -68,6 +71,16 @@ public class AttributeController {
                 .code(200)
                 .message("Attribute updated successfully")
                 .data(attributeService.update(id, request))
+                .build();
+    }
+
+    @GetMapping("/{id}/attribute-values")
+    public ApiResponse<List<AttributeValueResponse>> getAttributeValuesByAttributeId(
+            @PathVariable("id") Integer attributeId) {
+        return ApiResponse.<List<AttributeValueResponse>>builder()
+                .code(200)
+                .message("Get attribute values by attribute ID successfully")
+                .data(attributeValueService.getAttributeValuesByAttributeId(attributeId))
                 .build();
     }
 }

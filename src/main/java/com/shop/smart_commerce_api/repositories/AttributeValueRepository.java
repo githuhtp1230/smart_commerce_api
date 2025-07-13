@@ -10,18 +10,20 @@ import java.util.List;
 
 @Repository
 public interface AttributeValueRepository extends JpaRepository<AttributeValue, Integer> {
-    @Query("""
-            SELECT pva.attributeValue
-            FROM ProductVariationAttribute pva
-            WHERE pva.productVariation.id = :productVariationId
-            """)
-    List<AttributeValue> findAttributeValuesByProductVariationId(
-            @Param("productVariationId") Integer productVariationId);
+        @Query("""
+                        SELECT pva.attributeValue
+                        FROM ProductVariationAttribute pva
+                        WHERE pva.productVariation.id = :productVariationId
+                        """)
+        List<AttributeValue> findAttributeValuesByProductVariationId(
+                        @Param("productVariationId") Integer productVariationId);
 
-    @Query("""
-            SELECT pva.attributeValue
-            FROM ProductVariationAttribute pva
-            WHERE pva.productVariation.product.id = :productId
-            """)
-    List<AttributeValue> findAttributeValuesByProductId(@Param("productId") Integer productId);
+        @Query("""
+                        SELECT pva.attributeValue
+                        FROM ProductVariationAttribute pva
+                        WHERE pva.productVariation.product.id = :productId
+                        """)
+        List<AttributeValue> findAttributeValuesByProductId(@Param("productId") Integer productId);
+
+        List<AttributeValue> findByAttributeId(Integer attributeId);
 }
