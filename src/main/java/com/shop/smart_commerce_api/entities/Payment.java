@@ -19,6 +19,11 @@ public class Payment {
     private Integer id;
 
     @Size(max = 100)
+    @Column(name = "value", length = 100)
+    private String value;
+
+    @Size(max = 100)
+
     @Column(name = "name", length = 100)
     private String name;
 
