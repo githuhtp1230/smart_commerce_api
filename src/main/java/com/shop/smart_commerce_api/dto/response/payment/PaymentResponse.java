@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class PaymentResponse {
     private Integer id;
+    private String value;
     private String name;
     private String code;
 }
