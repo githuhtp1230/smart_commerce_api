@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
 import com.shop.smart_commerce_api.entities.User;
+import com.shop.smart_commerce_api.exception.AppException;
+import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.UserMapper;
 import com.shop.smart_commerce_api.repositories.UserRepository;
 
@@ -29,7 +31,7 @@ public class UserService {
 
     public UserResponse toggleIsActiveUser(Integer userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setIsActive(!user.getIsActive());
         userRepository.save(user);
         return userMapper.toUserResponse(user);
