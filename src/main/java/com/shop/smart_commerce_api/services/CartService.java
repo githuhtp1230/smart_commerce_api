@@ -1,6 +1,7 @@
 package com.shop.smart_commerce_api.services;
 
 import com.shop.smart_commerce_api.dto.request.cart.AddCartItemRequest;
+import com.shop.smart_commerce_api.dto.request.cart.DeleteMultipleCartItemsRequest;
 import com.shop.smart_commerce_api.dto.response.cart.CartItemResponse;
 import com.shop.smart_commerce_api.dto.response.cart.UpdateCartItemQuantityResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductVariationResponse;
@@ -130,6 +131,19 @@ public class CartService {
                 CartDetail cartDetail = cartDetailRepository.findById(cartItemId)
                                 .orElseThrow(() -> new AppException(ErrorCode.CART_ITEM_NOT_FOUND));
                 cartDetailRepository.delete(cartDetail);
+        }
+
+        public void deleteMultipleCartItem(DeleteMultipleCartItemsRequest request) {
+                Integer userId = userService.getCurrentUser().getId();
+                List<CartDetail> items = cartDetailRepository.findAllByIdIn(request.getCartItems());
+                List<CartDetail> validItems = items.stream()
+                                .filter(item -> item.getUser().getId().equals(userId))
+                                .toList();
+
+                if (validItems.isEmpty()) {
+                        throw new AppException(ErrorCode.CART_ITEM_NOT_FOUND);
+                }
+                cartDetailRepository.deleteAll(validItems);
         }
 
         public UpdateCartItemQuantityResponse changeQuantity(Integer change, Integer cartItemId) {

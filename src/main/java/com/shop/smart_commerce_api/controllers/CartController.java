@@ -1,6 +1,7 @@
 package com.shop.smart_commerce_api.controllers;
 
 import com.shop.smart_commerce_api.dto.request.cart.AddCartItemRequest;
+import com.shop.smart_commerce_api.dto.request.cart.DeleteMultipleCartItemsRequest;
 import com.shop.smart_commerce_api.dto.request.cart.UpdateCartItemQuantityRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.cart.CartItemResponse;
@@ -48,6 +49,15 @@ public class CartController {
         return ApiResponse.<CartItemResponse>builder()
                 .code(200)
                 .message("Delete item from cart successfully")
+                .build();
+    }
+
+    @DeleteMapping
+    public ApiResponse<?> deleteMultipleCartItem(@RequestBody DeleteMultipleCartItemsRequest request) {
+        cartService.deleteMultipleCartItem(request);
+        return ApiResponse.<CartItemResponse>builder()
+                .code(200)
+                .message("Delete all items from cart successfully")
                 .build();
     }
 
