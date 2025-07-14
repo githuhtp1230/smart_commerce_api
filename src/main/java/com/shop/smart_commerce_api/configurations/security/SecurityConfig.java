@@ -50,8 +50,7 @@ public class SecurityConfig {
             "api/reviews/**",
             "api/payments",
             "api/users/*/toggle-is-active-user",
-            "api/users/**",
-            "api/cart/items/**"
+            "api/users/**"
     };
 
     @Bean
