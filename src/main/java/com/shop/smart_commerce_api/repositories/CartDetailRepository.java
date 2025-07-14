@@ -69,4 +69,6 @@ public interface CartDetailRepository extends JpaRepository<CartDetail, Integer>
     @Query("SELECT cd FROM CartDetail cd WHERE cd.user.id = :userId AND cd.product.id = :productId AND (:productVariationId IS NULL OR cd.productVariation.id = :productVariationId)")
     CartDetail getCartDetailByUserIdAndProductIdOrProductVariationId(@Param("userId") Integer userId,
             @Param("productId") Integer productId, @Param("productVariationId") Integer productVariationId);
+
+    List<CartDetail> findAllByIdIn(List<Integer> ids);
 }

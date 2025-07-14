@@ -49,7 +49,9 @@ public class SecurityConfig {
             "api/attributes/*/attribute-values",
             "api/reviews/**",
             "api/payments",
-            "api/users/*/toggle-is-active-user"
+            "api/users/*/toggle-is-active-user",
+            "api/users/**",
+            "api/cart/items/**"
     };
 
     @Bean
