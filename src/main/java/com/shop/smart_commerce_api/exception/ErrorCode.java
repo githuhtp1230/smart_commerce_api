@@ -27,6 +27,8 @@ public enum ErrorCode {
     INVALID_OTP(HttpStatus.BAD_REQUEST, "Invalid otp"),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "Wrong current password"),
 
+    FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "File upload error"),
+
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "You have not permission"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
