@@ -31,5 +31,19 @@ spring:
             enable: true
             required: true
 
+# ⚠️ Đưa payment.vnpay RA NGOÀI khối spring
+payment:
+  vnpay:
+    tmnCode: BTSJ2OC3
+    secretKey: STRECL1WG3TXAEA6RHICEAUFQHE9LK0G
+    initPaymentUrl: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    returnUrl: https://59eb69dcebbf.ngrok-free.app
+    timeout: 15
+
+logging:
+  level:
+    root: INFO
+    org.springframework.boot.context.properties.bind: TRACE
+
 pagination:
   product_summaries_size: 10
