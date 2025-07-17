@@ -2,6 +2,7 @@ package com.shop.smart_commerce_api.services;
 
 import com.shop.smart_commerce_api.dto.request.cart.AddCartItemRequest;
 import com.shop.smart_commerce_api.dto.request.cart.DeleteMultipleCartItemsRequest;
+import com.shop.smart_commerce_api.dto.response.attribute.AttributeValueResponse;
 import com.shop.smart_commerce_api.dto.response.cart.CartItemResponse;
 import com.shop.smart_commerce_api.dto.response.cart.UpdateCartItemQuantityResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductVariationResponse;
@@ -36,6 +37,7 @@ public class CartService {
         private final ProductMapper productMapper;
         private final ProductVariationRepository productVariationRepository;
         private final CartMapper cartMapper;
+        private final ProductVariationService productVariationService;
 
         public List<CartItemResponse> getCart() {
                 return cartDetailRepository.getCartItems(userService.getCurrentUser().getId()).stream().map(
@@ -43,22 +45,10 @@ public class CartService {
                                         Product product = productRepository
                                                         .findById(cartItemResponse.getProduct().getId()).get();
                                         if (cartItemResponse.getProductVariation() != null) {
-                                                ProductVariation productVariation = productVariationRepository
-                                                                .findById(cartItemResponse.getProductVariation()
-                                                                                .getId())
-                                                                .get();
-
-                                                List<AttributeValue> attributeValues = attributeValueRepository
-                                                                .findAttributeValuesByProductVariationId(
-                                                                                productVariation.getId());
-
-                                                ProductVariationResponse productVariationResponse = productMapper
-                                                                .toProductVariationResponse(productVariation);
-
-                                                productVariationResponse.setAttributeValues(attributeService
-                                                                .mapToAttributeValueResponses(
-                                                                                attributeValues));
-
+                                                ProductVariationResponse productVariationResponse = productVariationService
+                                                                .mapToVariationResponse(
+                                                                                cartItemResponse.getProductVariation()
+                                                                                                .getId());
                                                 cartItemResponse
                                                                 .setProductVariation(productVariationResponse);
                                         }
@@ -105,22 +95,13 @@ public class CartService {
                                                 productVariationId);
 
                 if (productVariationId != null) {
-                        ProductVariation productVariation = productVariationRepository.findById(productVariationId)
-                                        .get();
-                        List<AttributeValue> attributeValues = attributeValueRepository
-                                        .findAttributeValuesByProductVariationId(productVariation.getId());
-
-                        ProductVariationResponse productVariationResponse = productMapper
-                                        .toProductVariationResponse(productVariation);
-
-                        productVariationResponse.setAttributeValues(attributeService
-                                        .mapToAttributeValueResponses(
-                                                        attributeValues));
+                        ProductVariationResponse productVariationResponse = productVariationService
+                                        .mapToVariationResponse(
+                                                        cartItemResponse.getProductVariation()
+                                                                        .getId());
 
                         cartItemResponse
-                                        .setProductVariation(productMapper
-                                                        .toProductVariationResponse(
-                                                                        productVariation));
+                                        .setProductVariation(productVariationResponse);
                 }
                 cartItemResponse.setProduct(productMapper.toProductResponse(product));
 
