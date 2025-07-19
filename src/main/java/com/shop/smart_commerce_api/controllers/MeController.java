@@ -8,6 +8,8 @@ import com.shop.smart_commerce_api.dto.request.user.UserUpdateProfileRequest;
 import com.shop.smart_commerce_api.services.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,4 +34,5 @@ public class MeController {
                 .data(userService.updateProfile(request))
                 .build();
     }
+
 }

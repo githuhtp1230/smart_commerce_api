@@ -1,5 +1,7 @@
 package com.shop.smart_commerce_api.services;
 
+import java.util.List;
+
 import org.hibernate.sql.Update;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,5 +56,9 @@ public class UserService {
         }
         userRepository.save(user);
         return userMapper.toUserResponse(user);
+    }
+
+    public List<UserResponse> getAllUsers() {
+        return userMapper.toUserResponseList(userRepository.findAll());
     }
 }
