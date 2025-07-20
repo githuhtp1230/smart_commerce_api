@@ -3,11 +3,14 @@ package com.shop.smart_commerce_api.controllers;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.smart_commerce_api.dto.request.category.CreateCategoryRequest;
+import com.shop.smart_commerce_api.dto.request.filter.CategoryFilterRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.category.CategoryResponse;
 import com.shop.smart_commerce_api.services.CategoryService;
@@ -23,11 +26,11 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ApiResponse<List<CategoryResponse>> getAllCategories() {
+    public ApiResponse<List<CategoryResponse>> getCategories(@ModelAttribute CategoryFilterRequest request) {
         return ApiResponse.<List<CategoryResponse>>builder()
                 .code(200)
                 .message("Get categories successfully")
-                .data(categoryService.getAllCategories())
+                .data(categoryService.getCategories(request))
                 .build();
     }
 
