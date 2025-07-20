@@ -23,6 +23,9 @@ public class CategoryService {
 
     public List<CategoryResponse> getCategories(CategoryFilterRequest request) {
         Boolean isDeleted = request.getIsDeleted();
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
         List<Category> categories = categoryRepository.findParentCategories(isDeleted);
         return categories.stream()
                 .map(category -> {
