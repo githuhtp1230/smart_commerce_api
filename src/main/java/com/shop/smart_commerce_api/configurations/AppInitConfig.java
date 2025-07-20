@@ -23,16 +23,22 @@ public class AppInitConfig {
     @Bean
     ApplicationRunner applicationRunner() {
         return args -> {
-            Role role = roleRepository.findByName("ADMIN");
-            if (role == null) {
-                role = new Role();
-                role.setName("ADMIN");
-                role = roleRepository.save(role);
-            }
+            Role adminRole = getOrCreate("ADMIN");
+            getOrCreate("USER");
             for (String name : userNames) {
-                createUser(name, role);
+                createUser(name, adminRole);
             }
         };
+    }
+
+    private Role getOrCreate(String roleName) {
+        Role role = roleRepository.findByName(roleName);
+        if (role == null) {
+            role = new Role();
+            role.setName(roleName);
+            role = roleRepository.save(role);
+        }
+        return role;
     }
 
     private void createUser(String name, Role role) {

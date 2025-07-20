@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.request.category.CreateCategoryRequest;
+import com.shop.smart_commerce_api.dto.request.filter.CategoryFilterRequest;
 import com.shop.smart_commerce_api.dto.response.category.CategoryResponse;
 import com.shop.smart_commerce_api.entities.Category;
 import com.shop.smart_commerce_api.exception.AppException;
@@ -20,15 +21,14 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public List<CategoryResponse> getAllCategories() {
-        return categoryRepository.findCategoriesByIsDeletedIsFalseAndParentIsNull()
-                .stream().map(category -> {
-                    List<CategoryResponse> children = category.getCategories().stream()
-                            .map(categoryMapper::toCategoryResponse).toList();
+    public List<CategoryResponse> getCategories(CategoryFilterRequest request) {
+        Boolean isDeleted = request.getIsDeleted();
+        List<Category> categories = categoryRepository.findParentCategories(isDeleted);
+        return categories.stream()
+                .map(category -> {
                     return CategoryResponse.builder()
                             .id(category.getId())
                             .name(category.getName())
-                            .children(children)
                             .build();
                 })
                 .toList();
@@ -50,4 +50,5 @@ public class CategoryService {
         category.setIsDeleted(true);
         categoryRepository.save(category);
     }
+
 }
