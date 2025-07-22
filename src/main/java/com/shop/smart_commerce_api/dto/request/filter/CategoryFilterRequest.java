@@ -8,6 +8,6 @@ import lombok.Setter;
 @Data
 @Builder
 public class CategoryFilterRequest {
-    @Builder.Default
-    Boolean isDeleted = false;
+    Boolean isDeleted;
+    Boolean isChildren;
 }

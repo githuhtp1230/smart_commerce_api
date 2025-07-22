@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,7 +27,12 @@ public class CategoryService {
         if (isDeleted == null) {
             isDeleted = false;
         }
-        List<Category> categories = categoryRepository.findParentCategories(isDeleted);
+        List<Category> categories = new ArrayList<>();
+        if (request.getIsChildren() == null || !request.getIsChildren()) {
+            categories = categoryRepository.findParentCategories(isDeleted);
+        } else {
+            categories = categoryRepository.findChildrentCategories(isDeleted);
+        }
         return categories.stream()
                 .map(category -> {
                     return CategoryResponse.builder()

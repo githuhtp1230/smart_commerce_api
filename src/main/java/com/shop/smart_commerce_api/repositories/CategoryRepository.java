@@ -19,4 +19,10 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
                             WHERE (:isDeleted IS NULL OR c.isDeleted = :isDeleted) AND c.parent IS NULL
                         """)
         List<Category> findParentCategories(@Param("isDeleted") Boolean isDeleted);
+
+        @Query("""
+                            SELECT c FROM Category c
+                            WHERE (:isDeleted IS NULL OR c.isDeleted = :isDeleted) AND c.parent IS NOT NULL
+                        """)
+        List<Category> findChildrentCategories(@Param("isDeleted") Boolean isDeleted);
 }
