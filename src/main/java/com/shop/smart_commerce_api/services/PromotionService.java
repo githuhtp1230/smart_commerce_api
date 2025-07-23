@@ -31,8 +31,8 @@ public class PromotionService {
                             .id(promotion.getId())
                             .description(promotion.getDescription())
                             .discountValuePercent(promotion.getDiscountValuePercent())
-                            .startDate(null)
-                            .endDate(null)
+                            .startDate(promotion.getStartDate())
+                            .endDate(promotion.getEndDate())
                             .build();
                 })
                 .toList();
