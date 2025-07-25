@@ -22,22 +22,27 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public List<CategoryResponse> getCategories(CategoryFilterRequest request) {
-        Boolean isDeleted = request.getIsDeleted();
-        if (isDeleted == null) {
-            isDeleted = false;
-        }
+    public List<CategoryResponse> getCategories(CategoryFilterRequest filter) {
+        Boolean isFetchChildren = filter.getIsFetchChildren() != null ? filter.getIsFetchChildren() : false;
+        Boolean isDeleted = filter.getIsDeleted() != null ? filter.getIsDeleted() : false;
+
         List<Category> categories = new ArrayList<>();
-        if (request.getIsChildren() == null || !request.getIsChildren()) {
+        if (filter.getIsChildren() == null || !filter.getIsChildren()) {
             categories = categoryRepository.findParentCategories(isDeleted);
         } else {
             categories = categoryRepository.findChildrentCategories(isDeleted);
         }
         return categories.stream()
                 .map(category -> {
+                    List<CategoryResponse> children = new ArrayList<>();
+                    if (isFetchChildren) {
+                        System.out.println("hello");
+                        children = categoryMapper.toCategoryResponses(category.getCategories());
+                    }
                     return CategoryResponse.builder()
                             .id(category.getId())
                             .name(category.getName())
+                            .children(children)
                             .build();
                 })
                 .toList();

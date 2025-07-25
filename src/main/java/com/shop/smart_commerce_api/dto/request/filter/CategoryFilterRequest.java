@@ -10,4 +10,5 @@ import lombok.Setter;
 public class CategoryFilterRequest {
     Boolean isDeleted;
     Boolean isChildren;
+    Boolean isFetchChildren;
 }
