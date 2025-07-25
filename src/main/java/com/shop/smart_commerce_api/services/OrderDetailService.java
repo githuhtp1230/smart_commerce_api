@@ -65,8 +65,6 @@ public class OrderDetailService {
         }
 
         public OrderDetailResponse addOrderDetail(AddOrderDetailRequest request) {
-                // Lấy thông tin người dùng và đơn hàng hiện tại
-                User currentUser = userService.getCurrentUser();
                 Order order = orderService.getCurrentOrder();
                 Integer productId = request.getProductId();
                 Integer productVariationId = request.getProductVariationId();

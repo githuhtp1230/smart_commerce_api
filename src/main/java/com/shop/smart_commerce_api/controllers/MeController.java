@@ -67,7 +67,7 @@ public class MeController {
                                 .build();
         }
 
-        @PostMapping("/order-details/add")
+        @PostMapping("/order-details")
         public ApiResponse<OrderDetailResponse> addOrderDetail(@RequestBody AddOrderDetailRequest request) {
                 OrderDetailResponse addedOrderDetail = orderDetailService.addOrderDetail(request);
                 return ApiResponse.<OrderDetailResponse>builder()
