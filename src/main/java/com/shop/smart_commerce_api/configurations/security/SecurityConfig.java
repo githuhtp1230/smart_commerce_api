@@ -35,7 +35,6 @@ public class SecurityConfig {
             "api/auth/login",
             "api/auth/register",
             "api/auth/register-verify-otp",
-            "api/auth/change-password",
             "api/auth/forgot-password",
             "api/auth/reset-password",
             "api/products",
@@ -50,7 +49,11 @@ public class SecurityConfig {
             "api/reviews/**",
             "api/payments",
             "api/users/*/toggle-is-active-user",
-            "api/users/**"
+            "api/users",
+            "api/users/**",
+            "api/orders",
+            "api/orders/**",
+            "api/me/order-details/**",
     };
 
     @Bean
