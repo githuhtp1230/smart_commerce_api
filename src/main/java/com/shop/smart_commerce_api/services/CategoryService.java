@@ -49,12 +49,17 @@ public class CategoryService {
     }
 
     public CategoryResponse createCategory(CreateCategoryRequest request) {
-        System.out.println(request.getName());
         Category category = categoryRepository.findByNameAndIsDeletedIsFalse(request.getName());
         if (category != null) {
             throw new AppException(ErrorCode.CATEGORY_EXISTS);
         }
-        Category savedCategory = categoryRepository.save(categoryMapper.toCategory(request));
+        Category newCategory = categoryMapper.toCategory(request);
+        if (request.getParentId() != null) {
+            Category parentCategory = categoryRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+            newCategory.setParent(parentCategory);
+        }
+        Category savedCategory = categoryRepository.save(newCategory);
         return categoryMapper.toCategoryResponse(savedCategory);
     }
 
