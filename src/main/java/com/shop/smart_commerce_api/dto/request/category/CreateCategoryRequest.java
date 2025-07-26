@@ -6,4 +6,5 @@ import lombok.Getter;
 @Data
 public class CreateCategoryRequest {
     private String name;
+    private Integer parentId;
 }
