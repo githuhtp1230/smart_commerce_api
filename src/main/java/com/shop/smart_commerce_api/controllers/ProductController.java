@@ -54,7 +54,7 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/summaries/{productId}")
     public ApiResponse<ProductDetailResponse> getProductDetail(@PathVariable("productId") int productId) {
         return ApiResponse.<ProductDetailResponse>builder()
                 .code(200)
