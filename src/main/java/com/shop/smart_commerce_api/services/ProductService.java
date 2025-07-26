@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
+import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductVariationResponse;
 import com.shop.smart_commerce_api.entities.ImageProduct;
@@ -82,6 +83,10 @@ public class ProductService {
 
                                         return productVariationResponse;
                                 }).toList();
+        }
+
+        public List<ProductResponse> getAllProducts() {
+                return productMapper.toProductResponses(productRepository.findAll());
         }
 
         public List<String> mapImageProductToStringImages(Set<ImageProduct> imageProducts) {

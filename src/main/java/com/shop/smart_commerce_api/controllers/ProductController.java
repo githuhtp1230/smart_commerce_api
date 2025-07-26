@@ -2,6 +2,7 @@ package com.shop.smart_commerce_api.controllers;
 
 import java.util.List;
 
+import com.cloudinary.Api;
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
@@ -9,12 +10,15 @@ import org.springframework.web.bind.annotation.*;
 
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
+import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.services.ProductService;
 import com.shop.smart_commerce_api.services.ReviewService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +28,15 @@ public class ProductController {
     private final ReviewService reviewService;
 
     @GetMapping
+    public ApiResponse<List<ProductResponse>> getProducts() {
+        return ApiResponse.<List<ProductResponse>>builder()
+                .code(200)
+                .message("Get products successfully")
+                .data(productService.getAllProducts())
+                .build();
+    }
+
+    @GetMapping("/summaries")
     public ApiResponse<PageResponse<ProductSummaryResponse>> getProductSummaries(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "${pagination.product_summary:15}") int limit,
