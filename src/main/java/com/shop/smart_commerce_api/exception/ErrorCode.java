@@ -35,7 +35,9 @@ public enum ErrorCode {
     ORDER_DETAILS_EMPTY(HttpStatus.BAD_REQUEST, "Order details cannot be empty"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "You have not permission"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+
+    VNPAY_SIGNING_FAILED(HttpStatus.BAD_REQUEST, "Signing vnpay failed");
 
     private HttpStatusCode statusCode;
     private String message;
