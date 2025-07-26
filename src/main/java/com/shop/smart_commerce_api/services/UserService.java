@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
+import com.shop.smart_commerce_api.dto.request.filter.UserFilterRequest;
 import com.shop.smart_commerce_api.dto.request.user.UserUpdateProfileRequest;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
 import com.shop.smart_commerce_api.entities.User;
@@ -58,7 +60,12 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public List<UserResponse> getAllUsers() {
+    public List<UserResponse> getAllUsers(UserFilterRequest request) {
+        if (request.getIsCustomer() != null && request.getIsCustomer()) {
+            return userMapper.toUserResponseList(userRepository.findAllCustomers());
+        } else if (request.getIsMemberShip() != null && request.getIsMemberShip()) {
+            return userMapper.toUserResponseList(userRepository.findAllMemberships());
+        }
         return userMapper.toUserResponseList(userRepository.findAll());
     }
 }

@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
+import com.shop.smart_commerce_api.dto.request.filter.UserFilterRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
 import com.shop.smart_commerce_api.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
@@ -33,11 +36,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ApiResponse<List<UserResponse>> getAllUsers() {
+    public ApiResponse<List<UserResponse>> getAllUsers(@ModelAttribute UserFilterRequest filterRequest) {
         return ApiResponse.<List<UserResponse>>builder()
                 .code(200)
                 .message("Get all users successfully")
-                .data(userService.getAllUsers())
+                .data(userService.getAllUsers(filterRequest))
                 .build();
     }
 
