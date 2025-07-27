@@ -2,8 +2,8 @@ package com.shop.smart_commerce_api.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -13,6 +13,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "orders", schema = "smart_commerce")
 public class Order {
     @Id
@@ -34,11 +37,15 @@ public class Order {
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
+    @Size(max = 100)
+    @Column(name = "address", length = 100)
+    private String address;
+
     @Column(name = "total")
     private Long total;
 
     @Column(name = "status")
-    private Boolean status;
+    private Integer status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")

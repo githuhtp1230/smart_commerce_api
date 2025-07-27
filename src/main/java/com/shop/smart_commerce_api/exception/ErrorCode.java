@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
+import com.shop.smart_commerce_api.entities.Payment;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +18,9 @@ public enum ErrorCode {
     ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "Address not found"),
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart item not found"),
     ATTRIBUTE_VALUE_NOT_FOUND(HttpStatus.NOT_FOUND, "Attribute value not found"),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order not found"),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
+    CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart items not found"),
 
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),
@@ -29,9 +34,12 @@ public enum ErrorCode {
 
     FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "File upload error"),
 
+    ORDER_DETAILS_EMPTY(HttpStatus.BAD_REQUEST, "Order details cannot be empty"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "You have not permission"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+
+    VNPAY_SIGNING_FAILED(HttpStatus.BAD_REQUEST, "Signing vnpay failed");
 
     private HttpStatusCode statusCode;
     private String message;

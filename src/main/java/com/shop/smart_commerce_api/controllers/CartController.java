@@ -70,4 +70,13 @@ public class CartController {
                 .data(cartService.changeQuantity(request.getChange(), cartItemId))
                 .build();
     }
+
+    // @PostMapping("/{checkout}")
+    // public ApiResponse<List<CartItemResponse>> checkout(@RequestBody String
+    // entity) {
+    // // TODO: process POST request
+
+    // return entity;
+    // }
+
 }
