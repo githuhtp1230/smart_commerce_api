@@ -1,11 +1,13 @@
 package com.shop.smart_commerce_api.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
+import com.shop.smart_commerce_api.dto.response.cart.CartItemResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
@@ -115,6 +117,37 @@ public class OrderDetailService {
                 }
 
                 return response;
+        }
+
+        public List<OrderDetail> mapToOrderDetailsFromCartItemResponses(List<CartItemResponse> cartItemResponses,
+                        Order order) {
+                List<OrderDetail> orderDetails = new ArrayList<>();
+
+                for (CartItemResponse cartItem : cartItemResponses) {
+                        OrderDetail detail = new OrderDetail();
+                        detail.setOrder(order);
+                        detail.setProduct(Product.builder().id(cartItem.getProduct().getId()).build());
+                        detail.setQuantity(cartItem.getQuantity());
+
+                        int price;
+                        if (cartItem.getProductVariation() == null) {
+                                price = productRepository.findById(cartItem.getProduct().getId())
+                                                .map(Product::getPrice)
+                                                .orElse(0);
+                        } else {
+                                price = productVariationRepository.findById(cartItem.getProductVariation().getId())
+                                                .map(ProductVariation::getPrice)
+                                                .orElse(0);
+                                detail.setProductVariation(ProductVariation.builder()
+                                                .id(cartItem.getProductVariation().getId()).build());
+                        }
+
+                        detail.setPrice(price * cartItem.getQuantity());
+
+                        orderDetails.add(detail);
+                }
+
+                return orderDetails;
         }
 
 }

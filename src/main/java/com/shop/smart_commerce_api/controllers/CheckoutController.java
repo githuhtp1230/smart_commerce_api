@@ -9,8 +9,11 @@ import com.shop.smart_commerce_api.dto.request.category.CreateCategoryRequest;
 import com.shop.smart_commerce_api.dto.request.checkout.CheckoutRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.category.CategoryResponse;
+import com.shop.smart_commerce_api.dto.response.checkout.CheckoutResponse;
 import com.shop.smart_commerce_api.services.CheckoutService;
+import com.shop.smart_commerce_api.util.RequestUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,11 +23,13 @@ public class CheckoutController {
     private final CheckoutService checkoutService;
 
     @PostMapping
-    public ApiResponse<CategoryResponse> createCategory(@RequestBody CheckoutRequest request) {
-        checkoutService.checkout(request);
-        return ApiResponse.<CategoryResponse>builder()
+    public ApiResponse<CheckoutResponse> createCategory(@RequestBody CheckoutRequest request,
+            HttpServletRequest servletRequest) {
+        request.setIpAddress(RequestUtil.getIpAddress(servletRequest));
+        return ApiResponse.<CheckoutResponse>builder()
                 .code(200)
-                .message("Create category successfully")
+                .message("Checkout successfully")
+                .data(checkoutService.checkout(request))
                 .build();
     }
 }

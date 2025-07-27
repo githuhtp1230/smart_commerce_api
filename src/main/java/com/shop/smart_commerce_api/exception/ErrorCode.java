@@ -19,6 +19,8 @@ public enum ErrorCode {
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart item not found"),
     ATTRIBUTE_VALUE_NOT_FOUND(HttpStatus.NOT_FOUND, "Attribute value not found"),
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order not found"),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
+    CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart items not found"),
 
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),

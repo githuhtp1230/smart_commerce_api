@@ -1,17 +1,27 @@
 package com.shop.smart_commerce_api.services;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.shop.smart_commerce_api.constant.Currency;
+import com.shop.smart_commerce_api.constant.Locale;
+import com.shop.smart_commerce_api.constant.Symbol;
 import com.shop.smart_commerce_api.constant.VNPayParams;
+import com.shop.smart_commerce_api.dto.request.payment.InitPaymentRequest;
+import com.shop.smart_commerce_api.dto.response.payment.InitPaymentResponse;
+import com.shop.smart_commerce_api.util.DateUtil;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 @Service
 @RequiredArgsConstructor
@@ -35,17 +45,26 @@ public class VnPayService {
 
     private final CryptoService cryptoService;
 
-    public void init() {
-        Map<String, String> params = new HashMap<>();
+    public InitPaymentResponse init(InitPaymentRequest request) {
+        var amount = request.getAmount() * DEFAULT_MULTIPLIER; // 1. amount * 100
+        var txnRef = request.getTxnRef(); // 2. bookingId
+        var returnUrl = buildReturnUrl(txnRef); // 3. FE redirect by returnUrl
+        var vnCalendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        var createdDate = DateUtil.formatVnTime(vnCalendar);
+        vnCalendar.add(Calendar.MINUTE, paymentTimeout);
+        var expiredDate = DateUtil.formatVnTime(vnCalendar); // 4. expiredDate for secure
 
-        Calendar vnCalendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-        var ipAddress = re
+        var ipAddress = request.getIpAddress();
+        var orderInfo = buildPaymentDetail(request);
+        var requestId = request.getRequestId();
+
+        Map<String, String> params = new HashMap<>();
 
         params.put(VNPayParams.VERSION, VERSION);
         params.put(VNPayParams.COMMAND, COMMAND);
 
         params.put(VNPayParams.TMN_CODE, tmnCode);
-        params.put(VNPayParams.AMOUNT, String.valueOf(100));
+        params.put(VNPayParams.AMOUNT, String.valueOf(amount));
         params.put(VNPayParams.CURRENCY, Currency.VND.getValue());
 
         params.put(VNPayParams.TXN_REF, txnRef);
@@ -59,5 +78,57 @@ public class VnPayService {
 
         params.put(VNPayParams.ORDER_INFO, orderInfo);
         params.put(VNPayParams.ORDER_TYPE, ORDER_TYPE);
+
+        var initPaymentUrl = buildInitPaymentUrl(params);
+        return InitPaymentResponse.builder()
+                .vnpUrl(initPaymentUrl)
+                .build();
+    }
+
+    private String buildReturnUrl(String txnRef) {
+        return String.format(returnUrlFormat, txnRef);
+    }
+
+    private String buildPaymentDetail(InitPaymentRequest request) {
+        return String.format("Thanh toan don hang", request.getTxnRef());
+    }
+
+    @SneakyThrows
+    private String buildInitPaymentUrl(Map<String, String> params) {
+        var hashPayload = new StringBuilder();
+        var query = new StringBuilder();
+        var fieldNames = new ArrayList<>(params.keySet());
+        Collections.sort(fieldNames); // 1. Sort field names
+
+        var itr = fieldNames.iterator();
+        while (itr.hasNext()) {
+            var fieldName = itr.next();
+            var fieldValue = params.get(fieldName);
+            if ((fieldValue != null) && (!fieldValue.isEmpty())) {
+                // 2.1. Build hash data
+                hashPayload.append(fieldName);
+                hashPayload.append(Symbol.EQUAL);
+                hashPayload.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+
+                // 2.2. Build query
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
+                query.append(Symbol.EQUAL);
+                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+
+                if (itr.hasNext()) {
+                    query.append(Symbol.AND);
+                    hashPayload.append(Symbol.AND);
+                }
+            }
+        }
+
+        // 3. Build secureHash
+        var secureHash = cryptoService.sign(hashPayload.toString());
+
+        // 4. Finalize query
+        query.append("&vnp_SecureHash=");
+        query.append(secureHash);
+
+        return initPaymentPrefixUrl + "?" + query;
     }
 }

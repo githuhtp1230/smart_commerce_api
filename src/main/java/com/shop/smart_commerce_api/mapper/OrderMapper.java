@@ -8,7 +8,6 @@ import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.entities.Order;
 import com.shop.smart_commerce_api.entities.OrderDetail;
-import com.shop.smart_commerce_api.model.OrderStatus;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {

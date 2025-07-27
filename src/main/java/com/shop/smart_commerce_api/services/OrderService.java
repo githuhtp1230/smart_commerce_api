@@ -14,7 +14,6 @@ import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.OrderMapper;
-import com.shop.smart_commerce_api.model.OrderStatus;
 import com.shop.smart_commerce_api.repositories.OrderRepository;
 import com.shop.smart_commerce_api.repositories.PaymentRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;

@@ -9,5 +9,7 @@ import lombok.Data;
 @Builder
 public class CheckoutRequest {
     private List<Integer> cartItemIds;
-    private String address;
+    private Integer addressId;
+    private Integer paymentId;
+    private String ipAddress;
 }
