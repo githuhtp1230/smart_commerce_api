@@ -17,6 +17,6 @@ public class AddressResponse {
     private String district;
     private String ward;
     private String streetAddress;
-
+    private Boolean isDefault;
     // private UserResponse user;
 }

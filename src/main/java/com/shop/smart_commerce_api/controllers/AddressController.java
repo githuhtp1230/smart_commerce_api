@@ -70,6 +70,14 @@ public class AddressController {
                 .build();
     }
 
+    @PutMapping("/{id}/set-default")
+    ApiResponse<Void> setDefaultAddressApiResponse(@PathVariable Integer id) {
+        addressService.setDefaultAddress(id);
+        return ApiResponse.<Void>builder()
+                .code(200)
+                .message("Default address set successfully")
+                .build();
+    }
     // @GetMapping("/user/{userId}")
     // ApiResponse<List<AddressResponse>>
     // getAddressesByUserIdApiResponse(@PathVariable Integer userId) {
