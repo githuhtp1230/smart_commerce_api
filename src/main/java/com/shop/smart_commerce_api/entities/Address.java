@@ -42,7 +42,8 @@ public class Address {
     private String streetAddress;
 
     @Column(name = "is_default")
-    private Boolean isDefault;
+    @ColumnDefault("false")
+    private Boolean isDefault = false;
 
     @ColumnDefault("0")
     @Column(name = "is_delete")

@@ -11,6 +11,9 @@ import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.mapper.AddressMapper;
 import com.shop.smart_commerce_api.repositories.AddressRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
+
+import jakarta.transaction.Transactional;
+
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 
@@ -56,5 +59,23 @@ public class AddressService {
         return addresses.stream()
                 .map(addressMapper::toAddressResponse)
                 .toList();
+    }
+
+    @Transactional
+    public void setDefaultAddress(Integer addressId) {
+        User currentUser = userService.getCurrentUser();
+
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        if (!address.getUser().getId().equals(currentUser.getId())) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+
+        // Reset all others to false
+        addressRepository.resetOtherDefaults(currentUser.getId(), addressId);
+
+        address.setIsDefault(true);
+        addressRepository.save(address);
     }
 }
