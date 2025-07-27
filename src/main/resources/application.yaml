@@ -36,7 +36,7 @@ payment:
     tmn-code: 03NCHO1Z
     secret-key: WPAPJPIGP1HTS1221UOG81L5QT6HPWE0
     init-payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-    return-url: http://localhost:3000
+    return-url: http://localhost:3000/checkout-completed
     timeout: 15
 
 pagination:

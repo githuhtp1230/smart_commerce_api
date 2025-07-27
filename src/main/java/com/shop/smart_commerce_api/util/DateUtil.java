@@ -1,6 +1,7 @@
 package com.shop.smart_commerce_api.util;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -36,9 +37,10 @@ public class DateUtil {
         return VNPAY_DATE_FORMAT.format(calendar.getTime());
     }
 
-    // public static void main(String[] agrs) {
-    // LocalDate date1 = LocalDate.parse("2022-06-12");
-    // LocalDate date2 = LocalDate.parse("2022-06-15");
-    // System.out.println(getDiffInDays(date1, date2));
-    // }
+    public static boolean isCurrentDateInRange(Instant startDate, Instant endDate) {
+        Instant now = Instant.now();
+        return startDate != null && endDate != null
+                && !now.isBefore(startDate)
+                && !now.isAfter(endDate);
+    }
 }

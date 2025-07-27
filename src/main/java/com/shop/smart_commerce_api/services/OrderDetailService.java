@@ -126,22 +126,25 @@ public class OrderDetailService {
                 for (CartItemResponse cartItem : cartItemResponses) {
                         OrderDetail detail = new OrderDetail();
                         detail.setOrder(order);
-                        detail.setProduct(Product.builder().id(cartItem.getProduct().getId()).build());
-                        detail.setQuantity(cartItem.getQuantity());
+
+                        Product product = productRepository.findById(cartItem.getProduct().getId())
+                                        .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                        detail.setProduct(product);
 
                         int price;
-                        if (cartItem.getProductVariation() == null) {
-                                price = productRepository.findById(cartItem.getProduct().getId())
-                                                .map(Product::getPrice)
-                                                .orElse(0);
+
+                        if (cartItem.getProductVariation() != null) {
+                                ProductVariation variation = productVariationRepository.findById(
+                                                cartItem.getProductVariation().getId())
+                                                .orElseThrow(() -> new AppException(
+                                                                ErrorCode.PRODUCT_VARIATION_NOT_FOUND));
+                                detail.setProductVariation(variation);
+                                price = variation.getPrice();
                         } else {
-                                price = productVariationRepository.findById(cartItem.getProductVariation().getId())
-                                                .map(ProductVariation::getPrice)
-                                                .orElse(0);
-                                detail.setProductVariation(ProductVariation.builder()
-                                                .id(cartItem.getProductVariation().getId()).build());
+                                price = product.getPrice();
                         }
 
+                        detail.setQuantity(cartItem.getQuantity());
                         detail.setPrice(price * cartItem.getQuantity());
 
                         orderDetails.add(detail);

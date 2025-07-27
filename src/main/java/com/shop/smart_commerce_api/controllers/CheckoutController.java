@@ -23,13 +23,13 @@ public class CheckoutController {
     private final CheckoutService checkoutService;
 
     @PostMapping
-    public ApiResponse<CheckoutResponse> createCategory(@RequestBody CheckoutRequest request,
+    public ApiResponse<CheckoutResponse> checkoutTransfer(@RequestBody CheckoutRequest request,
             HttpServletRequest servletRequest) {
         request.setIpAddress(RequestUtil.getIpAddress(servletRequest));
         return ApiResponse.<CheckoutResponse>builder()
                 .code(200)
                 .message("Checkout successfully")
-                .data(checkoutService.checkout(request))
+                .data(checkoutService.checkoutTransfer(request))
                 .build();
     }
 }
