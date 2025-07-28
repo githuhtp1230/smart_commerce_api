@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +61,7 @@ public class AddressController {
     // .build();
     // }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     ApiResponse<AddressResponse> updateAddressApiResponse(@PathVariable Integer id,
             @RequestBody AddressRequest request) {
         return ApiResponse.<AddressResponse>builder()
@@ -76,6 +77,15 @@ public class AddressController {
         return ApiResponse.<Void>builder()
                 .code(200)
                 .message("Default address set successfully")
+                .build();
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ApiResponse<Void> deleteApiResponse(@PathVariable Integer id) {
+        addressService.delete(id);
+        return ApiResponse.<Void>builder()
+                .code(200)
+                .message("Address deleted successfully")
                 .build();
     }
     // @GetMapping("/user/{userId}")

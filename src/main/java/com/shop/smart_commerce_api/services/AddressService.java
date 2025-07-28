@@ -36,10 +36,13 @@ public class AddressService {
         return addressMapper.toAddressResponse(address);
     }
 
-    public void delete(int id) {
+    public void delete(Integer id) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
-        addressRepository.save(address);
+        if (!address.getUser().getId().equals(userService.getCurrentUser().getId())) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+        addressRepository.delete(address);
     }
 
     public AddressResponse update(Integer id, AddressRequest request) {
