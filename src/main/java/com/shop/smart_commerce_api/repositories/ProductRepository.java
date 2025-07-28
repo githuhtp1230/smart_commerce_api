@@ -23,7 +23,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                     ip.image_url AS image,
                     CAST(COALESCE(AVG(r.rating * 1.0), 0.0) AS DOUBLE) AS average_rating,
                     COUNT(DISTINCT r.id) AS review_count,
-                    CAST(COALESCE(MIN(pr.price), p.price) AS double)
+                    CAST(COALESCE(MIN(pr.price), p.price) AS double),
+                    CAST(COALESCE(MAX(pr.price), p.price) AS double)
                 FROM products p
                 LEFT JOIN (
                     SELECT product_id, image_url,
