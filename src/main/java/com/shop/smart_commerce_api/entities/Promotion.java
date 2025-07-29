@@ -1,6 +1,7 @@
 package com.shop.smart_commerce_api.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,10 +15,14 @@ import java.util.Set;
 @Table(name = "promotions", schema = "smart_commerce")
 public class Promotion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Size(max = 100)
+    @Column(name = "name", length = 100)
+    private String name;
+
+    @Size(max = 100)
     @Column(name = "description", length = 100)
     private String description;
 
