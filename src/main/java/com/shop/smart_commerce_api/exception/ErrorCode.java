@@ -26,6 +26,7 @@ public enum ErrorCode {
 
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),
+    PROMOTION_EXISTS(HttpStatus.CONFLICT, "Promotion is exists"),
 
     EMAIL_OR_PASSWORD_INVALID(HttpStatus.BAD_REQUEST, "Email or password is invalid"),
 

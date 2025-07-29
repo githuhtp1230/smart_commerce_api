@@ -27,40 +27,45 @@ public class PromotionController {
     public final PromotionService promotionService;
 
     @GetMapping
-    ApiResponse<List<PromotionResponse>> getAllApiResponse() {
+    public ApiResponse<List<PromotionResponse>> getAll(@RequestParam(required = false) Boolean isActive) {
+        List<PromotionResponse> promotions;
+        if (isActive != null) {
+            promotions = promotionService.getAllByIsActive(isActive);
+        } else {
+            promotions = promotionService.getAll(); // Lấy tất cả nếu không có tham số
+        }
+
         return ApiResponse.<List<PromotionResponse>>builder()
                 .code(200)
-                .message("Address retrieved successfully")
-                .data(promotionService.getAll())
+                .message("Promotions retrieved successfully")
+                .data(promotions)
                 .build();
     }
 
     @PostMapping
-    ApiResponse<String> createApiResponse(@RequestBody PromotionRequest request) {
-        promotionService.create(request);
-        return ApiResponse.<String>builder()
+    public ApiResponse<PromotionResponse> create(@RequestBody PromotionRequest request) {
+        return ApiResponse.<PromotionResponse>builder()
                 .code(200)
                 .message("Promotion created successfully")
-                .data("Promotion created")
+                .data(promotionService.create(request))
                 .build();
     }
 
-    @DeleteMapping("/{id}/delete")
-    ApiResponse<?> deleteApiResponse(@PathVariable("id") int id) {
-        promotionService.delete(id);
+    @PostMapping("/{id}")
+    ApiResponse<?> toggleIsActive(@PathVariable("id") int id) {
         return ApiResponse.builder()
                 .code(200)
-                .message("Promotion deleted successfully")
+                .message("Promotion disabled successfully")
+                .data(promotionService.toggleIsActive(id))
                 .build();
     }
 
     @PutMapping("/{id}")
-    ApiResponse<String> updateApiResponse(@PathVariable("id") int id, @RequestBody PromotionRequest request) {
-        promotionService.update(id, request);
-        return ApiResponse.<String>builder()
+    ApiResponse<PromotionResponse> update(@PathVariable("id") int id, @RequestBody PromotionRequest request) {
+        return ApiResponse.<PromotionResponse>builder()
                 .code(200)
                 .message("Promotion updated successfully")
-                .data("Promotion updated")
+                .data(promotionService.update(id, request))
                 .build();
     }
 

@@ -1,5 +1,7 @@
 package com.shop.smart_commerce_api.dto.request.promotion;
 
+import java.time.Instant;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PromotionRequest {
-    private String name;
     private String description;
-    private String startDate;
-    private String endDate;
-    private Integer discountPercentage;
+    private Instant startDate;
+    private Instant endDate;
+    private Integer discountValuePercent;
     private Boolean isActive;
 }
