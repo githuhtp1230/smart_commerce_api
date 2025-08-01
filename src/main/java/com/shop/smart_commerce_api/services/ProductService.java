@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.shop.smart_commerce_api.dto.response.product.ImageProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
@@ -35,15 +36,78 @@ public class ProductService {
         private final PromotionMapper promotionMapper;
         private final AttributeService attributeService;
 
+        // public PageResponse<ProductSummaryResponse>
+        // getProductSummaries(ProductSummaryFilterRequest request,
+        // int currentPage, int limit) {
+        // Pageable pageable = PageRequest.of(currentPage, limit);
+        // Page<ProductSummaryResponse> page =
+        // productRepository.findProductSummaries(request.getCategoryId(),
+        // pageable);
+        // page.stream().forEach(productSummary -> {
+        // Product product = productRepository.findById(productSummary.getId()).get();
+
+        // productSummary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
+        // productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+        // productSummary.setCreatedAt(product.getCreatedAt());
+        // });
+        // return PageResponse.<ProductSummaryResponse>builder()
+        // .currentPage(page.getNumber() + 1)
+        // .totalPages(page.getTotalPages())
+        // .limit(page.getNumberOfElements())
+        // .totalElements((int) page.getTotalElements())
+        // .isLast(page.isLast())
+        // .data(page.getContent())
+        // .build();
+        // }
+
         public PageResponse<ProductSummaryResponse> getProductSummaries(ProductSummaryFilterRequest request,
                         int currentPage, int limit) {
                 Pageable pageable = PageRequest.of(currentPage, limit);
-                Page<ProductSummaryResponse> page = productRepository.findProductSummaries(request.getCategoryId(),
-                                pageable);
-                page.stream().forEach(productSummary -> {
-                        Product product = productRepository.findById(productSummary.getId()).get();
+
+                // Gọi hàm đã sửa để chỉ lấy sản phẩm chưa bị xóa
+                Page<ProductSummaryResponse> page = productRepository.findActiveProductSummaries(pageable);
+
+                page.forEach(productSummary -> {
+                        Product product = productRepository.findById(productSummary.getId())
+                                        .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
                         productSummary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
+                        productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+                        productSummary.setCreatedAt(product.getCreatedAt());
                 });
+
+                return PageResponse.<ProductSummaryResponse>builder()
+                                .currentPage(page.getNumber() + 1)
+                                .totalPages(page.getTotalPages())
+                                .limit(page.getNumberOfElements())
+                                .totalElements((int) page.getTotalElements())
+                                .isLast(page.isLast())
+                                .data(page.getContent())
+                                .build();
+        }
+
+        public void deleteProduct(int productId) {
+                Product product = productRepository.findById(productId)
+                                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                product.setIsDeleted(1);
+                productRepository.save(product);
+        }
+
+        public PageResponse<ProductSummaryResponse> getDeletedProductSummaries(int currentPage, int limit) {
+                Pageable pageable = PageRequest.of(currentPage, limit);
+                Page<ProductSummaryResponse> page = productRepository.findDeletedProductSummaries(pageable);
+
+                // Bổ sung các trường còn thiếu bằng cách fetch từ entity
+                page.forEach(productSummary -> {
+                        Product product = productRepository.findById(productSummary.getId()).orElse(null);
+                        if (product != null) {
+                                productSummary.setPromotion(
+                                                promotionMapper.toPromotionResponse(product.getPromotion()));
+                                productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+                                productSummary.setCreatedAt(product.getCreatedAt());
+                        }
+                });
+
                 return PageResponse.<ProductSummaryResponse>builder()
                                 .currentPage(page.getNumber() + 1)
                                 .totalPages(page.getTotalPages())

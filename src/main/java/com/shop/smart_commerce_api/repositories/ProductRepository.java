@@ -60,4 +60,59 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                 GROUP BY p.id, p.name, p.createdAt, p.price
             """)
     ProductDetailResponse findProductDetailById(@Param("productId") Integer productId);
+
+    @Query(value = """
+                SELECT
+                    p.id,
+                    p.name,
+                    ip.image_url AS image,
+                    CAST(COALESCE(AVG(r.rating * 1.0), 0.0) AS DOUBLE) AS average_rating,
+                    COUNT(DISTINCT r.id) AS review_count,
+                    CAST(COALESCE(MIN(pr.price), p.price) AS double),
+                    CAST(COALESCE(MAX(pr.price), p.price) AS double)
+                FROM products p
+                LEFT JOIN (
+                    SELECT product_id, image_url,
+                           ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY id) AS rn
+                    FROM image_products
+                ) ip ON ip.product_id = p.id AND ip.rn = 1
+                LEFT JOIN reviews r ON r.product_id = p.id
+                LEFT JOIN promotions po ON po.id = p.promotion_id
+                LEFT JOIN product_variations pr ON pr.product_id = p.id
+                WHERE p.is_deleted = 1
+                GROUP BY p.id, p.name, ip.image_url
+            """, countQuery = """
+                SELECT COUNT(DISTINCT p.id)
+                FROM products p
+                WHERE p.is_deleted = 1
+            """, nativeQuery = true)
+    Page<ProductSummaryResponse> findDeletedProductSummaries(Pageable pageable);
+
+    @Query(value = """
+            SELECT
+                p.id,
+                p.name,
+                ip.image_url AS image,
+                CAST(COALESCE(AVG(r.rating * 1.0), 0.0) AS DOUBLE) AS average_rating,
+                COUNT(DISTINCT r.id) AS review_count,
+                CAST(COALESCE(MIN(pr.price), p.price) AS double),
+                CAST(COALESCE(MAX(pr.price), p.price) AS double)
+            FROM products p
+            LEFT JOIN (
+                SELECT product_id, image_url,
+                       ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY id) AS rn
+                FROM image_products
+            ) ip ON ip.product_id = p.id AND ip.rn = 1
+            LEFT JOIN reviews r ON r.product_id = p.id
+            LEFT JOIN promotions po ON po.id = p.promotion_id
+            LEFT JOIN product_variations pr ON pr.product_id = p.id
+            WHERE p.is_deleted = 0
+            GROUP BY p.id, p.name, ip.image_url
+            """, countQuery = """
+            SELECT COUNT(DISTINCT p.id)
+            FROM products p
+            WHERE p.is_deleted = 0
+            """, nativeQuery = true)
+    Page<ProductSummaryResponse> findActiveProductSummaries(Pageable pageable);
+
 }
