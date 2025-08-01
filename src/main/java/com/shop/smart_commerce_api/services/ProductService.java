@@ -36,46 +36,18 @@ public class ProductService {
         private final PromotionMapper promotionMapper;
         private final AttributeService attributeService;
 
-        // public PageResponse<ProductSummaryResponse>
-        // getProductSummaries(ProductSummaryFilterRequest request,
-        // int currentPage, int limit) {
-        // Pageable pageable = PageRequest.of(currentPage, limit);
-        // Page<ProductSummaryResponse> page =
-        // productRepository.findProductSummaries(request.getCategoryId(),
-        // pageable);
-        // page.stream().forEach(productSummary -> {
-        // Product product = productRepository.findById(productSummary.getId()).get();
-
-        // productSummary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
-        // productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
-        // productSummary.setCreatedAt(product.getCreatedAt());
-        // });
-        // return PageResponse.<ProductSummaryResponse>builder()
-        // .currentPage(page.getNumber() + 1)
-        // .totalPages(page.getTotalPages())
-        // .limit(page.getNumberOfElements())
-        // .totalElements((int) page.getTotalElements())
-        // .isLast(page.isLast())
-        // .data(page.getContent())
-        // .build();
-        // }
-
         public PageResponse<ProductSummaryResponse> getProductSummaries(ProductSummaryFilterRequest request,
                         int currentPage, int limit) {
                 Pageable pageable = PageRequest.of(currentPage, limit);
-
-                // Gọi hàm đã sửa để chỉ lấy sản phẩm chưa bị xóa
-                Page<ProductSummaryResponse> page = productRepository.findActiveProductSummaries(pageable);
-
-                page.forEach(productSummary -> {
-                        Product product = productRepository.findById(productSummary.getId())
-                                        .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                Page<ProductSummaryResponse> page = productRepository.findProductSummaries(request.getCategoryId(),
+                                pageable);
+                page.stream().forEach(productSummary -> {
+                        Product product = productRepository.findById(productSummary.getId()).get();
 
                         productSummary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
                         productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
                         productSummary.setCreatedAt(product.getCreatedAt());
                 });
-
                 return PageResponse.<ProductSummaryResponse>builder()
                                 .currentPage(page.getNumber() + 1)
                                 .totalPages(page.getTotalPages())
