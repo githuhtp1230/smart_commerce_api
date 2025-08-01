@@ -1,7 +1,9 @@
 package com.shop.smart_commerce_api.dto.response.user;
 
+import java.util.List;
 import java.util.Set;
 
+import com.shop.smart_commerce_api.dto.response.address.AddressResponse;
 import com.shop.smart_commerce_api.entities.Address;
 
 import lombok.Builder;
@@ -17,4 +19,5 @@ public class UserResponse {
     private String phone;
     private String role;
     private Boolean isActive;
+    private List<AddressResponse> addresses;
 }
