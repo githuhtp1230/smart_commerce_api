@@ -65,11 +65,12 @@ public class ProductService {
                 productRepository.save(product);
         }
 
-        public PageResponse<ProductSummaryResponse> getDeletedProductSummaries(int currentPage, int limit) {
+        public PageResponse<ProductSummaryResponse> getProductSummariesByStatus(boolean isDeleted, int currentPage,
+                        int limit) {
                 Pageable pageable = PageRequest.of(currentPage, limit);
-                Page<ProductSummaryResponse> page = productRepository.findDeletedProductSummaries(pageable);
+                Page<ProductSummaryResponse> page = productRepository.findProductSummariesByDeletedStatus(isDeleted,
+                                pageable);
 
-                // Bổ sung các trường còn thiếu bằng cách fetch từ entity
                 page.forEach(productSummary -> {
                         Product product = productRepository.findById(productSummary.getId()).orElse(null);
                         if (product != null) {

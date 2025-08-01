@@ -52,20 +52,18 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/deleted-summaries")
-    public ApiResponse<PageResponse<ProductSummaryResponse>> getDeletedProducts(
+    @GetMapping("/status-summaries")
+    public ApiResponse<PageResponse<ProductSummaryResponse>> getProductsByStatus(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int limit) {
+            @RequestParam(defaultValue = "15") int limit,
+            @RequestParam(defaultValue = "false") boolean deleted) {
 
-        if (page <= 0) {
+        if (page <= 0)
             page = 1;
-        }
-        page = page - 1;
-
         return ApiResponse.<PageResponse<ProductSummaryResponse>>builder()
                 .code(200)
-                .message("Get deleted products successfully")
-                .data(productService.getDeletedProductSummaries(page, limit))
+                .message("Get product summaries successfully")
+                .data(productService.getProductSummariesByStatus(deleted, page - 1, limit))
                 .build();
     }
 
