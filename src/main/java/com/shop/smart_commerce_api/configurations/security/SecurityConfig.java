@@ -57,6 +57,8 @@ public class SecurityConfig {
             "api/orders/**",
             "api/me/order-details/**",
             "api/addresses/**",
+            "api/promotions",
+            "api/promotions/**"
     };
 
     @Bean
