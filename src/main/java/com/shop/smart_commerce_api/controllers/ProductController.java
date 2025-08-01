@@ -17,8 +17,6 @@ import com.shop.smart_commerce_api.services.ProductService;
 import com.shop.smart_commerce_api.services.ReviewService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,6 +52,21 @@ public class ProductController {
                 .build();
     }
 
+    @GetMapping("/status-summaries")
+    public ApiResponse<PageResponse<ProductSummaryResponse>> getProductsByStatus(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int limit,
+            @RequestParam(defaultValue = "false") boolean deleted) {
+
+        if (page <= 0)
+            page = 1;
+        return ApiResponse.<PageResponse<ProductSummaryResponse>>builder()
+                .code(200)
+                .message("Get product summaries successfully")
+                .data(productService.getProductSummariesByStatus(deleted, page - 1, limit))
+                .build();
+    }
+
     @GetMapping("/summaries/{productId}")
     public ApiResponse<ProductDetailResponse> getProductDetail(@PathVariable("productId") int productId) {
         return ApiResponse.<ProductDetailResponse>builder()
@@ -78,6 +91,15 @@ public class ProductController {
                 .code(200)
                 .message("Get list reviews successfully")
                 .data(reviewService.getListReviewsByProductId(productId))
+                .build();
+    }
+
+    @DeleteMapping("/{productId}/delete")
+    ApiResponse<?> deleteProduct(@PathVariable("productId") int productId) {
+        productService.deleteProduct(productId);
+        return ApiResponse.builder()
+                .code(200)
+                .message("Delete product successfully")
                 .build();
     }
 

@@ -64,7 +64,7 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<CartDetail> cartDetails = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<ImageProduct> imageProducts = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "product")

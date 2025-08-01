@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.shop.smart_commerce_api.dto.response.product.ImageProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
@@ -42,8 +43,44 @@ public class ProductService {
                                 pageable);
                 page.stream().forEach(productSummary -> {
                         Product product = productRepository.findById(productSummary.getId()).get();
+
                         productSummary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
+                        productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+                        productSummary.setCreatedAt(product.getCreatedAt());
                 });
+                return PageResponse.<ProductSummaryResponse>builder()
+                                .currentPage(page.getNumber() + 1)
+                                .totalPages(page.getTotalPages())
+                                .limit(page.getNumberOfElements())
+                                .totalElements((int) page.getTotalElements())
+                                .isLast(page.isLast())
+                                .data(page.getContent())
+                                .build();
+        }
+
+        public void deleteProduct(int productId) {
+                Product product = productRepository.findById(productId)
+                                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                product.setIsDeleted(1);
+                productRepository.save(product);
+        }
+
+        public PageResponse<ProductSummaryResponse> getProductSummariesByStatus(boolean isDeleted, int currentPage,
+                        int limit) {
+                Pageable pageable = PageRequest.of(currentPage, limit);
+                Page<ProductSummaryResponse> page = productRepository.findProductSummariesByDeletedStatus(isDeleted,
+                                pageable);
+
+                page.forEach(productSummary -> {
+                        Product product = productRepository.findById(productSummary.getId()).orElse(null);
+                        if (product != null) {
+                                productSummary.setPromotion(
+                                                promotionMapper.toPromotionResponse(product.getPromotion()));
+                                productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+                                productSummary.setCreatedAt(product.getCreatedAt());
+                        }
+                });
+
                 return PageResponse.<ProductSummaryResponse>builder()
                                 .currentPage(page.getNumber() + 1)
                                 .totalPages(page.getTotalPages())

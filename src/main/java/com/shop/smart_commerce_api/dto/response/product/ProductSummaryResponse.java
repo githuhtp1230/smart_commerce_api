@@ -1,5 +1,8 @@
 package com.shop.smart_commerce_api.dto.response.product;
 
+import java.time.Instant;
+
+import com.shop.smart_commerce_api.dto.response.category.CategoryResponse;
 import com.shop.smart_commerce_api.dto.response.promotion.PromotionResponse;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +23,8 @@ public class ProductSummaryResponse {
     private Integer maxPrice;
     private String image;
     private PromotionResponse promotion;
+    private CategoryResponse category;
+    private Instant createdAt;
 
     public ProductSummaryResponse(Integer id, String name, String image, Double averageRating, Long reviewCount,
             Double price, Double maxPrice) {
