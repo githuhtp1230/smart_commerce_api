@@ -27,7 +27,7 @@ public class Category {
 
     @ColumnDefault("0")
     @Column(name = "is_deleted")
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @OneToMany(mappedBy = "parent")
     private Set<Category> categories = new LinkedHashSet<>();
