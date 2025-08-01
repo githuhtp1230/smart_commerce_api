@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Address> addresses = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user")

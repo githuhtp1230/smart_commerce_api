@@ -18,5 +18,4 @@ public class AddressResponse {
     private String ward;
     private String streetAddress;
     private Boolean isDefault;
-    // private UserResponse user;
 }

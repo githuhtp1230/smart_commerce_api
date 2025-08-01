@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
 import com.shop.smart_commerce_api.dto.request.filter.UserFilterRequest;
 import com.shop.smart_commerce_api.dto.request.user.UserUpdateProfileRequest;
+import com.shop.smart_commerce_api.dto.response.address.AddressResponse;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
 import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.exception.AppException;
@@ -27,7 +28,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserResponse getCurrentProfile() {
-        return userMapper.toUserResponse(getCurrentUser());
+        UserResponse userResponse = userMapper.toUserResponse(getCurrentUser());
+        return userResponse;
     }
 
     public User getCurrentUser() {
