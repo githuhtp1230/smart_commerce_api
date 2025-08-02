@@ -70,7 +70,7 @@ public class AttributeController {
                 .build();
     }
 
-    @PutMapping("/{id}/update   ")
+    @PutMapping("/{id}/update")
     ApiResponse<AttributeResponse> updateResponse(@PathVariable("id") int id,
             @RequestBody AttributeUpdateRequest request) {
         return ApiResponse.<AttributeResponse>builder()

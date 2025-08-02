@@ -13,6 +13,7 @@ import java.util.List;
 public interface AttributeValueRepository extends JpaRepository<AttributeValue, Integer> {
         AttributeValue findByValueAndIsDeletedIsFalse(String value);
         
+        
         @Query("""
                         SELECT pva.attributeValue
                         FROM ProductVariationAttribute pva

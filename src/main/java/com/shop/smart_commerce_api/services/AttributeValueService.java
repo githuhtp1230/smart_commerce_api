@@ -1,10 +1,10 @@
 package com.shop.smart_commerce_api.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.shop.smart_commerce_api.dto.request.attribute.AttributeValueRequest;
 import com.shop.smart_commerce_api.dto.request.attribute.AttributeValueUpdateRequest;
@@ -31,74 +31,70 @@ public class AttributeValueService {
     private final AttributeMapper attributeMapper;
 
     public List<AttributeValueResponse> getAttributeValues(AttributeValueFilterRequest filter) {
-        Boolean isDeleted = filter.getIsDeleted() != null ? filter.getIsDeleted() : false;
-        List<AttributeValue> attributeValues;
+    Boolean isDeleted = filter.getIsDeleted() != null ? filter.getIsDeleted() : false;
 
-        if (filter.getIsDeleted() == null || !filter.getIsDeleted()) {
-            attributeValues = attributeValueRepository.findAttributesValues(isDeleted);
-        } else {
-            attributeValues = attributeValueRepository.findAll();
-        }
+    // Gọi đúng filter luôn
+    List<AttributeValue> attributesValues = attributeValueRepository.findAttributesValues(isDeleted);
 
-        return attributeValues.stream()
-                .map(attributeValue -> {
-                    AttributeResponse attributeResponse = null;
-                    if (attributeValue.getAttribute() != null) {
-                        attributeResponse = attributeMapper.toAttributeResponse(attributeValue.getAttribute());
-                    }
-                    return AttributeValueResponse.builder()
-                            .id(attributeValue.getId())
-                            .value(attributeValue.getValue())
-                            .attribute(attributeResponse)
-                            .build();
-                })
-                .collect(Collectors.toList());
+    return attributesValues.stream()
+        .map(attributeValue -> {
+            AttributeResponse attributeResponse = null;
+            if (attributeValue.getAttribute() != null) {
+                attributeResponse = attributeMapper.toAttributeResponse(attributeValue.getAttribute());
+            }
+
+            return AttributeValueResponse.builder()
+                    .id(attributeValue.getId())
+                    .value(attributeValue.getValue())
+                    .attribute(attributeResponse)
+                    .build();
+        })
+        .collect(Collectors.toList());
     }
 
-    @Transactional
-    public AttributeValueResponse createAttributeValue(AttributeValueRequest request) {
-        AttributeValue existing = attributeValueRepository
-                .findByValueAndIsDeletedIsFalse(request.getValue());
 
+
+        public AttributeValueResponse createAttributeValue(AttributeValueRequest request) {
+        // Kiểm tra trùng value
+        AttributeValue existing = attributeValueRepository.findByValueAndIsDeletedIsFalse(request.getValue());
         if (existing != null) {
             throw new AppException(ErrorCode.ATTRIBUTEVALUE_EXISTS);
         }
 
+        // Kiểm tra attributeId hợp lệ
         Attribute attribute = attributeRepository.findById(request.getAttributeId())
                 .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_NOT_FOUND));
 
+        // Mapping request thành entity
         AttributeValue newAttributeValue = attributeValueMapper.toAttributeValue(request);
-        newAttributeValue.setAttribute(attribute);
+        newAttributeValue.setAttribute(attribute); // Gán attribute vào
         newAttributeValue.setIsDeleted(false);
 
         AttributeValue saved = attributeValueRepository.save(newAttributeValue);
         return attributeValueMapper.toAttributeValueResponse(saved);
     }
 
-    @Transactional
-    public AttributeValueResponse updateAttributeValue(Integer attributeValueId, AttributeValueUpdateRequest request) {
-        AttributeValue attributeValue = attributeValueRepository.findById(attributeValueId)
-                .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_VALUE_NOT_FOUND));
 
-        attributeValue.setValue(request.getValue());
-
-        AttributeValue updated = attributeValueRepository.save(attributeValue);
-        return attributeValueMapper.toAttributeValueResponse(updated);
-    }
-
-    @Transactional
     public void deleteAttributeValue(Integer attributeValueId) {
-        AttributeValue attributeValue = attributeValueRepository.findById(attributeValueId)
+        AttributeValue attributeValue = attributeValueRepository
+                .findById(attributeValueId)
                 .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_VALUE_NOT_FOUND));
-
         attributeValue.setIsDeleted(true);
         attributeValueRepository.save(attributeValue);
+    }
+
+    public AttributeValueResponse updateAtrributeValue(Integer attributeValueId, AttributeValueUpdateRequest request) {
+        AttributeValue attributeValue = attributeValueRepository
+                .findById(attributeValueId)
+                .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_VALUE_NOT_FOUND));
+        attributeValue.setValue(request.getValue());
+        return attributeValueMapper.toAttributeValueResponse(attributeValueRepository.save(attributeValue));
     }
 
     public List<AttributeValueResponse> getAttributeValuesByAttributeId(Integer attributeId) {
         return attributeValueRepository.findByAttributeId(attributeId)
                 .stream()
                 .map(attributeValueMapper::toAttributeValueResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
