@@ -22,6 +22,8 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
     CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart items not found"),
 
+    ATTRIBUTEVALUE_EXISTS(HttpStatus.CONFLICT, "AttributeValue is exists"),
+    ATTRIBUTE_EXISTS(HttpStatus.CONFLICT, "Attribute is exists"),
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),
 
