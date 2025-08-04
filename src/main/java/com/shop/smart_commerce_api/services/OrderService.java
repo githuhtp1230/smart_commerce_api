@@ -62,25 +62,16 @@ public class OrderService {
         return orderMapper.toOrderResponse(savedOrder);
     }
 
-    public List<OrderResponse> filterOrders(OrderFilterRequest filterRequest) {
+    public List<OrderResponse> getOrders(String status) {
         User currentUser = userService.getCurrentUser();
         Integer userId = currentUser.getId();
 
-        if (Boolean.TRUE.equals(filterRequest.getConfirmed())) {
-            return orderMapper
-                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Confirmed, userId));
-        } else if (Boolean.TRUE.equals(filterRequest.getCancelled())) {
-            return orderMapper
-                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Cancelled, userId));
-        } else if (Boolean.TRUE.equals(filterRequest.getShipping())) {
-            return orderMapper
-                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Shipping, userId));
-        } else if (Boolean.TRUE.equals(filterRequest.getShipped())) {
-            return orderMapper
-                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Shipped, userId));
-        } else {
+        if (status == null) {
             return orderMapper.toOrderResponseList(orderRepository.findByUserId(userId));
         }
+
+        return orderMapper
+                .toOrderResponseList(orderRepository.findByStatusAndUserId(status, userId));
     }
 
 }

@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import com.shop.smart_commerce_api.dto.query.order.OrderSummary;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.entities.Order;
-import com.shop.smart_commerce_api.model.OrderStatus;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
@@ -19,7 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByUserId(Integer userId);
 
-    List<Order> findByStatusAndUserId(OrderStatus status, Integer userId);
+    List<Order> findByStatusAndUserId(String status, Integer userId);
 
     @Query("""
                 SELECT new com.shop.smart_commerce_api.dto.query.order.OrderSummary(o, SUM(od.price))

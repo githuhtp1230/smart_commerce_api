@@ -13,7 +13,6 @@ import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
-import com.shop.smart_commerce_api.dto.request.filter.OrderFilterRequest;
 import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
 import com.shop.smart_commerce_api.dto.request.user.UserUpdateProfileRequest;
 import com.shop.smart_commerce_api.services.OrderDetailService;
@@ -48,14 +47,14 @@ public class MeController {
                                 .build();
         }
 
-        @GetMapping("/orders")
-        public ApiResponse<List<OrderResponse>> getMyOrders() {
-                return ApiResponse.<List<OrderResponse>>builder()
-                                .code(200)
-                                .message("Orders retrieved successfully")
-                                .data(orderService.getMyOrders())
-                                .build();
-        }
+        // @GetMapping("/orders")
+        // public ApiResponse<List<OrderResponse>> getMyOrders() {
+        // return ApiResponse.<List<OrderResponse>>builder()
+        // .code(200)
+        // .message("Orders retrieved successfully")
+        // .data(orderService.getMyOrders())
+        // .build();
+        // }
 
         @GetMapping("/order-details/{orderId}")
         public ApiResponse<List<OrderDetailResponse>> getOrderDetails(@PathVariable Integer orderId) {
@@ -76,15 +75,13 @@ public class MeController {
                                 .build();
         }
 
-        @GetMapping("/orders/filter")
+        @GetMapping("/orders")
         public ApiResponse<List<OrderResponse>> filterOrders(
-                        @ModelAttribute OrderFilterRequest filterRequest) {
-
-                List<OrderResponse> orders = orderService.filterOrders(filterRequest);
-
+                        @RequestParam(required = false) String status) {
+                List<OrderResponse> orders = orderService.getOrders(status);
                 return ApiResponse.<List<OrderResponse>>builder()
                                 .code(200)
-                                .message("Orders filtered successfully")
+                                .message("get Orders successfully")
                                 .data(orders)
                                 .build();
         }
