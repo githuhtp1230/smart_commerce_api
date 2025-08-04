@@ -65,7 +65,7 @@ public class AddressService {
     }
 
     @Transactional
-    public void setDefaultAddress(Integer addressId) {
+    public AddressResponse setDefaultAddress(Integer addressId) {
         User currentUser = userService.getCurrentUser();
 
         Address address = addressRepository.findById(addressId)
@@ -75,10 +75,9 @@ public class AddressService {
             throw new AppException(ErrorCode.ACCESS_DENIED);
         }
 
-        // Reset all others to false
         addressRepository.resetOtherDefaults(currentUser.getId(), addressId);
 
         address.setIsDefault(true);
-        addressRepository.save(address);
+        return addressMapper.toAddressResponse(addressRepository.save(address));
     }
 }

@@ -26,7 +26,7 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping
-    ApiResponse<AddressResponse> createAddressApiResponse(@RequestBody AddressRequest request) {
+    public ApiResponse<AddressResponse> createAddressApiResponse(@RequestBody AddressRequest request) {
         return ApiResponse.<AddressResponse>builder()
                 .code(200)
                 .message("Address created successfully")
@@ -35,7 +35,7 @@ public class AddressController {
     }
 
     @GetMapping
-    ApiResponse<List<AddressResponse>> getMyAddress() {
+    public ApiResponse<List<AddressResponse>> getMyAddress() {
         return ApiResponse.<List<AddressResponse>>builder()
                 .code(200)
                 .message("Addresses retrieved successfully")
@@ -62,7 +62,7 @@ public class AddressController {
     // }
 
     @PutMapping("/{id}")
-    ApiResponse<AddressResponse> updateAddressApiResponse(@PathVariable Integer id,
+    public ApiResponse<AddressResponse> updateAddressApiResponse(@PathVariable Integer id,
             @RequestBody AddressRequest request) {
         return ApiResponse.<AddressResponse>builder()
                 .code(200)
@@ -72,11 +72,11 @@ public class AddressController {
     }
 
     @PutMapping("/{id}/set-default")
-    ApiResponse<Void> setDefaultAddressApiResponse(@PathVariable Integer id) {
-        addressService.setDefaultAddress(id);
-        return ApiResponse.<Void>builder()
+    public ApiResponse<AddressResponse> setDefaultAddressApiResponse(@PathVariable Integer id) {
+        return ApiResponse.<AddressResponse>builder()
                 .code(200)
                 .message("Default address set successfully")
+                .data(addressService.setDefaultAddress(id))
                 .build();
     }
 

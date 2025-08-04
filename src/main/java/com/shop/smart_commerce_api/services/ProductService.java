@@ -43,7 +43,6 @@ public class ProductService {
                                 pageable);
                 page.stream().forEach(productSummary -> {
                         Product product = productRepository.findById(productSummary.getId()).get();
-
                         productSummary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
                         productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
                         productSummary.setCreatedAt(product.getCreatedAt());
