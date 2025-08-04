@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import com.shop.smart_commerce_api.dto.query.order.OrderSummary;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.entities.Order;
+import com.shop.smart_commerce_api.model.OrderStatus;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
@@ -18,7 +19,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByUserId(Integer userId);
 
-    Page<Order> findByStatus(Integer status, Pageable pageable);
+    @Query("SELECT o FROM Order o WHERE o.status = OrderStatus.PENDING")
+    List<Order> findPendingOrders();
+
+    @Query("SELECT o FROM Order o WHERE o.status = OrderStatus.COMPLETED")
+    List<Order> findCompletedOrders();
+
+    @Query("SELECT o FROM Order o WHERE o.status = OrderStatus.CANCELLED")
+    List<Order> findCancelledOrders();
+
+    List<Order> findByStatusAndUserId(OrderStatus status, Integer userId);
 
     @Query("""
                 SELECT new com.shop.smart_commerce_api.dto.query.order.OrderSummary(o, SUM(od.price))

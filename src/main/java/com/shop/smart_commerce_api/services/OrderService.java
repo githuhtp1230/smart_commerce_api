@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.shop.smart_commerce_api.dto.request.filter.OrderFilterRequest;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.entities.Order;
 import com.shop.smart_commerce_api.entities.Payment;
@@ -14,6 +15,7 @@ import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.OrderMapper;
+import com.shop.smart_commerce_api.model.OrderStatus;
 import com.shop.smart_commerce_api.repositories.OrderRepository;
 import com.shop.smart_commerce_api.repositories.PaymentRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
@@ -60,13 +62,21 @@ public class OrderService {
         return orderMapper.toOrderResponse(savedOrder);
     }
 
-    public List<OrderResponse> getOrdersByStatus(Boolean status, Pageable pageable) {
-        Page<Order> orderPage = orderRepository.findAll(pageable);
+    public List<OrderResponse> filterOrders(OrderFilterRequest filterRequest) {
+        User currentUser = userService.getCurrentUser();
+        Integer userId = currentUser.getId();
 
-        // Lọc các đơn hàng theo trạng thái
-        return orderPage.getContent().stream()
-                .filter(order -> status == null || order.getStatus().equals(status))
-                .map(orderMapper::toOrderResponse)
-                .collect(Collectors.toList());
+        if (Boolean.TRUE.equals(filterRequest.getIsPending())) {
+            return orderMapper.toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.PENDING, userId));
+        } else if (Boolean.TRUE.equals(filterRequest.getIsCompleted())) {
+            return orderMapper
+                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.COMPLETED, userId));
+        } else if (Boolean.TRUE.equals(filterRequest.getIsCancelled())) {
+            return orderMapper
+                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.CANCELLED, userId));
+        } else {
+            return orderMapper.toOrderResponseList(orderRepository.findByUserId(userId));
+        }
     }
+
 }

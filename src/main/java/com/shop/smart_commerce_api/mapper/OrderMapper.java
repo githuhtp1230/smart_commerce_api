@@ -1,5 +1,7 @@
 package com.shop.smart_commerce_api.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 
 import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
@@ -19,4 +21,6 @@ public interface OrderMapper {
     public OrderResponse toOrderResponse(Order order);
 
     OrderDetail toOrderDetail(AddOrderDetailRequest request);
+
+    List<OrderResponse> toOrderResponseList(List<Order> orders);
 }
