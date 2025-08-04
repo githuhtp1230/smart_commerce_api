@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.smart_commerce_api.constant.OrderStatus;
 import com.shop.smart_commerce_api.dto.request.checkout.CheckoutRequest;
 import com.shop.smart_commerce_api.dto.request.payment.InitPaymentRequest;
 import com.shop.smart_commerce_api.dto.response.cart.CartItemResponse;
@@ -63,7 +64,7 @@ public class CheckoutService {
                                 .user(currentUser)
                                 .address(address.toString())
                                 .payment(payment)
-                                .status(1)
+                                .status(OrderStatus.CONFIRMED)
                                 .build();
 
                 order = orderRepository.save(order);
@@ -128,7 +129,7 @@ public class CheckoutService {
                                 .user(currentUser)
                                 .address(address.toString())
                                 .payment(payment)
-                                .status(1)
+                                .status(OrderStatus.CONFIRMED)
                                 .build();
 
                 order = orderRepository.save(order);

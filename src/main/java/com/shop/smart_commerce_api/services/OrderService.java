@@ -60,13 +60,16 @@ public class OrderService {
         return orderMapper.toOrderResponse(savedOrder);
     }
 
-    public List<OrderResponse> getOrdersByStatus(Boolean status, Pageable pageable) {
-        Page<Order> orderPage = orderRepository.findAll(pageable);
+    public List<OrderResponse> getOrders(String status) {
+        User currentUser = userService.getCurrentUser();
+        Integer userId = currentUser.getId();
 
-        // Lọc các đơn hàng theo trạng thái
-        return orderPage.getContent().stream()
-                .filter(order -> status == null || order.getStatus().equals(status))
-                .map(orderMapper::toOrderResponse)
-                .collect(Collectors.toList());
+        if (status == null) {
+            return orderMapper.toOrderResponseList(orderRepository.findByUserId(userId));
+        }
+
+        return orderMapper
+                .toOrderResponseList(orderRepository.findByStatusAndUserId(status, userId));
     }
+
 }

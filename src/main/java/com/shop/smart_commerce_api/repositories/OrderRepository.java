@@ -18,7 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByUserId(Integer userId);
 
-    Page<Order> findByStatus(Integer status, Pageable pageable);
+    List<Order> findByStatusAndUserId(String status, Integer userId);
 
     @Query("""
                 SELECT new com.shop.smart_commerce_api.dto.query.order.OrderSummary(o, SUM(od.price))
