@@ -19,15 +19,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByUserId(Integer userId);
 
-    @Query("SELECT o FROM Order o WHERE o.status = OrderStatus.PENDING")
-    List<Order> findPendingOrders();
-
-    @Query("SELECT o FROM Order o WHERE o.status = OrderStatus.COMPLETED")
-    List<Order> findCompletedOrders();
-
-    @Query("SELECT o FROM Order o WHERE o.status = OrderStatus.CANCELLED")
-    List<Order> findCancelledOrders();
-
     List<Order> findByStatusAndUserId(OrderStatus status, Integer userId);
 
     @Query("""

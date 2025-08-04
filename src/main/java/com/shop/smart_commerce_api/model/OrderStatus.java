@@ -1,9 +1,10 @@
 package com.shop.smart_commerce_api.model;
 
 public enum OrderStatus {
-    PENDING(0),
-    COMPLETED(1),
-    CANCELLED(2);
+    Confirmed(0),
+    Cancelled(1),
+    Shipping(2),
+    Shipped(3);
 
     private final int value;
 

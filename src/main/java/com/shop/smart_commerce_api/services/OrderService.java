@@ -66,14 +66,18 @@ public class OrderService {
         User currentUser = userService.getCurrentUser();
         Integer userId = currentUser.getId();
 
-        if (Boolean.TRUE.equals(filterRequest.getIsPending())) {
-            return orderMapper.toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.PENDING, userId));
-        } else if (Boolean.TRUE.equals(filterRequest.getIsCompleted())) {
+        if (Boolean.TRUE.equals(filterRequest.getConfirmed())) {
             return orderMapper
-                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.COMPLETED, userId));
-        } else if (Boolean.TRUE.equals(filterRequest.getIsCancelled())) {
+                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Confirmed, userId));
+        } else if (Boolean.TRUE.equals(filterRequest.getCancelled())) {
             return orderMapper
-                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.CANCELLED, userId));
+                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Cancelled, userId));
+        } else if (Boolean.TRUE.equals(filterRequest.getShipping())) {
+            return orderMapper
+                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Shipping, userId));
+        } else if (Boolean.TRUE.equals(filterRequest.getShipped())) {
+            return orderMapper
+                    .toOrderResponseList(orderRepository.findByStatusAndUserId(OrderStatus.Shipped, userId));
         } else {
             return orderMapper.toOrderResponseList(orderRepository.findByUserId(userId));
         }

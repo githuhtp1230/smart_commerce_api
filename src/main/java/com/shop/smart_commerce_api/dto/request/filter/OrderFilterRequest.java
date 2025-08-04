@@ -6,7 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class OrderFilterRequest {
-    private Boolean isPending;
-    private Boolean isCompleted;
-    private Boolean isCancelled;
+    private Boolean Confirmed;
+    private Boolean Cancelled;
+    private Boolean Shipping;
+    private Boolean Shipped;
 }
