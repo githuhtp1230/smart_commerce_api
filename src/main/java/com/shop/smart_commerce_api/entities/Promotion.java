@@ -15,6 +15,7 @@ import java.util.Set;
 @Table(name = "promotions", schema = "smart_commerce")
 public class Promotion {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
