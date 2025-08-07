@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.shop.smart_commerce_api.constant.OrderStatus;
+import com.shop.smart_commerce_api.dto.response.PageResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
+import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.entities.Order;
 import com.shop.smart_commerce_api.entities.Payment;
 import com.shop.smart_commerce_api.entities.User;
@@ -60,16 +64,29 @@ public class OrderService {
         return orderMapper.toOrderResponse(savedOrder);
     }
 
-    public List<OrderResponse> getOrders(String status) {
+    public PageResponse<OrderSummaryResponse> getOrderSummaries(String status, int page, int limit) {
         User currentUser = userService.getCurrentUser();
         Integer userId = currentUser.getId();
 
-        if (status == null) {
-            return orderMapper.toOrderResponseList(orderRepository.findByUserId(userId));
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Order> orderPage;
+
+        if (status == null || status.isEmpty()) {
+            orderPage = orderRepository.findByUserId(userId, pageable);
+        } else {
+            orderPage = orderRepository.findByStatusAndUserId(status.toLowerCase(), userId, pageable);
         }
 
-        return orderMapper
-                .toOrderResponseList(orderRepository.findByStatusAndUserId(status, userId));
+        return PageResponse.<OrderSummaryResponse>builder()
+                .currentPage(orderPage.getNumber() + 1)
+                .totalPages(orderPage.getTotalPages())
+                .limit(orderPage.getSize())
+                .totalElements((int) orderPage.getTotalElements())
+                .isLast(orderPage.isLast())
+                .data(orderPage.getContent().stream()
+                        .map(orderMapper::toOrderSummaryResponse)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
 }

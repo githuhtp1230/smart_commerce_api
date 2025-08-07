@@ -18,7 +18,7 @@ public class RegisterRequest {
     private String email;
 
     @NotBlank(message = "Phone is required")
-    @Size(min = 10, max = 15, message = "Numbers phone is required")
+    @Size(min = 10, max = 15, message = "Numbers phone is invalid")
     private String phone;
 
     @NotBlank(message = "Password is required")
