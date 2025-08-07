@@ -92,4 +92,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             @Param("isDeleted") boolean isDeleted,
             Pageable pageable);
 
+    @Query(value = "SELECT p.name FROM order_details od " +
+            "JOIN products p ON p.id = od.product_id " +
+            "WHERE od.order_id = :orderId LIMIT 1", nativeQuery = true)
+    List<String> findProductNamesByOrderId(@Param("orderId") int orderId);
+
 }
