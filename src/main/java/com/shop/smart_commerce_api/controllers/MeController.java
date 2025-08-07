@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
+import com.shop.smart_commerce_api.dto.response.PageResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
+import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
 import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
 import com.shop.smart_commerce_api.dto.request.user.UserUpdateProfileRequest;
@@ -75,14 +77,47 @@ public class MeController {
                                 .build();
         }
 
+        // @GetMapping("/orders")
+        // public ApiResponse<List<OrderResponse>> filterOrders(
+        // @RequestParam(required = false) String status) {
+        // List<OrderResponse> orders = orderService.getOrders(status);
+        // return ApiResponse.<List<OrderResponse>>builder()
+        // .code(200)
+        // .message("get Orders successfully")
+        // .data(orders)
+        // .build();
+        // }
+
+        // @GetMapping("/orders/summaries")
+        // public ApiResponse<PageResponse<OrderSummaryResponse>> getOrderSummaries(
+        // @RequestParam(defaultValue = "0") int page,
+        // @RequestParam(defaultValue = "15") int limit) {
+        // if (page < 1) {
+        // page = 1;
+        // }
+        // return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
+        // .code(200)
+        // .message("Get order summaries successfully")
+        // .data(orderService.getOrderSummaries(page - 1, limit))
+        // .build();
+        // }
+
         @GetMapping("/orders")
-        public ApiResponse<List<OrderResponse>> filterOrders(
-                        @RequestParam(required = false) String status) {
-                List<OrderResponse> orders = orderService.getOrders(status);
-                return ApiResponse.<List<OrderResponse>>builder()
+        public ApiResponse<PageResponse<OrderSummaryResponse>> getOrders(
+                        @RequestParam(required = false) String status,
+                        @RequestParam(defaultValue = "1") int page,
+                        @RequestParam(defaultValue = "15") int limit) {
+
+                if (page < 1)
+                        page = 1;
+
+                PageResponse<OrderSummaryResponse> result = orderService.getOrderSummaries(status, page - 1, limit);
+
+                return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
                                 .code(200)
-                                .message("get Orders successfully")
-                                .data(orders)
+                                .message("Get orders successfully")
+                                .data(result)
                                 .build();
         }
+
 }

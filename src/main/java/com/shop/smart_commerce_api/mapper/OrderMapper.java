@@ -8,6 +8,7 @@ import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
 import com.shop.smart_commerce_api.dto.request.order.AddOrderRequest;
 import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
+import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.entities.Order;
 import com.shop.smart_commerce_api.entities.OrderDetail;
 
@@ -23,4 +24,6 @@ public interface OrderMapper {
     OrderDetail toOrderDetail(AddOrderDetailRequest request);
 
     List<OrderResponse> toOrderResponseList(List<Order> orders);
+
+    OrderSummaryResponse toOrderSummaryResponse(Order order);
 }
