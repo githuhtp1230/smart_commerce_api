@@ -23,6 +23,7 @@ import com.shop.smart_commerce_api.repositories.PaymentRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.var;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class OrderService {
     private final UserService userService;
     private final OrderMapper orderMapper;
     private final PaymentRepository paymentRepository;
+    private final ProductService productService;
 
     public Order getCurrentOrder() {
         User currentUser = userService.getCurrentUser();
@@ -77,15 +79,21 @@ public class OrderService {
             orderPage = orderRepository.findByStatusAndUserId(status.toLowerCase(), userId, pageable);
         }
 
+        var res = orderPage.getContent().stream()
+                .map(od -> {
+                    OrderSummaryResponse orderSummary = orderMapper.toOrderSummaryResponse(od);
+                    orderSummary.setProductName(productService.getFirstProductNameByOrder(od.getId()));
+                    return orderSummary;
+                })
+                .collect(Collectors.toList());
+
         return PageResponse.<OrderSummaryResponse>builder()
                 .currentPage(orderPage.getNumber() + 1)
                 .totalPages(orderPage.getTotalPages())
                 .limit(orderPage.getSize())
                 .totalElements((int) orderPage.getTotalElements())
                 .isLast(orderPage.isLast())
-                .data(orderPage.getContent().stream()
-                        .map(orderMapper::toOrderSummaryResponse)
-                        .collect(Collectors.toList()))
+                .data(res)
                 .build();
     }
 

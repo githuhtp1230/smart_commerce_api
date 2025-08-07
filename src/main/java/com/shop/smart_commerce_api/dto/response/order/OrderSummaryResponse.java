@@ -11,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class OrderSummaryResponse {
     private Integer id;
+    private String productName;
     private VoucherResponse voucher;
     private PaymentResponse payment;
     private Integer total;

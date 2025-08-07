@@ -128,4 +128,9 @@ public class ProductService {
         public List<String> mapImageProductToStringImages(Set<ImageProduct> imageProducts) {
                 return imageProducts.stream().map(imageProduct -> imageProduct.getImageUrl()).toList();
         }
+
+        public String getFirstProductNameByOrder(int orderId) {
+                List<String> name = productRepository.findProductNamesByOrderId(orderId);
+                return name.isEmpty() ? null : name.get(0);
+        }
 }
