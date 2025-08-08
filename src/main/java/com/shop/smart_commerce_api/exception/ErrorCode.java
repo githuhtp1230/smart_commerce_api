@@ -24,6 +24,8 @@ public enum ErrorCode {
     CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart items not found"),
     PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Promotion not found"),
 
+    ATTRIBUTEVALUE_EXISTS(HttpStatus.CONFLICT, "AttributeValue is exists"),
+    ATTRIBUTE_EXISTS(HttpStatus.CONFLICT, "Attribute is exists"),
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
     USER_EXSITS(HttpStatus.CONFLICT, "User is exists"),
 
