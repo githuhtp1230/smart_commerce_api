@@ -122,43 +122,6 @@ public class CheckoutService {
                                 .sum();
         }
 
-        public boolean verifySignature(Map<String, String> fields, String secureHash, String secureHashType) {
-                try {
-                        // Lọc bỏ các tham số không dùng để tạo chữ ký
-                        Map<String, String> sortedFields = new TreeMap<>();
-                        for (Map.Entry<String, String> entry : fields.entrySet()) {
-                                String key = entry.getKey();
-                                String value = entry.getValue();
-                                if (key.equals("vnp_SecureHash") || key.equals("vnp_SecureHashType") || value == null
-                                                || value.isEmpty()) {
-                                        continue;
-                                }
-                                sortedFields.put(key, value);
-                        }
-
-                        // Tạo chuỗi dữ liệu: key=value nối bằng &
-                        StringBuilder sb = new StringBuilder();
-                        for (Map.Entry<String, String> entry : sortedFields.entrySet()) {
-                                if (sb.length() > 0) {
-                                        sb.append("&");
-                                }
-                                sb.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(),
-                                                StandardCharsets.US_ASCII.toString()));
-                        }
-                        String data = sb.toString();
-
-                        // Tạo chữ ký HMAC SHA512 dùng CryptoService
-                        String calculatedHash = cryptoService.sign(data);
-
-                        // So sánh chữ ký
-                        return calculatedHash.equalsIgnoreCase(secureHash);
-
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                }
-        }
-
         @Transactional
         public CheckoutResponse checkoutCash(CheckoutRequest request) {
                 Address address = addressRepository.findById(request.getAddressId())
