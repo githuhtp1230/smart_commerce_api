@@ -49,4 +49,17 @@ public class Address {
     @Column(name = "is_delete")
     private Boolean isDelete;
 
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", streetAddress='" + streetAddress + '\'' +
+                ", ward='" + ward + '\'' +
+                ", district='" + district + '\'' +
+                ", province='" + province + '\'' +
+                ", isDefault=" + isDefault +
+                ", isDelete=" + isDelete +
+                '}';
+    }
+
 }
