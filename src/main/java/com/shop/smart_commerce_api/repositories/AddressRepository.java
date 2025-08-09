@@ -7,6 +7,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,5 +20,8 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
     @Modifying
     @Query("UPDATE Address a SET a.isDefault = false WHERE a.user.id = :userId AND a.id <> :addressId")
     void resetOtherDefaults(@Param("userId") Integer userId, @Param("addressId") Integer addressId);
+
+    @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.isDefault = true")
+    Optional<Address> findDefaultByUserId(Integer userId);
 
 }

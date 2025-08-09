@@ -1,6 +1,11 @@
 package com.shop.smart_commerce_api.services;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,27 +48,36 @@ public class CheckoutService {
         private final UserService userService;
         private final OrderDetailService orderDetailService;
         private final VnPayService vnPayService;
+        private final CryptoService cryptoService;
 
         @Transactional
         public CheckoutResponse checkoutTransfer(CheckoutRequest request) {
-                Address address = addressRepository.findById(request.getAddressId())
-                                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
+                if (request.getPaymentId() == null || request.getCartItemIds() == null
+                                || request.getCartItemIds().isEmpty()) {
+                        throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR);
+                }
+
                 Payment payment = paymentRepository.findById(request.getPaymentId())
                                 .orElseThrow(() -> new AppException(ErrorCode.PAYMENT_NOT_FOUND));
                 User currentUser = userService.getCurrentUser();
 
-                List<CartItemResponse> cartItemResponses = cartDetailRepository.getCartItemsWithListIds(
-                                currentUser.getId(),
-                                request.getCartItemIds());
+                Address address = addressRepository.findDefaultByUserId(currentUser.getId())
+                                .orElseThrow(() -> new AppException(ErrorCode.ADDRESS_NOT_FOUND));
 
-                if (cartItemResponses.size() <= 0) {
+                List<CartItemResponse> cartItemResponses = cartDetailRepository.getCartItemsWithListIds(
+                                currentUser.getId(), request.getCartItemIds());
+
+                if (cartItemResponses.isEmpty()) {
                         throw new AppException(ErrorCode.CART_ITEMS_NOT_FOUND);
                 }
 
                 Order order = Order.builder()
                                 .user(currentUser)
-                                .address(address.toString())
+                                .address(String.format("%s, %s, %s, %s",
+                                                address.getStreetAddress(), address.getWard(), address.getDistrict(),
+                                                address.getProvince()))
                                 .payment(payment)
+                                .createdAt(LocalDateTime.now())
                                 .status(OrderStatus.CONFIRMED)
                                 .build();
 
@@ -72,24 +86,7 @@ public class CheckoutService {
                 List<OrderDetail> orderDetails = orderDetailService
                                 .mapToOrderDetailsFromCartItemResponses(cartItemResponses, order);
 
-                long total = orderDetails.stream()
-                                .mapToLong(od -> {
-                                        Promotion promotion = od.getProduct().getPromotion();
-
-                                        if (promotion != null && DateUtil.isCurrentDateInRange(
-                                                        promotion.getStartDate(), promotion.getEndDate())) {
-
-                                                double discountPercent = promotion.getDiscountValuePercent() / 100.0;
-                                                double original = od.getPrice();
-                                                double discountAmount = original - original * discountPercent;
-
-                                                return (long) Math.floor(discountAmount);
-                                        }
-
-                                        return od.getPrice();
-                                })
-                                .sum();
-
+                long total = calculateTotal(orderDetails);
                 order.setTotal(total);
                 orderRepository.save(order);
 
@@ -102,11 +99,27 @@ public class CheckoutService {
                                 .txnRef(String.valueOf(order.getId()))
                                 .build();
 
-                var initPaymentResponse = vnPayService.init(initPaymentRequest);
+                InitPaymentResponse initPaymentResponse = vnPayService.init(initPaymentRequest);
 
                 return CheckoutResponse.builder()
                                 .payment(initPaymentResponse)
                                 .build();
+        }
+
+        private long calculateTotal(List<OrderDetail> orderDetails) {
+                return orderDetails.stream()
+                                .mapToLong(od -> {
+                                        Promotion promotion = od.getProduct().getPromotion();
+                                        if (promotion != null && DateUtil.isCurrentDateInRange(
+                                                        promotion.getStartDate(), promotion.getEndDate())) {
+                                                double discountPercent = promotion.getDiscountValuePercent() / 100.0;
+                                                double original = od.getPrice();
+                                                double discountAmount = original - (original * discountPercent);
+                                                return (long) Math.floor(discountAmount);
+                                        }
+                                        return od.getPrice();
+                                })
+                                .sum();
         }
 
         @Transactional

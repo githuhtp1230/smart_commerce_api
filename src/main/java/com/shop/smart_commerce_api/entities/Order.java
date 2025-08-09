@@ -9,8 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -41,7 +43,7 @@ public class Order {
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
-    @Size(max = 100)
+    @Size(max = 255)
     @Column(name = "address", length = 100)
     private String address;
 
@@ -52,9 +54,9 @@ public class Order {
     @Column(name = "status")
     private String status;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order")
     private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
