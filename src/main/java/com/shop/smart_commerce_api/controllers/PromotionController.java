@@ -3,6 +3,7 @@ package com.shop.smart_commerce_api.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shop.smart_commerce_api.dto.request.filter.PromotionFilterRequest;
 import com.shop.smart_commerce_api.dto.request.promotion.PromotionRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.promotion.PromotionResponse;
@@ -26,14 +27,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PromotionController {
     public final PromotionService promotionService;
 
-    @GetMapping
-    ApiResponse<List<PromotionResponse>> getAllApiResponse() {
+   @GetMapping
+    public ApiResponse<List<PromotionResponse>> getAllPromotions(
+            @RequestParam(required = false) Boolean isActived
+    ) {
+        PromotionFilterRequest filter = new PromotionFilterRequest();
+        filter.setIsActived(isActived);
+
         return ApiResponse.<List<PromotionResponse>>builder()
                 .code(200)
-                .message("Address retrieved successfully")
-                .data(promotionService.getAll())
+                .message("Get promotions successfully")
+                .data(promotionService.getPromotions(filter))
                 .build();
     }
+
+
 
     @PostMapping
     ApiResponse<String> createApiResponse(@RequestBody PromotionRequest request) {
@@ -54,7 +62,7 @@ public class PromotionController {
                 .build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/deactivate")
     ApiResponse<String> updateApiResponse(@PathVariable("id") int id, @RequestBody PromotionRequest request) {
         promotionService.update(id, request);
         return ApiResponse.<String>builder()

@@ -20,10 +20,6 @@ public class Promotion {
     private Integer id;
 
     @Size(max = 100)
-    @Column(name = "name", length = 100)
-    private String name;
-
-    @Size(max = 100)
     @Column(name = "description", length = 100)
     private String description;
 

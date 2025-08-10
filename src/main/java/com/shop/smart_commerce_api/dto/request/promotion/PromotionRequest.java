@@ -14,6 +14,6 @@ public class PromotionRequest {
     private String description;
     private String startDate;
     private String endDate;
-    private Integer discountPercentage;
+    private Integer discountValuePercent;
     private Boolean isActive;
 }
