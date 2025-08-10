@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.security.access.method.P;
+import com.shop.smart_commerce_api.configurations.security.HasPermission;
+import com.shop.smart_commerce_api.constant.Permissions;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/{userId}/toggle-is-active-user")
+    @HasPermission(Permissions.USER_UPDATE)
     public ApiResponse<UserResponse> toggleIsActiveUser(@PathVariable("userId") int userId) {
         return ApiResponse.<UserResponse>builder()
                 .code(200)
@@ -36,6 +38,7 @@ public class UserController {
     }
 
     @GetMapping
+    @HasPermission(Permissions.USER_READ)
     public ApiResponse<List<UserResponse>> getAllUsers(@ModelAttribute UserFilterRequest filterRequest) {
         return ApiResponse.<List<UserResponse>>builder()
                 .code(200)
