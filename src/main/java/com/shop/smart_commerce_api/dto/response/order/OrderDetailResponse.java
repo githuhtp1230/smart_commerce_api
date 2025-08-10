@@ -11,10 +11,10 @@ public class OrderDetailResponse {
     private ProductResponse product;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ProductVariationResponse productVariation;
+    private String image;
     private Integer quantity;
     private Integer price;
 
-    // Constructor DUY NHẤT dùng cho native query
     public OrderDetailResponse(Integer id, Integer productId, Integer productVariationId, String image,
             Integer quantity, Integer price) {
         this.id = id;
@@ -22,6 +22,7 @@ public class OrderDetailResponse {
         this.productVariation = productVariationId != null
                 ? ProductVariationResponse.builder().id(productVariationId).image(image).build()
                 : null;
+        this.image = image;
         this.quantity = quantity;
         this.price = price;
     }
