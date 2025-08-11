@@ -1,6 +1,7 @@
 package com.shop.smart_commerce_api.services;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import com.shop.smart_commerce_api.constant.OrderStatus;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
+import com.shop.smart_commerce_api.dto.response.order.OrdersByStatusResponse;
 import com.shop.smart_commerce_api.entities.Order;
 import com.shop.smart_commerce_api.entities.Payment;
 import com.shop.smart_commerce_api.entities.User;
@@ -34,6 +36,23 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final PaymentRepository paymentRepository;
     private final ProductService productService;
+
+    public OrdersByStatusResponse getMyOrdersByStatus() {
+        User currentUser = userService.getCurrentUser();
+        List<Order> orders = orderRepository.findByUserId(currentUser.getId());
+
+        // Group theo status
+        Map<String, List<OrderResponse>> grouped = orders.stream()
+                .map(orderMapper::toOrderResponse)
+                .collect(Collectors.groupingBy(o -> o.getStatus().toLowerCase()));
+
+        return OrdersByStatusResponse.builder()
+                .confirmed(grouped.getOrDefault(OrderStatus.CONFIRMED, List.of()))
+                .cancelled(grouped.getOrDefault(OrderStatus.CANCELLED, List.of()))
+                .shipping(grouped.getOrDefault(OrderStatus.SHIPPING, List.of()))
+                .shipped(grouped.getOrDefault(OrderStatus.SHIPPED, List.of()))
+                .build();
+    }
 
     public Order getCurrentOrder() {
         User currentUser = userService.getCurrentUser();
