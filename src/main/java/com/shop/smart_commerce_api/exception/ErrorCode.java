@@ -23,6 +23,8 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
     CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart items not found"),
     PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Promotion not found"),
+    PERMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "Permission not found"),
+    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "Role not found"),
 
     ATTRIBUTEVALUE_EXISTS(HttpStatus.CONFLICT, "AttributeValue is exists"),
     ATTRIBUTE_EXISTS(HttpStatus.CONFLICT, "Attribute is exists"),
@@ -43,6 +45,7 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "You have not permission"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    PERMISSION_ALREADY_ASSIGNED(HttpStatus.BAD_REQUEST, "Permission already assigned to role"),
 
     VNPAY_SIGNING_FAILED(HttpStatus.BAD_REQUEST, "Signing vnpay failed");
 
