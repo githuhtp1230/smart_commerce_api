@@ -12,8 +12,7 @@ import java.util.List;
 @Repository
 public interface AttributeValueRepository extends JpaRepository<AttributeValue, Integer> {
         AttributeValue findByValueAndIsDeletedIsFalse(String value);
-        
-        
+
         @Query("""
                         SELECT pva.attributeValue
                         FROM ProductVariationAttribute pva
@@ -35,7 +34,9 @@ public interface AttributeValueRepository extends JpaRepository<AttributeValue, 
                         SELECT a FROM AttributeValue a
                         JOIN FETCH a.attribute
                         WHERE (:isDeleted IS NULL OR a.isDeleted = :isDeleted)
+                        AND (:attributeId IS NULL OR a.attribute.id = :attributeId)
                         """)
-        List<AttributeValue> findAttributesValues(@Param("isDeleted") Boolean isDeleted);
+        List<AttributeValue> findAttributesValues(@Param("isDeleted") Boolean isDeleted,
+                        @Param("attributeId") Integer attributeId);
 
 }
