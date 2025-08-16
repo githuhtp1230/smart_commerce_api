@@ -8,5 +8,6 @@ import lombok.Data;
 public class AttributeValueFilterRequest {
     private Integer page = 0;
     private Integer size = 10;
-    Boolean isDeleted;
+    private Boolean isDeleted;
+    private Integer attributeId;
 }

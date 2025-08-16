@@ -31,30 +31,27 @@ public class AttributeValueService {
     private final AttributeMapper attributeMapper;
 
     public List<AttributeValueResponse> getAttributeValues(AttributeValueFilterRequest filter) {
-    Boolean isDeleted = filter.getIsDeleted() != null ? filter.getIsDeleted() : false;
+        Boolean isDeleted = filter.getIsDeleted() != null ? filter.getIsDeleted() : false;
+        Integer attributeId = filter.getAttributeId();
+        List<AttributeValue> attributesValues = attributeValueRepository.findAttributesValues(isDeleted, attributeId);
 
-    // Gọi đúng filter luôn
-    List<AttributeValue> attributesValues = attributeValueRepository.findAttributesValues(isDeleted);
+        return attributesValues.stream()
+                .map(attributeValue -> {
+                    AttributeResponse attributeResponse = null;
+                    if (attributeValue.getAttribute() != null) {
+                        attributeResponse = attributeMapper.toAttributeResponse(attributeValue.getAttribute());
+                    }
 
-    return attributesValues.stream()
-        .map(attributeValue -> {
-            AttributeResponse attributeResponse = null;
-            if (attributeValue.getAttribute() != null) {
-                attributeResponse = attributeMapper.toAttributeResponse(attributeValue.getAttribute());
-            }
-
-            return AttributeValueResponse.builder()
-                    .id(attributeValue.getId())
-                    .value(attributeValue.getValue())
-                    .attribute(attributeResponse)
-                    .build();
-        })
-        .collect(Collectors.toList());
+                    return AttributeValueResponse.builder()
+                            .id(attributeValue.getId())
+                            .value(attributeValue.getValue())
+                            .attribute(attributeResponse)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
-
-
-        public AttributeValueResponse createAttributeValue(AttributeValueRequest request) {
+    public AttributeValueResponse createAttributeValue(AttributeValueRequest request) {
         // Kiểm tra trùng value
         AttributeValue existing = attributeValueRepository.findByValueAndIsDeletedIsFalse(request.getValue());
         if (existing != null) {
@@ -73,7 +70,6 @@ public class AttributeValueService {
         AttributeValue saved = attributeValueRepository.save(newAttributeValue);
         return attributeValueMapper.toAttributeValueResponse(saved);
     }
-
 
     public void deleteAttributeValue(Integer attributeValueId) {
         AttributeValue attributeValue = attributeValueRepository
