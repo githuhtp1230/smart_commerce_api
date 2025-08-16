@@ -2,6 +2,7 @@ package com.shop.smart_commerce_api.dto.response.order;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shop.smart_commerce_api.dto.response.payment.PaymentResponse;
+import com.shop.smart_commerce_api.dto.response.product.ImageProductResponse;
 import com.shop.smart_commerce_api.dto.response.voucher.VoucherResponse;
 import com.shop.smart_commerce_api.entities.User;
 
@@ -18,4 +19,6 @@ public class OrderResponse {
     private Integer total;
     private String status;
     private String createdAt;
+    private String address;
+    private ImageProductResponse imageProduct;
 }
