@@ -29,22 +29,34 @@ public class PromotionService {
                 .toList();
     }
 
-    public void create(PromotionRequest request) {
-        Promotion promotion = promotionMapper.toPromotion(request);
-        promotionRepository.save(promotion);
+    public List<PromotionResponse> getAllByIsActive(Boolean isActive) {
+        var promotions = promotionRepository.findByIsActive(isActive);
+        return promotions.stream()
+                .map(promotionMapper::toPromotionResponse)
+                .toList();
     }
 
-    public void delete(int id) {
+    public PromotionResponse create(PromotionRequest request) {
+        Promotion promotion = promotionMapper.toPromotion(request);
+        promotion.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
+        promotionRepository.save(promotion);
+        return promotionMapper.toPromotionResponse(promotion);
+    }
+
+    public PromotionResponse toggleIsActive(Integer id) {
         Promotion promotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
-        promotionRepository.delete(promotion);
+        promotion.setIsActive(!promotion.getIsActive());
+        promotionRepository.save(promotion);
+        return promotionMapper.toPromotionResponse(promotion);
     }
 
-    public void update(int id, PromotionRequest request) {
+    public PromotionResponse update(int id, PromotionRequest request) {
         Promotion promotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
         promotionMapper.updatePromotionFromRequest(request, promotion);
         promotionRepository.save(promotion);
+        return promotionMapper.toPromotionResponse(promotion);
     }
 
 }
