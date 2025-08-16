@@ -15,5 +15,5 @@ public class OrdersByStatusResponse {
     private List<OrderResponse> confirmed;
     private List<OrderResponse> cancelled;
     private List<OrderResponse> shipping;
-    private List<OrderResponse> shipped;
+    private List<OrderResponse> delivered;
 }

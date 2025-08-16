@@ -50,7 +50,7 @@ public class OrderService {
                 .confirmed(grouped.getOrDefault(OrderStatus.CONFIRMED, List.of()))
                 .cancelled(grouped.getOrDefault(OrderStatus.CANCELLED, List.of()))
                 .shipping(grouped.getOrDefault(OrderStatus.SHIPPING, List.of()))
-                .shipped(grouped.getOrDefault(OrderStatus.SHIPPED, List.of()))
+                .delivered(grouped.getOrDefault(OrderStatus.DELIVERED, List.of()))
                 .build();
     }
 
@@ -94,7 +94,7 @@ public class OrderService {
 
         if (status == null || status.isEmpty()) {
             orderPage = orderRepository.findByUserId(userId, pageable);
-        } else {
+        } else { 
             orderPage = orderRepository.findByStatusAndUserId(status.toLowerCase(), userId, pageable);
         }
 
