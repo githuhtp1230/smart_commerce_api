@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
 import com.shop.smart_commerce_api.dto.request.filter.UserFilterRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
+import com.shop.smart_commerce_api.dto.response.PageResponse;
+import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
+import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
+import com.shop.smart_commerce_api.services.OrderService;
 import com.shop.smart_commerce_api.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final OrderService orderService;
 
     @PostMapping("/{userId}/toggle-is-active-user")
     @HasPermission(Permissions.USER_UPDATE)
@@ -46,4 +51,22 @@ public class UserController {
                 .data(userService.getAllUsers(filterRequest))
                 .build();
     }
+
+    @GetMapping("/{userId}/orders")
+    public ApiResponse<PageResponse<OrderSummaryResponse>> getUserOrders(
+            @PathVariable Integer userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int limit,
+            @RequestParam(required = false) String status) {
+
+        if (page < 1)
+            page = 1;
+
+        return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
+                .code(200)
+                .message("Get user orders successfully")
+                .data(orderService.getOrderSummaries(status, page - 1, limit, userId))
+                .build();
+    }
+
 }
