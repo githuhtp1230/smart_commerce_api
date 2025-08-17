@@ -1,6 +1,5 @@
 package com.shop.smart_commerce_api.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +50,18 @@ public class AttributeValueService {
                 .collect(Collectors.toList());
     }
 
+    public List<AttributeValueResponse> getAllAttributeValue() {
+        var attributeValues = attributeValueRepository.findAll();
+        return attributeValues.stream()
+                .map(attributeValueMapper::toAttributeValueResponse).toList();
+
+    }
+
+    public List<AttributeValueResponse> getAllAttributeValueByIsDeleted(Boolean isDeleted) {
+        var attributeValues = attributeValueRepository.findByIsDeleted(isDeleted);
+        return attributeValues.stream().map(attributeValueMapper::toAttributeValueResponse).toList();
+    }
+
     public AttributeValueResponse createAttributeValue(AttributeValueRequest request) {
         // Kiểm tra trùng value
         AttributeValue existing = attributeValueRepository.findByValueAndIsDeletedIsFalse(request.getValue());
@@ -77,6 +88,14 @@ public class AttributeValueService {
                 .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_VALUE_NOT_FOUND));
         attributeValue.setIsDeleted(true);
         attributeValueRepository.save(attributeValue);
+    }
+
+    public AttributeValueResponse toggleIsDeleted(int id) {
+        AttributeValue attributeValue = attributeValueRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_VALUE_NOT_FOUND));
+        attributeValue.setIsDeleted(!attributeValue.getIsDeleted());
+        attributeValueRepository.save(attributeValue);
+        return attributeValueMapper.toAttributeValueResponse(attributeValue);
     }
 
     public AttributeValueResponse updateAtrributeValue(Integer attributeValueId, AttributeValueUpdateRequest request) {

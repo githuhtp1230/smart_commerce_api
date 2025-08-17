@@ -39,4 +39,5 @@ public interface AttributeValueRepository extends JpaRepository<AttributeValue, 
         List<AttributeValue> findAttributesValues(@Param("isDeleted") Boolean isDeleted,
                         @Param("attributeId") Integer attributeId);
 
+        List<AttributeValue> findByIsDeleted(Boolean isDeleted);
 }

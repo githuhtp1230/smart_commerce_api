@@ -14,7 +14,8 @@ import io.lettuce.core.dynamic.annotation.Param;
 
 @Repository
 public interface AttributeRepository extends JpaRepository<Attribute, Integer> {
-        Optional<Attribute>findByName(String name);
+        Optional<Attribute> findByName(String name);
+
         Attribute findByNameAndIsDeletedIsFalse(String name);
 
         @Query("""
@@ -22,4 +23,6 @@ public interface AttributeRepository extends JpaRepository<Attribute, Integer> {
                             WHERE (:isDeleted IS NULL OR a.isDeleted = :isDeleted)
                         """)
         List<Attribute> findAttributes(@Param("isDeleted") Boolean isDeleted);
+
+        List<Attribute> findByIsDeleted(Boolean isDeleted);
 }

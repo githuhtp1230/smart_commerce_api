@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.smart_commerce_api.dto.request.attribute.AttributeRequest;
@@ -23,8 +24,6 @@ import com.shop.smart_commerce_api.services.AttributeValueService;
 
 import lombok.RequiredArgsConstructor;
 
-
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/attributes")
@@ -33,14 +32,19 @@ public class AttributeController {
     private final AttributeValueService attributeValueService;
 
     @GetMapping
-    public ApiResponse<List<AttributeResponse>> getAttributes(@ModelAttribute AttributeFilterRequest request) {
-    return ApiResponse.<List<AttributeResponse>>builder()
-            .code(200)
-            .message("Get Attributes successfully")
-            .data(attributeService.getAttributes(request))
-            .build();
-}
-
+    public ApiResponse<List<AttributeResponse>> getAttributes(@RequestParam(required = false) Boolean isDeleted) {
+        List<AttributeResponse> attributes;
+        if (isDeleted != null) {
+            attributes = attributeService.getAllAttributeByIsDeleted(isDeleted);
+        } else {
+            attributes = attributeService.getAllAttribute();
+        }
+        return ApiResponse.<List<AttributeResponse>>builder()
+                .code(200)
+                .message("Get Attributes successfully")
+                .data(attributes)
+                .build();
+    }
 
     @PostMapping
     ApiResponse<AttributeResponse> createAttributeApiResponse(@RequestBody AttributeRequest request) {
@@ -50,7 +54,6 @@ public class AttributeController {
                 .data(attributeService.createAttribute(request))
                 .build();
     }
-
 
     @GetMapping("/{id}")
     ApiResponse<AttributeResponse> getid(@PathVariable("id") int id) {
@@ -68,6 +71,13 @@ public class AttributeController {
                 .code(200)
                 .message("Attribute deleted successfully")
                 .build();
+    }
+
+    @PostMapping("/{id}")
+    ApiResponse<?> toggleIsDeleted(@PathVariable("id") int id) {
+        // TODO: process POST request
+        return ApiResponse.builder().code(200).message("Attribute disabled successfully")
+                .data(attributeService.toggleIsDeleted(id)).build();
     }
 
     @PutMapping("/{id}/update")
