@@ -15,6 +15,7 @@ import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
+import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
 import com.shop.smart_commerce_api.dto.request.user.UserUpdateProfileRequest;
 import com.shop.smart_commerce_api.services.OrderDetailService;

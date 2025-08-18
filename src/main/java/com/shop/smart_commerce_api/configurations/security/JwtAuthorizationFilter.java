@@ -40,6 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             String email = signedJWT.getJWTClaimsSet().getSubject();
 
+            System.out.println(SecurityContextHolder.getContext().getAuthentication());
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 User user = (User) userDetailServiceImpl.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user,
@@ -49,6 +50,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (Exception e) {
+            e.printStackTrace();
             filterChain.doFilter(request, response);
         }
     }

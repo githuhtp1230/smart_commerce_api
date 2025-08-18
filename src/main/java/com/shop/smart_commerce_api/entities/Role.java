@@ -20,7 +20,7 @@ public class Role {
     @Column(name = "name", length = 50)
     private String name;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "role")

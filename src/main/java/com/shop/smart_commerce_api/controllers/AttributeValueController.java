@@ -2,7 +2,9 @@ package com.shop.smart_commerce_api.controllers;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,7 @@ import com.shop.smart_commerce_api.services.AttributeValueService;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeValueResponse;
 import com.shop.smart_commerce_api.dto.request.attribute.AttributeValueRequest;
 import com.shop.smart_commerce_api.dto.request.attribute.AttributeValueUpdateRequest;
+import com.shop.smart_commerce_api.dto.request.filter.AttributeValueFilterRequest;
 
 import lombok.AllArgsConstructor;
 
@@ -25,11 +28,11 @@ public class AttributeValueController {
     private final AttributeValueService attributeValueService;
 
     @GetMapping
-    public ApiResponse<List<AttributeValueResponse>> getAllAttributeValues() {
+    public ApiResponse<List<AttributeValueResponse>> getAttributeValues(@ModelAttribute AttributeValueFilterRequest request) {
         return ApiResponse.<List<AttributeValueResponse>>builder()
                 .code(200)
                 .message("Get attribute values successfully")
-                .data(attributeValueService.getAllAttributeValues())
+                .data(attributeValueService.getAttributeValues(request))
                 .build();
     }
 
@@ -42,7 +45,7 @@ public class AttributeValueController {
                 .build();
     }
 
-    @PostMapping("/{attributeValueId}/delete")
+   @DeleteMapping("/{attributeValueId}/delete")
     public ApiResponse<?> deleteAttributeValue(@PathVariable("attributeValueId") int attributeValueId) {
         attributeValueService.deleteAttributeValue(attributeValueId);
         return ApiResponse.builder()
@@ -51,7 +54,8 @@ public class AttributeValueController {
                 .build();
     }
 
-    @PostMapping("/{attributeValueId}/update")
+
+    @PutMapping("/{attributeValueId}/update")
     public ApiResponse<?> updateAttributeValue(@PathVariable("attributeValueId") int attributeValueId,
             @RequestBody AttributeValueUpdateRequest request) {
         attributeValueService.updateAtrributeValue(attributeValueId, request);

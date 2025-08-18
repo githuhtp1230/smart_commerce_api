@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -67,7 +68,23 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if (role == null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
+
+        // Add permissions as authorities
+        Set<RolePermission> rolePermissions = role.getRolePermissions();
+        for (RolePermission rolePermission : rolePermissions) {
+            Permission permission = rolePermission.getPermission();
+            if (permission != null) {
+                authorities.add(new SimpleGrantedAuthority(permission.getName()));
+            }
+        }
+
+        return authorities;
     }
 
     @Override
