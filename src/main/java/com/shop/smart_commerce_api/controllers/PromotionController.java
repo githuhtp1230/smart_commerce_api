@@ -51,7 +51,7 @@ public class PromotionController {
                 .build();
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/delete")
     ApiResponse<?> toggleIsActive(@PathVariable("id") int id) {
         return ApiResponse.builder()
                 .code(200)

@@ -43,20 +43,24 @@ public class PromotionService {
         return promotionMapper.toPromotionResponse(promotion);
     }
 
-    public PromotionResponse toggleIsActive(Integer id) {
+   public PromotionResponse toggleIsActive(Integer id) {
         Promotion promotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
-        promotion.setIsActive(!promotion.getIsActive());
+
+        boolean currentStatus = Boolean.TRUE.equals(promotion.getIsActive());
+        promotion.setIsActive(!currentStatus);
+
         promotionRepository.save(promotion);
         return promotionMapper.toPromotionResponse(promotion);
     }
 
-    public PromotionResponse update(int id, PromotionRequest request) {
-        Promotion promotion = promotionRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
-        promotionMapper.updatePromotionFromRequest(request, promotion);
-        promotionRepository.save(promotion);
-        return promotionMapper.toPromotionResponse(promotion);
-    }
+
+        public PromotionResponse update(int id, PromotionRequest request) {
+            Promotion promotion = promotionRepository.findById(id)
+                    .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
+            promotionMapper.updatePromotionFromRequest(request, promotion);
+            promotionRepository.save(promotion);
+            return promotionMapper.toPromotionResponse(promotion);
+        }
 
 }

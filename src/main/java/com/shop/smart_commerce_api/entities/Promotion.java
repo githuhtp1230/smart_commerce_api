@@ -36,8 +36,8 @@ public class Promotion {
     @Column(name = "end_date")
     private Instant endDate;
 
-    @Column(name = "is_active")
-    private Boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 
     @OneToMany(mappedBy = "promotion")
     private Set<Product> products = new LinkedHashSet<>();
