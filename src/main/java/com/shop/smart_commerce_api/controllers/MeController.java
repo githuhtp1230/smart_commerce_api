@@ -50,15 +50,6 @@ public class MeController {
                                 .build();
         }
 
-        // @GetMapping("/orders")
-        // public ApiResponse<List<OrderResponse>> getMyOrders() {
-        // return ApiResponse.<List<OrderResponse>>builder()
-        // .code(200)
-        // .message("Orders retrieved successfully")
-        // .data(orderService.getMyOrders())
-        // .build();
-        // }
-
         @GetMapping("/order-details/{orderId}")
         public ApiResponse<List<OrderDetailResponse>> getOrderDetails(@PathVariable Integer orderId) {
                 return ApiResponse.<List<OrderDetailResponse>>builder()
@@ -78,44 +69,16 @@ public class MeController {
                                 .build();
         }
 
-        // @GetMapping("/orders")
-        // public ApiResponse<List<OrderResponse>> filterOrders(
-        // @RequestParam(required = false) String status) {
-        // List<OrderResponse> orders = orderService.getOrders(status);
-        // return ApiResponse.<List<OrderResponse>>builder()
-        // .code(200)
-        // .message("get Orders successfully")
-        // .data(orders)
-        // .build();
-        // }
-
-        // @GetMapping("/orders/summaries")
-        // public ApiResponse<PageResponse<OrderSummaryResponse>> getOrderSummaries(
-        // @RequestParam(defaultValue = "0") int page,
-        // @RequestParam(defaultValue = "15") int limit) {
-        // if (page < 1) {
-        // page = 1;
-        // }
-        // return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
-        // .code(200)
-        // .message("Get order summaries successfully")
-        // .data(orderService.getOrderSummaries(page - 1, limit))
-        // .build();
-        // }
-
         @GetMapping("/orders")
         public ApiResponse<PageResponse<OrderSummaryResponse>> getOrders(
                         @RequestParam(required = false) String status,
-                        @RequestParam(defaultValue = "1") int page,
-                        @RequestParam(defaultValue = "15") int limit) {
-                User currentUser = userService.getCurrentUser();
-                Integer userId = currentUser.getId();
+                        @RequestParam int page,
+                        @RequestParam int limit) {
 
                 if (page < 1)
                         page = 1;
 
-                PageResponse<OrderSummaryResponse> result = orderService.getOrderSummaries(status, page - 1, limit,
-                                userId);
+                PageResponse<OrderSummaryResponse> result = orderService.getOrderSummaries(status, page - 1, limit);
 
                 return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
                                 .code(200)

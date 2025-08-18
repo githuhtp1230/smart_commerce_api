@@ -3,6 +3,7 @@ package com.shop.smart_commerce_api.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
 import com.shop.smart_commerce_api.dto.request.order.AddOrderRequest;
@@ -26,4 +27,5 @@ public interface OrderMapper {
     List<OrderResponse> toOrderResponseList(List<Order> orders);
 
     OrderSummaryResponse toOrderSummaryResponse(Order order);
+
 }
