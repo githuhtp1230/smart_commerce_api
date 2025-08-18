@@ -19,14 +19,4 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-
-    @GetMapping("/orders-by-status")
-    public ApiResponse<OrdersByStatusResponse> getMyOrdersByStatus() {
-        OrdersByStatusResponse data = orderService.getMyOrdersByStatus();
-        return ApiResponse.<OrdersByStatusResponse>builder()
-                .code(200)
-                .message("Orders fetched successfully")
-                .data(data)
-                .build();
-    }
 }

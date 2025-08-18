@@ -11,15 +11,18 @@ import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.constant.OrderStatus;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
+import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrdersByStatusResponse;
 import com.shop.smart_commerce_api.entities.Order;
 import com.shop.smart_commerce_api.entities.Payment;
+import com.shop.smart_commerce_api.entities.Product;
 import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.OrderMapper;
+import com.shop.smart_commerce_api.mapper.ProductMapper;
 import com.shop.smart_commerce_api.repositories.OrderRepository;
 import com.shop.smart_commerce_api.repositories.PaymentRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
@@ -36,23 +39,8 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final PaymentRepository paymentRepository;
     private final ProductService productService;
-
-    public OrdersByStatusResponse getMyOrdersByStatus() {
-        User currentUser = userService.getCurrentUser();
-        List<Order> orders = orderRepository.findByUserId(currentUser.getId());
-
-        // Group theo status
-        Map<String, List<OrderResponse>> grouped = orders.stream()
-                .map(orderMapper::toOrderResponse)
-                .collect(Collectors.groupingBy(o -> o.getStatus().toLowerCase()));
-
-        return OrdersByStatusResponse.builder()
-                .confirmed(grouped.getOrDefault(OrderStatus.CONFIRMED, List.of()))
-                .cancelled(grouped.getOrDefault(OrderStatus.CANCELLED, List.of()))
-                .shipping(grouped.getOrDefault(OrderStatus.SHIPPING, List.of()))
-                .delivered(grouped.getOrDefault(OrderStatus.DELIVERED, List.of()))
-                .build();
-    }
+    private final ProductVariationService productVariationService;
+    private final ProductMapper productMapper;
 
     public Order getCurrentOrder() {
         User currentUser = userService.getCurrentUser();
@@ -94,14 +82,40 @@ public class OrderService {
 
         if (status == null || status.isEmpty()) {
             orderPage = orderRepository.findByUserId(userId, pageable);
-        } else { 
+        } else {
             orderPage = orderRepository.findByStatusAndUserId(status.toLowerCase(), userId, pageable);
         }
 
         var res = orderPage.getContent().stream()
-                .map(od -> {
-                    OrderSummaryResponse orderSummary = orderMapper.toOrderSummaryResponse(od);
-                    orderSummary.setProductName(productService.getFirstProductNameByOrder(od.getId()));
+                .map(order -> {
+
+                    OrderSummaryResponse orderSummary = orderMapper.toOrderSummaryResponse(order);
+
+                    List<OrderDetailResponse> detailResponses = order.getOrderDetails().stream()
+                            .map(orderDetail -> {
+                                OrderDetailResponse detailResponse = orderMapper.toOrderDetailResponse(orderDetail);
+                                detailResponse.setProduct(productMapper.toProductResponse(orderDetail.getProduct()));
+
+                                if (orderDetail.getProductVariation() != null) {
+                                    detailResponse.setProductVariation(
+                                            productVariationService
+                                                    .mapToVariationResponse(orderDetail.getProductVariation().getId()));
+                                }
+
+                                orderDetail.getProduct().getImageProducts().stream().findFirst()
+                                        .ifPresent(img -> detailResponse.setImage(img.getImageUrl()));
+
+                                return detailResponse;
+                            })
+                            .collect(Collectors.toList());
+
+                    orderSummary.setOrderDetails(detailResponses);
+
+                    order.getOrderDetails().stream().findFirst().ifPresent(orderDetail -> {
+                        orderDetail.getProduct().getImageProducts().stream().findFirst()
+                                .ifPresent(img -> orderSummary.setProductImage(img.getImageUrl()));
+                    });
+
                     return orderSummary;
                 })
                 .collect(Collectors.toList());
