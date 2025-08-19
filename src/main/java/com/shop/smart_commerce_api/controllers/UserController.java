@@ -57,7 +57,6 @@ public class UserController {
     }
 
     @PostMapping
-    @HasPermission(Permissions.USER_CREATE)
     public ApiResponse<UserResponse> createUser(@RequestBody CreateUserRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .code(200)
@@ -67,7 +66,6 @@ public class UserController {
     }
 
     @PutMapping
-    @HasPermission(Permissions.USER_UPDATE)
     public ApiResponse<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .code(200)
