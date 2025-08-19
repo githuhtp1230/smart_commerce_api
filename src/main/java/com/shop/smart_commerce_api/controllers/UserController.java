@@ -24,6 +24,10 @@ import com.shop.smart_commerce_api.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import com.shop.smart_commerce_api.dto.request.user.CreateUserRequest;
+import com.shop.smart_commerce_api.dto.request.user.UpdateUserRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,21 +56,41 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping
+    @HasPermission(Permissions.USER_CREATE)
+    public ApiResponse<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Create user successfully")
+                .data(userService.createUser(request))
+                .build();
+    }
+
+    @PutMapping
+    @HasPermission(Permissions.USER_UPDATE)
+    public ApiResponse<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .code(200)
+                .message("Update user successfully")
+                .data(userService.updateUser(request))
+                .build();
+    }
+
     // @GetMapping("/{userId}/orders")
     // public ApiResponse<PageResponse<OrderSummaryResponse>> getUserOrders(
-    //         @PathVariable Integer userId,
-    //         @RequestParam(defaultValue = "0") int page,
-    //         @RequestParam(defaultValue = "15") int limit,
-    //         @RequestParam(required = false) String status) {
+    // @PathVariable Integer userId,
+    // @RequestParam(defaultValue = "0") int page,
+    // @RequestParam(defaultValue = "15") int limit,
+    // @RequestParam(required = false) String status) {
 
-    //     if (page < 1)
-    //         page = 1;
+    // if (page < 1)
+    // page = 1;
 
-    //     return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
-    //             .code(200)
-    //             .message("Get user orders successfully")
-    //             .data(orderService.getOrderSummaries(status, page - 1, limit, userId))
-    //             .build();
+    // return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
+    // .code(200)
+    // .message("Get user orders successfully")
+    // .data(orderService.getOrderSummaries(status, page - 1, limit, userId))
+    // .build();
     // }
 
 }

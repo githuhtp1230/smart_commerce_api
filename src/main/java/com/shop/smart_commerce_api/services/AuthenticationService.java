@@ -59,7 +59,7 @@ public class AuthenticationService {
     public void register(RegisterRequest request) {
         User user = userRepository.findByEmail(request.getEmail());
         if (user != null) {
-            throw new AppException(ErrorCode.USER_EXSITS);
+            throw new AppException(ErrorCode.USER_EXISTS);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());

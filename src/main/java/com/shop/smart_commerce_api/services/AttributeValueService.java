@@ -55,7 +55,7 @@ public class AttributeValueService {
         // Kiểm tra trùng value
         AttributeValue existing = attributeValueRepository.findByValueAndIsDeletedIsFalse(request.getValue());
         if (existing != null) {
-            throw new AppException(ErrorCode.ATTRIBUTEVALUE_EXISTS);
+            throw new AppException(ErrorCode.ATTRIBUTE_VALUE_EXISTS);
         }
 
         // Kiểm tra attributeId hợp lệ

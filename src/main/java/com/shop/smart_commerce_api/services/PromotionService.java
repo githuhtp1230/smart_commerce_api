@@ -14,7 +14,6 @@ import com.shop.smart_commerce_api.mapper.PromotionMapper;
 import com.shop.smart_commerce_api.repositories.PromotionRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 
 @Service
 @RequiredArgsConstructor
@@ -23,14 +22,14 @@ public class PromotionService {
     private final PromotionMapper promotionMapper;
 
     public List<PromotionResponse> getAll() {
-        var promotions = promotionRepository.findAll();
+        List<Promotion> promotions = promotionRepository.findAll();
         return promotions.stream()
                 .map(promotionMapper::toPromotionResponse)
                 .toList();
     }
 
     public List<PromotionResponse> getAllByIsActive(Boolean isActive) {
-        var promotions = promotionRepository.findByIsActive(isActive);
+        List<Promotion> promotions = promotionRepository.findByIsActive(isActive);
         return promotions.stream()
                 .map(promotionMapper::toPromotionResponse)
                 .toList();
@@ -43,7 +42,7 @@ public class PromotionService {
         return promotionMapper.toPromotionResponse(promotion);
     }
 
-   public PromotionResponse toggleIsActive(Integer id) {
+    public PromotionResponse toggleIsActive(Integer id) {
         Promotion promotion = promotionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
 
@@ -54,13 +53,12 @@ public class PromotionService {
         return promotionMapper.toPromotionResponse(promotion);
     }
 
-
-        public PromotionResponse update(int id, PromotionRequest request) {
-            Promotion promotion = promotionRepository.findById(id)
-                    .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
-            promotionMapper.updatePromotionFromRequest(request, promotion);
-            promotionRepository.save(promotion);
-            return promotionMapper.toPromotionResponse(promotion);
-        }
+    public PromotionResponse update(int id, PromotionRequest request) {
+        Promotion promotion = promotionRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
+        promotionMapper.updatePromotionFromRequest(request, promotion);
+        promotionRepository.save(promotion);
+        return promotionMapper.toPromotionResponse(promotion);
+    }
 
 }

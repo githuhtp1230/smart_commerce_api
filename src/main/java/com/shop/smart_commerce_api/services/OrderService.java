@@ -30,7 +30,6 @@ import com.shop.smart_commerce_api.repositories.PaymentRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 
 @Service
 @RequiredArgsConstructor
@@ -89,7 +88,7 @@ public class OrderService {
             orderPage = orderRepository.findByStatusAndUserId(status.toLowerCase(), userId, pageable);
         }
 
-        var res = orderPage.getContent().stream()
+        List<OrderSummaryResponse> res = orderPage.getContent().stream()
                 .map(order -> {
 
                     OrderSummaryResponse orderSummary = orderMapper.toOrderSummaryResponse(order);
