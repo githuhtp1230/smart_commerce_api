@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,25 +21,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PermissionController {
     private final PermissionService permissionService;
 
-    @GetMapping("/getAll")
-    ApiResponse<List<PermissionResponse>> getPermissions() {
-        return ApiResponse.<List<PermissionResponse>>builder()
-                .code(200)
-                .message("Permissions retrieved successfully")
-                .data(permissionService.getPermissions())
-                .build();
-    }
-
     @GetMapping
     public ApiResponse<List<PermissionResponse>> getPermissionsByRole(
             @RequestParam("role") Integer roleId) {
-
         List<PermissionResponse> permissions = permissionService.getPermissionsByRole(roleId);
-
+        if (roleId != null) {
+            permissions = permissionService.getPermissions();
+        }
         return ApiResponse.<List<PermissionResponse>>builder()
                 .code(200)
                 .message("Permissions retrieved successfully")
                 .data(permissions)
                 .build();
     }
+
 }

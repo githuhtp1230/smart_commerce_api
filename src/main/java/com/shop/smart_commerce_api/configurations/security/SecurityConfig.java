@@ -61,7 +61,9 @@ public class SecurityConfig {
             "api/me/order-details/**",
             "api/permissions",
             "api/permissions/**",
-            "api/role-permissions/**"
+            "api/role-permissions/**",
+            "api/role-permissions",
+            "api/roles/*/permissions/**"
     };
 
     @Bean
