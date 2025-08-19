@@ -34,5 +34,4 @@ public class PermissionController {
                 .data(permissions)
                 .build();
     }
-
 }
