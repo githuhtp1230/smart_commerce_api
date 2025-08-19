@@ -28,7 +28,8 @@ public class AttributeValueController {
     private final AttributeValueService attributeValueService;
 
     @GetMapping
-    public ApiResponse<List<AttributeValueResponse>> getAttributeValues(@ModelAttribute AttributeValueFilterRequest request) {
+    public ApiResponse<List<AttributeValueResponse>> getAttributeValues(
+            @ModelAttribute AttributeValueFilterRequest request) {
         return ApiResponse.<List<AttributeValueResponse>>builder()
                 .code(200)
                 .message("Get attribute values successfully")
@@ -45,7 +46,13 @@ public class AttributeValueController {
                 .build();
     }
 
-   @DeleteMapping("/{attributeValueId}/delete")
+    @PostMapping("/{id}")
+    ApiResponse<?> toggleIsDeleted(@PathVariable("id") int id) {
+        return ApiResponse.builder().code(200).message("Attribute value disable successfully")
+                .data(attributeValueService.toggleIsDeleted(id)).build();
+    }
+
+    @DeleteMapping("/{attributeValueId}/delete")
     public ApiResponse<?> deleteAttributeValue(@PathVariable("attributeValueId") int attributeValueId) {
         attributeValueService.deleteAttributeValue(attributeValueId);
         return ApiResponse.builder()
@@ -53,7 +60,6 @@ public class AttributeValueController {
                 .message("Delete attribute value successfully")
                 .build();
     }
-
 
     @PutMapping("/{attributeValueId}/update")
     public ApiResponse<?> updateAttributeValue(@PathVariable("attributeValueId") int attributeValueId,

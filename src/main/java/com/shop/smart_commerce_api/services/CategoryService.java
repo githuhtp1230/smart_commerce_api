@@ -49,24 +49,23 @@ public class CategoryService {
                 .toList();
     }
 
-   public CategoryResponse createCategory(CreateCategoryRequest request) {
-    Category category = categoryRepository.findByNameAndIsDeletedIsFalse(request.getName());
-    if (category != null) {
-        throw new AppException(ErrorCode.CATEGORY_EXISTS);
+    public CategoryResponse createCategory(CreateCategoryRequest request) {
+        Category category = categoryRepository.findByNameAndIsDeletedIsFalse(request.getName());
+        if (category != null) {
+            throw new AppException(ErrorCode.CATEGORY_EXISTS);
+        }
+        Category newCategory = categoryMapper.toCategory(request);
+        newCategory.setIsDeleted(false);
+
+        if (request.getParentId() != null) {
+            Category parentCategory = categoryRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+            newCategory.setParent(parentCategory);
+        }
+
+        Category savedCategory = categoryRepository.save(newCategory);
+        return categoryMapper.toCategoryResponse(savedCategory);
     }
-    Category newCategory = categoryMapper.toCategory(request);
-    newCategory.setIsDeleted(false); 
-
-    if (request.getParentId() != null) {
-        Category parentCategory = categoryRepository.findById(request.getParentId())
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-        newCategory.setParent(parentCategory);
-    }
-
-    Category savedCategory = categoryRepository.save(newCategory);
-    return categoryMapper.toCategoryResponse(savedCategory);
-}
-
 
     public void deleteCategory(int categoryId) {
         Category category = categoryRepository.findById(categoryId)
@@ -75,29 +74,36 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
+    public CategoryResponse toggleIsDeleted(int id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        category.setIsDeleted(!category.getIsDeleted());
+        categoryRepository.save(category);
+        return categoryMapper.toCategoryResponse(category);
+    }
+
     public CategoryResponse updateCategory(int categoryId, UpdateCategoryRequest request) {
-    Category category = categoryRepository.findById(categoryId)
-            .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
-    if (request.getName() != null && !request.getName().equals(category.getName())) {
-        Category existingCategory = categoryRepository.findByNameAndIsDeletedIsFalse(request.getName());
-        if (existingCategory != null && existingCategory.getId() != categoryId) {
-            throw new AppException(ErrorCode.CATEGORY_EXISTS);
+        if (request.getName() != null && !request.getName().equals(category.getName())) {
+            Category existingCategory = categoryRepository.findByNameAndIsDeletedIsFalse(request.getName());
+            if (existingCategory != null && existingCategory.getId() != categoryId) {
+                throw new AppException(ErrorCode.CATEGORY_EXISTS);
+            }
+            category.setName(request.getName());
         }
-        category.setName(request.getName());
-    }
 
-    if (request.getParentId() != null) {
-        if (!request.getParentId().equals(category.getParent() != null ? category.getParent().getId() : null)) {
-            Category parent = categoryRepository.findById(request.getParentId())
-                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-            category.setParent(parent);
+        if (request.getParentId() != null) {
+            if (!request.getParentId().equals(category.getParent() != null ? category.getParent().getId() : null)) {
+                Category parent = categoryRepository.findById(request.getParentId())
+                        .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+                category.setParent(parent);
+            }
         }
+
+        Category updated = categoryRepository.save(category);
+        return categoryMapper.toCategoryResponse(updated);
     }
-
-    Category updated = categoryRepository.save(category);
-    return categoryMapper.toCategoryResponse(updated);
-}
-
 
 }

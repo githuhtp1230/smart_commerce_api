@@ -45,12 +45,19 @@ public class AttributeService {
         return attributeMapper.toAttributeResponse(savedAttribute);
     }
 
-
     public void delete(int id) {
         Attribute attribute = attributeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_NOT_FOUND));
         attribute.setIsDeleted(true);
         attributeRepository.save(attribute);
+    }
+
+    public AttributeResponse toggleIsDeleted(int id) {
+        Attribute attribute = attributeRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_NOT_FOUND));
+        attribute.setIsDeleted(!attribute.getIsDeleted());
+        attributeRepository.save(attribute);
+        return attributeMapper.toAttributeResponse(attribute);
     }
 
     public AttributeResponse update(int id, AttributeUpdateRequest request) {
@@ -62,17 +69,16 @@ public class AttributeService {
 
     public List<AttributeResponse> getAttributes(AttributeFilterRequest filter) {
         Boolean isDeleted = filter.getIsDeleted() != null ? filter.getIsDeleted() : false;
-        
+
         List<Attribute> attributes = attributeRepository.findAttributes(isDeleted);
 
         return attributes.stream()
-            .map(attribute -> AttributeResponse.builder()
-                    .id(attribute.getId())
-                    .name(attribute.getName())
-                    .build())
-            .toList();
+                .map(attribute -> AttributeResponse.builder()
+                        .id(attribute.getId())
+                        .name(attribute.getName())
+                        .build())
+                .toList();
     }
-
 
     public AttributeResponse getByName(String name) {
         Attribute attribute = attributeRepository.findByName(name)

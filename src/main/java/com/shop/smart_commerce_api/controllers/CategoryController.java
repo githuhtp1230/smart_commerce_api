@@ -54,12 +54,11 @@ public class CategoryController {
                 .message("Delete category successfully")
                 .build();
     }
-    
-     @PutMapping("/{categoryId}/update")
-     public ApiResponse<CategoryResponse> updateCategory(
+
+    @PutMapping("/{categoryId}/update")
+    public ApiResponse<CategoryResponse> updateCategory(
             @PathVariable("categoryId") int categoryId,
-            @RequestBody UpdateCategoryRequest request
-     ) {
+            @RequestBody UpdateCategoryRequest request) {
         CategoryResponse updatedCategory = categoryService.updateCategory(categoryId, request);
         return ApiResponse.<CategoryResponse>builder()
                 .code(200)
@@ -68,4 +67,12 @@ public class CategoryController {
                 .build();
     }
 
+    @PostMapping("/{id}")
+    ApiResponse<?> toggleIsDeleted(@PathVariable("id") int id) {
+        return ApiResponse.builder()
+                .code(200)
+                .message("Category disabled successfully")
+                .data(categoryService.toggleIsDeleted(id))
+                .build();
+    }
 }

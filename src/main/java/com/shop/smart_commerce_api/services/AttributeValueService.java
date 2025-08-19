@@ -93,4 +93,12 @@ public class AttributeValueService {
                 .map(attributeValueMapper::toAttributeValueResponse)
                 .toList();
     }
+
+    public AttributeValueResponse toggleIsDeleted(int id) {
+        AttributeValue attributeValue = attributeValueRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ATTRIBUTE_VALUE_NOT_FOUND));
+        attributeValue.setIsDeleted(!attributeValue.getIsDeleted());
+        attributeValueRepository.save(attributeValue);
+        return attributeValueMapper.toAttributeValueResponse(attributeValue);
+    }
 }

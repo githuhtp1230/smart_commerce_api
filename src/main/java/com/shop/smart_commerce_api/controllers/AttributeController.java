@@ -23,8 +23,6 @@ import com.shop.smart_commerce_api.services.AttributeValueService;
 
 import lombok.RequiredArgsConstructor;
 
-
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/attributes")
@@ -34,13 +32,12 @@ public class AttributeController {
 
     @GetMapping
     public ApiResponse<List<AttributeResponse>> getAttributes(@ModelAttribute AttributeFilterRequest request) {
-    return ApiResponse.<List<AttributeResponse>>builder()
-            .code(200)
-            .message("Get Attributes successfully")
-            .data(attributeService.getAttributes(request))
-            .build();
-}
-
+        return ApiResponse.<List<AttributeResponse>>builder()
+                .code(200)
+                .message("Get Attributes successfully")
+                .data(attributeService.getAttributes(request))
+                .build();
+    }
 
     @PostMapping
     ApiResponse<AttributeResponse> createAttributeApiResponse(@RequestBody AttributeRequest request) {
@@ -51,6 +48,14 @@ public class AttributeController {
                 .build();
     }
 
+    @PostMapping("/{id}")
+    ApiResponse<?> toggleIsDeleted(@PathVariable("id") int id) {
+        return ApiResponse.builder()
+                .code(200)
+                .message("Attribute disabled successfully")
+                .data(attributeService.toggleIsDeleted(id))
+                .build();
+    }
 
     @GetMapping("/{id}")
     ApiResponse<AttributeResponse> getid(@PathVariable("id") int id) {
@@ -89,4 +94,5 @@ public class AttributeController {
                 .data(attributeValueService.getAttributeValuesByAttributeId(attributeId))
                 .build();
     }
+
 }
