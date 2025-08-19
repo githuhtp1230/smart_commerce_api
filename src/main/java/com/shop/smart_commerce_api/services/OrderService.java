@@ -15,6 +15,7 @@ import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrdersByStatusResponse;
+import com.shop.smart_commerce_api.dto.response.user.UserResponse;
 import com.shop.smart_commerce_api.entities.Order;
 import com.shop.smart_commerce_api.entities.Payment;
 import com.shop.smart_commerce_api.entities.Product;
@@ -23,6 +24,7 @@ import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.OrderMapper;
 import com.shop.smart_commerce_api.mapper.ProductMapper;
+import com.shop.smart_commerce_api.mapper.UserMapper;
 import com.shop.smart_commerce_api.repositories.OrderRepository;
 import com.shop.smart_commerce_api.repositories.PaymentRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
@@ -41,6 +43,7 @@ public class OrderService {
     private final ProductService productService;
     private final ProductVariationService productVariationService;
     private final ProductMapper productMapper;
+    private final UserMapper userMapper;
 
     public Order getCurrentOrder() {
         User currentUser = userService.getCurrentUser();
@@ -115,7 +118,10 @@ public class OrderService {
                         orderDetail.getProduct().getImageProducts().stream().findFirst()
                                 .ifPresent(img -> orderSummary.setProductImage(img.getImageUrl()));
                     });
-
+                    if (order.getUser() != null) {
+                        UserResponse userResponse = userMapper.toUserResponse(order.getUser());
+                        orderSummary.setUserId(userResponse);
+                    }
                     return orderSummary;
                 })
                 .collect(Collectors.toList());
@@ -129,6 +135,5 @@ public class OrderService {
                 .data(res)
                 .build();
     }
-
 
 }
