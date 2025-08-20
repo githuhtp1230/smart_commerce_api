@@ -42,8 +42,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                 FROM products p
                 WHERE p.is_deleted = 0
                   AND (:categoryId IS NULL OR (p.category_id IS NOT NULL AND p.category_id = :categoryId))
+                  AND (:query IS NULL OR (p.name LIKE CONCAT('%', :query, '%')))
             """, nativeQuery = true)
-    Page<ProductSummaryResponse> findProductSummaries(@Param("categoryId") Integer categoryId, Pageable pageable);
+    Page<ProductSummaryResponse> findProductSummaries(@Param("categoryId") Integer categoryId,
+            @Param("query") String query, Pageable pageable);
 
     @Query("""
                 SELECT new com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse (
