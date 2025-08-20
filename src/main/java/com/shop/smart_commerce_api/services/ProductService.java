@@ -40,6 +40,7 @@ public class ProductService {
                         int currentPage, int limit) {
                 Pageable pageable = PageRequest.of(currentPage, limit);
                 Page<ProductSummaryResponse> page = productRepository.findProductSummaries(request.getCategoryId(),
+                                request.getQuery(),
                                 pageable);
                 page.stream().forEach(productSummary -> {
                         Product product = productRepository.findById(productSummary.getId()).get();

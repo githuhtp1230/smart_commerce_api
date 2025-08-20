@@ -6,5 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class ProductSummaryFilterRequest {
-    Integer categoryId;
+    private Integer categoryId;
+    private String query;
 }
