@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
+import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.entities.Product;
 import com.shop.smart_commerce_api.entities.Review;
@@ -25,6 +26,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final ReviewMapper reviewMapper;
 
     public ReviewResponse create(ReviewRequest request, Integer productId) {
@@ -89,6 +91,13 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Xóa không thành công"));
         reviewRepository.delete(review);
+    }
+
+    public List<HistoryReviewResponse> getReviewHistoryByUser(Integer userId) {
+        var reviews = reviewRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        return reviews.stream()
+                .map(reviewMapper::toHistoryReviewResponse)
+                .toList();
     }
     // private ReviewResponse mapReviewToResponseWithReplies(Review review) {
     // ReviewResponse reviewResponse = reviewMapper.toResponse(review);

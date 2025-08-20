@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
+import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.repositories.ReviewRepository;
 import com.shop.smart_commerce_api.services.ReviewService;
@@ -41,6 +43,15 @@ public class ReviewController {
                 .code(200)
                 .message("Get list reviews successfully")
                 .data(reviewService.getListReviewReply(reviewId))
+                .build();
+    }
+
+    @GetMapping("/users/{id}/reviews")
+    public ApiResponse<List<HistoryReviewResponse>> getReviewHistory(@PathVariable("id") Integer userId) {
+        return ApiResponse.<List<HistoryReviewResponse>>builder()
+                .code(200)
+                .message("Get review history successfully")
+                .data(reviewService.getReviewHistoryByUser(userId))
                 .build();
     }
 }

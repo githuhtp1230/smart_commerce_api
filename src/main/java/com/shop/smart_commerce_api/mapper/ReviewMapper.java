@@ -9,8 +9,10 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
+import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.entities.Review;
+import com.shop.smart_commerce_api.entities.Role;
 
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {
@@ -35,4 +37,11 @@ public interface ReviewMapper {
     @Mapping(target = "parentReview", ignore = true)
     @Mapping(target = "reviews", ignore = true)
     void updateEntityFromRequest(ReviewRequest request, @MappingTarget Review review);
+
+    @Mapping(target = "product.category.children", ignore = true)
+    default String map(Role role) {
+        return role != null ? role.getName() : null;
+    }
+
+    HistoryReviewResponse toHistoryReviewResponse(Review review);
 }
