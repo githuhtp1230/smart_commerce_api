@@ -74,21 +74,21 @@ public class UserController {
                 .build();
     }
 
-    // @GetMapping("/{userId}/orders")
-    // public ApiResponse<PageResponse<OrderSummaryResponse>> getUserOrders(
-    // @PathVariable Integer userId,
-    // @RequestParam(defaultValue = "0") int page,
-    // @RequestParam(defaultValue = "15") int limit,
-    // @RequestParam(required = false) String status) {
+    @GetMapping("/{userId}/orders")
+    public ApiResponse<PageResponse<OrderSummaryResponse>> getUserOrders(
+            @PathVariable Integer userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int limit,
+            @RequestParam(required = false) String status) {
 
-    // if (page < 1)
-    // page = 1;
+        if (page < 1)
+            page = 1;
 
-    // return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
-    // .code(200)
-    // .message("Get user orders successfully")
-    // .data(orderService.getOrderSummaries(status, page - 1, limit, userId))
-    // .build();
-    // }
+        return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
+                .code(200)
+                .message("Get user orders successfully")
+                .data(orderService.getOrderSummaries(status, page - 1, limit, userId))
+                .build();
+    }
 
 }

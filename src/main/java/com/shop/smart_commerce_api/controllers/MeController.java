@@ -78,7 +78,8 @@ public class MeController {
                 if (page < 1)
                         page = 1;
 
-                PageResponse<OrderSummaryResponse> result = orderService.getOrderSummaries(status, page - 1, limit);
+                PageResponse<OrderSummaryResponse> result = orderService.getOrderSummaries(status, page - 1, limit,
+                                userService.getCurrentUser().getId());
 
                 return ApiResponse.<PageResponse<OrderSummaryResponse>>builder()
                                 .code(200)

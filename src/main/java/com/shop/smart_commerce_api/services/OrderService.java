@@ -75,10 +75,7 @@ public class OrderService {
         return orderMapper.toOrderResponse(savedOrder);
     }
 
-    public PageResponse<OrderSummaryResponse> getOrderSummaries(String status, int page, int limit) {
-        User currentUser = userService.getCurrentUser();
-        Integer userId = currentUser.getId();
-
+    public PageResponse<OrderSummaryResponse> getOrderSummaries(String status, int page, int limit, Integer userId) {
         Pageable pageable = PageRequest.of(page, limit);
         Page<Order> orderPage;
 
