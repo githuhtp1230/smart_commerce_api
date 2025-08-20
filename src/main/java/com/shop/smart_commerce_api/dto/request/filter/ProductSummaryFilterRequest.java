@@ -8,4 +8,6 @@ import lombok.Data;
 public class ProductSummaryFilterRequest {
     private Integer categoryId;
     private String query;
+    private Integer min;
+    private Integer max;
 }
