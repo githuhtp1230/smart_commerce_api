@@ -3,11 +3,13 @@ package com.shop.smart_commerce_api.services;
 import java.util.List;
 
 import org.hibernate.sql.Update;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.smart_commerce_api.dto.request.auth.MailContactRequest;
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
 import com.shop.smart_commerce_api.dto.request.filter.UserFilterRequest;
 import com.shop.smart_commerce_api.dto.request.user.CreateUserRequest;
@@ -22,7 +24,13 @@ import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.UserMapper;
 import com.shop.smart_commerce_api.repositories.RoleRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +41,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String contactEmail;
 
     public UserResponse getCurrentProfile() {
         UserResponse userResponse = userMapper.toUserResponse(getCurrentUser());
@@ -129,6 +141,26 @@ public class UserService {
             user.setIsActive(request.getIsActive());
 
         userRepository.save(user);
+        return userMapper.toUserResponse(user);
+    }
+
+    public UserResponse sendEmailContact(MailContactRequest request) {
+        User user = getCurrentUser();
+        String email = user.getEmail();
+        if (email == null || email.isEmpty()) {
+            throw new AppException(ErrorCode.EMAIL_NOT_FOUND);
+        }
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(contactEmail); // Địa chỉ nhận liên hệ lấy từ cấu hình
+            helper.setSubject(request.getTitle());
+            helper.setText(request.getMessage() + "<br>From: " + email, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new AppException(ErrorCode.EMAIL_SEND_FAILED);
+        }
         return userMapper.toUserResponse(user);
     }
 }
