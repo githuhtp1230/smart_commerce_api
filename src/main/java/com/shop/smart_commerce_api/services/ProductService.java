@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.shop.smart_commerce_api.dto.response.product.ImageProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
+import com.shop.smart_commerce_api.dto.response.product.ProductSummaryAdminResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductVariationResponse;
 import com.shop.smart_commerce_api.entities.ImageProduct;
@@ -132,5 +133,68 @@ public class ProductService {
         public String getFirstProductNameByOrder(int orderId) {
                 List<String> name = productRepository.findProductNamesByOrderId(orderId);
                 return name.isEmpty() ? null : name.get(0);
+        }
+
+        public Product toggleIsDeleted(int id) {
+                Product product = productRepository.findById(id)
+                                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                int currentStatus = product.getIsDeleted() != null ? product.getIsDeleted() : 0;
+                product.setIsDeleted(1 - currentStatus);
+                productRepository.save(product);
+                return product;
+        }
+
+        public PageResponse<ProductSummaryAdminResponse> getAllProductSummaries(
+                        ProductSummaryFilterRequest request,
+                        int currentPage,
+                        int limit) {
+
+                Pageable pageable = PageRequest.of(currentPage, limit);
+                Page<ProductSummaryResponse> page;
+
+                if (Boolean.TRUE.equals(request.getIncludeDeleted())) {
+                        // Lấy tất cả sản phẩm, không filter theo is_deleted
+                        page = productRepository.findAllProductSummaries(request.getCategoryId(), pageable);
+                } else {
+                        // Lấy sản phẩm chưa bị xóa
+                        page = productRepository.findProductSummaries(request.getCategoryId(), pageable);
+                }
+
+                // Map sang ProductSummaryAdminResponse
+                List<ProductSummaryAdminResponse> adminResponses = page.getContent().stream()
+                                .map(productSummary -> {
+                                        Product product = productRepository.findById(productSummary.getId())
+                                                        .orElse(null);
+
+                                        ProductSummaryAdminResponse adminResponse = new ProductSummaryAdminResponse();
+                                        adminResponse.setId(productSummary.getId());
+                                        adminResponse.setName(productSummary.getName());
+                                        adminResponse.setAverageRating(productSummary.getAverageRating());
+                                        adminResponse.setReviewCount(productSummary.getReviewCount());
+                                        adminResponse.setPrice(productSummary.getPrice());
+                                        adminResponse.setMaxPrice(productSummary.getMaxPrice());
+                                        adminResponse.setImage(productSummary.getImage());
+
+                                        if (product != null) {
+                                                adminResponse.setPromotion(promotionMapper
+                                                                .toPromotionResponse(product.getPromotion()));
+                                                adminResponse.setCategory(productMapper
+                                                                .toCategoryResponse(product.getCategory()));
+                                                adminResponse.setCreatedAt(product.getCreatedAt());
+                                                adminResponse.setIs_deleted(product.getIsDeleted()); // thêm is_deleted
+                                        }
+
+                                        return adminResponse;
+                                })
+                                .toList();
+
+                return PageResponse.<ProductSummaryAdminResponse>builder()
+                                .currentPage(page.getNumber() + 1)
+                                .totalPages(page.getTotalPages())
+                                .limit(page.getNumberOfElements())
+                                .totalElements((int) page.getTotalElements())
+                                .isLast(page.isLast())
+                                .data(adminResponses)
+                                .build();
         }
 }

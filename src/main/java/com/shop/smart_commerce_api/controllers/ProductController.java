@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
+import com.shop.smart_commerce_api.dto.response.product.ProductSummaryAdminResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.services.ProductService;
@@ -49,6 +50,24 @@ public class ProductController {
                 .code(200)
                 .message("Get products successfully")
                 .data(productService.getProductSummaries(filterRequest, page, limit))
+                .build();
+    }
+
+    @GetMapping("/summary")
+    public ApiResponse<PageResponse<ProductSummaryAdminResponse>> getAllProductSummaries(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "${pagination.product_summary:15}") int limit,
+            @ModelAttribute ProductSummaryFilterRequest filterRequest) {
+
+        if (page <= 0) {
+            page = 1;
+        }
+        page = page - 1;
+
+        return ApiResponse.<PageResponse<ProductSummaryAdminResponse>>builder()
+                .code(200)
+                .message("Get products successfully")
+                .data(productService.getAllProductSummaries(filterRequest, page, limit))
                 .build();
     }
 
@@ -109,6 +128,15 @@ public class ProductController {
         return ApiResponse.builder()
                 .code(200)
                 .message("delete successfully")
+                .build();
+    }
+
+    @PostMapping("/summaries/{id}/delete")
+    ApiResponse<?> toggleIsDeleted(@PathVariable("id") int id) {
+        return ApiResponse.builder()
+                .code(200)
+                .message("Product disabled successfully")
+                .data(productService.toggleIsDeleted(id))
                 .build();
     }
 

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class ProductSummaryResponse {
     private Integer id;
     private String name;
@@ -35,6 +36,7 @@ public class ProductSummaryResponse {
         this.reviewCount = reviewCount;
         this.price = price != null ? (int) Math.round(price) : null;
         this.maxPrice = maxPrice != null ? (int) Math.round(maxPrice) : null;
+
     }
 
 }
