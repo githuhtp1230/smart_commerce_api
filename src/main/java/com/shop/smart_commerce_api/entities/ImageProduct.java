@@ -3,12 +3,14 @@ package com.shop.smart_commerce_api.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "image_products", schema = "smart_commerce")
 public class ImageProduct {
     @Id
