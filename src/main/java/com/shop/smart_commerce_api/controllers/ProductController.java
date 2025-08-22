@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cloudinary.Api;
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
+import com.shop.smart_commerce_api.dto.request.product.CreateProductRequest;
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import com.shop.smart_commerce_api.services.ProductService;
 import com.shop.smart_commerce_api.services.ReviewService;
 
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +26,15 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
+
+    @PostMapping
+    public ApiResponse<ProductResponse> createProduct(@Valid @RequestBody CreateProductRequest request) {
+        return ApiResponse.<ProductResponse>builder()
+                .code(200)
+                .message("Create product successfully")
+                .data(productService.createProduct(request))
+                .build();
+    }
 
     @GetMapping
     public ApiResponse<List<ProductResponse>> getProducts() {

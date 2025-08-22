@@ -30,6 +30,7 @@ public enum ErrorCode {
     ATTRIBUTE_VALUE_EXISTS(HttpStatus.CONFLICT, "AttributeValue is exists"),
     ATTRIBUTE_EXISTS(HttpStatus.CONFLICT, "Attribute is exists"),
     CATEGORY_EXISTS(HttpStatus.CONFLICT, "Category is exists"),
+    PRODUCT_EXISTS(HttpStatus.CONFLICT, "Product is exists"),
     USER_EXISTS(HttpStatus.CONFLICT, "User is exists"),
     PROMOTION_EXISTS(HttpStatus.CONFLICT, "Promotion is exists"),
 

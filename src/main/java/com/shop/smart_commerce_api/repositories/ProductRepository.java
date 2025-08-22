@@ -100,4 +100,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             "WHERE od.order_id = :orderId LIMIT 1", nativeQuery = true)
     List<String> findProductNamesByOrderId(@Param("orderId") int orderId);
 
+    boolean existsByNameAndIsDeletedIsNot(String name, Integer isDeleted);
+
 }

@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.mapper;
 
+import com.shop.smart_commerce_api.dto.request.product.CreateProductRequest;
 import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
 import com.shop.smart_commerce_api.dto.response.category.CategoryResponse;
 import com.shop.smart_commerce_api.dto.response.product.ImageProductResponse;
@@ -22,11 +23,11 @@ public interface ProductMapper {
 
     ImageProductResponse toImageProductResponse(ImageProduct imageProduct);
 
-    // AttributeResponse toAttributeResponse(Attribute attribute);
     CategoryResponse toCategoryResponse(Category category);
 
     ProductResponse toProductResponse(Product product);
 
     List<ProductResponse> toProductResponses(List<Product> list);
 
+    Product toProduct(CreateProductRequest request);
 }

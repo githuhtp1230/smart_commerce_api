@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
+import com.shop.smart_commerce_api.dto.request.product.CreateProductRequest;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
 import com.shop.smart_commerce_api.mapper.ProductMapper;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,11 @@ import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.AttributeMapper;
 import com.shop.smart_commerce_api.mapper.PromotionMapper;
 import com.shop.smart_commerce_api.repositories.ProductRepository;
+import com.shop.smart_commerce_api.repositories.CategoryRepository;
+import com.shop.smart_commerce_api.repositories.ProductImageRepository;
+import com.shop.smart_commerce_api.entities.Category;
+import java.time.Instant;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +37,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductService {
         private final ProductRepository productRepository;
+        private final CategoryRepository categoryRepository;
+        private final ProductImageRepository productImageRepository;
         private final AttributeMapper attributeMapper;
         private final ProductMapper productMapper;
         private final PromotionMapper promotionMapper;
@@ -122,6 +130,41 @@ public class ProductService {
 
                                         return productVariationResponse;
                                 }).toList();
+        }
+
+        public ProductResponse createProduct(CreateProductRequest request) {
+                Category category = categoryRepository.findById(request.getCategoryId())
+                                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+
+                if (productRepository.existsByNameAndIsDeletedIsNot(request.getTitle(), 1)) {
+                        throw new AppException(ErrorCode.PRODUCT_EXISTS);
+                }
+
+                Product product = Product.builder()
+                                .category(category)
+                                .name(request.getTitle())
+                                .description(request.getDescription())
+                                .price(request.getPrice())
+                                .stock(request.getStock())
+                                .createdAt(Instant.now())
+                                .isDeleted(0)
+                                .build();
+
+                Product savedProduct = productRepository.save(product);
+
+                if (request.getImages() != null && !request.getImages().isEmpty()) {
+                        Set<ImageProduct> imageProducts = request.getImages().stream()
+                                        .map(imageUrl -> ImageProduct.builder()
+                                                        .product(savedProduct)
+                                                        .imageUrl(imageUrl)
+                                                        .build())
+                                        .collect(Collectors.toSet());
+
+                        productImageRepository.saveAll(imageProducts);
+                        savedProduct.setImageProducts(imageProducts);
+                }
+
+                return productMapper.toProductResponse(savedProduct);
         }
 
         public List<ProductResponse> getAllProducts() {
