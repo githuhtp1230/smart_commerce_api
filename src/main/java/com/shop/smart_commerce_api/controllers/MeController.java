@@ -16,6 +16,8 @@ import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.dto.response.user.UserResponse;
 import com.shop.smart_commerce_api.entities.User;
+import com.cloudinary.Api;
+import com.shop.smart_commerce_api.dto.request.auth.MailContactRequest;
 import com.shop.smart_commerce_api.dto.request.order.AddOrderDetailRequest;
 import com.shop.smart_commerce_api.dto.request.user.UserUpdateProfileRequest;
 import com.shop.smart_commerce_api.services.OrderDetailService;
@@ -23,6 +25,8 @@ import com.shop.smart_commerce_api.services.OrderService;
 import com.shop.smart_commerce_api.services.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -85,6 +89,16 @@ public class MeController {
                                 .code(200)
                                 .message("Get orders successfully")
                                 .data(result)
+                                .build();
+        }
+
+        @PostMapping("send-email-contact")
+        public ApiResponse<String> postMethodName(@RequestBody MailContactRequest request) {
+                userService.sendEmailContact(request);
+                return ApiResponse.<String>builder()
+                                .code(200)
+                                .message("Email sent successfully")
+                                .data("Email sent to: " + request.getTitle())
                                 .build();
         }
 

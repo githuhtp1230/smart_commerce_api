@@ -1,13 +1,16 @@
 package com.shop.smart_commerce_api.services;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.hibernate.sql.Update;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.smart_commerce_api.dto.request.auth.MailContactRequest;
 import com.shop.smart_commerce_api.dto.request.filter.ProductSummaryFilterRequest;
 import com.shop.smart_commerce_api.dto.request.filter.UserFilterRequest;
 import com.shop.smart_commerce_api.dto.request.user.CreateUserRequest;
@@ -22,7 +25,13 @@ import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.UserMapper;
 import com.shop.smart_commerce_api.repositories.RoleRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +42,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String contactEmail;
 
     public UserResponse getCurrentProfile() {
         UserResponse userResponse = userMapper.toUserResponse(getCurrentUser());
@@ -131,4 +144,47 @@ public class UserService {
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
+
+    public UserResponse sendEmailContact(MailContactRequest request) {
+        User user = getCurrentUser();
+        String email = user.getEmail();
+
+        if (email == null || email.isEmpty()) {
+            throw new AppException(ErrorCode.EMAIL_NOT_FOUND);
+        }
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(contactEmail);
+            helper.setFrom("noreply@yourdomain.com", user.getName());
+            helper.setReplyTo(email);
+            helper.setSubject("[Customer Support] " + request.getTitle());
+            String content = "<html>" +
+                    "<body style='font-family: Arial, sans-serif;'>" +
+                    "<h2 style='color:#2d89ef;'>📩 New Contact Request</h2>" +
+                    "<p><b>From:</b> " + user.getName() + " (" + email + ")</p>" +
+                    "<p><b>Title:</b> " + request.getTitle() + "</p>" +
+                    "<p><b>Message:</b></p>" +
+                    "<div style='margin:10px 0; padding:10px; border:1px solid #ddd; background:#f9f9f9;'>" +
+                    request.getMessage().replace("\n", "<br>") +
+                    "</div>" +
+                    "<hr>" +
+                    "<p style='font-size:12px;color:#888;'>This email was sent automatically from Smart Commerce Contact Form.</p>"
+                    +
+                    "</body>" +
+                    "</html>";
+
+            helper.setText(content, true);
+
+            mailSender.send(message);
+
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new AppException(ErrorCode.EMAIL_SEND_FAILED);
+        }
+
+        return userMapper.toUserResponse(user);
+    }
+
 }

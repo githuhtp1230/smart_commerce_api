@@ -23,6 +23,9 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Payment not found"),
     CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart items not found"),
     PROMOTION_NOT_FOUND(HttpStatus.NOT_FOUND, "Promotion not found"),
+    ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "Role not found"),
+    PERMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "Permission not found"),
+    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "Email not found"),
 
     ATTRIBUTE_VALUE_EXISTS(HttpStatus.CONFLICT, "AttributeValue is exists"),
     ATTRIBUTE_EXISTS(HttpStatus.CONFLICT, "Attribute is exists"),
@@ -36,6 +39,7 @@ public enum ErrorCode {
     OTP_WRONG(HttpStatus.BAD_REQUEST, "Otp is wrong"),
     INVALID_OTP(HttpStatus.BAD_REQUEST, "Invalid otp"),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "Wrong current password"),
+    EMAIL_SEND_FAILED(HttpStatus.BAD_REQUEST, "Email send failed"),
 
     FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "File upload error"),
 
