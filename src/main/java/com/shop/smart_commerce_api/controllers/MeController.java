@@ -25,8 +25,6 @@ import com.shop.smart_commerce_api.services.OrderService;
 import com.shop.smart_commerce_api.services.UserService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -99,6 +97,16 @@ public class MeController {
                                 .code(200)
                                 .message("Email sent successfully")
                                 .data("Email sent to: " + request.getTitle())
+                                .build();
+        }
+
+        @PostMapping("/order/{id}/cancel")
+        public ApiResponse<OrderResponse> cancelOrder(@PathVariable Integer id) {
+                OrderResponse response = orderService.cancelOrderByUser(id);
+                return ApiResponse.<OrderResponse>builder()
+                                .code(200)
+                                .message("Order cancelled successfully")
+                                .data(response)
                                 .build();
         }
 
