@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.services;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.hibernate.sql.Update;
@@ -147,20 +148,43 @@ public class UserService {
     public UserResponse sendEmailContact(MailContactRequest request) {
         User user = getCurrentUser();
         String email = user.getEmail();
+
         if (email == null || email.isEmpty()) {
             throw new AppException(ErrorCode.EMAIL_NOT_FOUND);
         }
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(contactEmail); // Địa chỉ nhận liên hệ lấy từ cấu hình
-            helper.setSubject(request.getTitle());
-            helper.setText(request.getMessage() + "<br>From: " + email, true);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(contactEmail);
+            helper.setFrom("noreply@yourdomain.com", user.getName());
+            helper.setReplyTo(email);
+            helper.setSubject("[Customer Support] " + request.getTitle());
+            String content = "<html>" +
+                    "<body style='font-family: Arial, sans-serif;'>" +
+                    "<h2 style='color:#2d89ef;'>📩 New Contact Request</h2>" +
+                    "<p><b>From:</b> " + user.getName() + " (" + email + ")</p>" +
+                    "<p><b>Title:</b> " + request.getTitle() + "</p>" +
+                    "<p><b>Message:</b></p>" +
+                    "<div style='margin:10px 0; padding:10px; border:1px solid #ddd; background:#f9f9f9;'>" +
+                    request.getMessage().replace("\n", "<br>") +
+                    "</div>" +
+                    "<hr>" +
+                    "<p style='font-size:12px;color:#888;'>This email was sent automatically from Smart Commerce Contact Form.</p>"
+                    +
+                    "</body>" +
+                    "</html>";
+
+            helper.setText(content, true);
+
             mailSender.send(message);
-        } catch (MessagingException e) {
+
+        } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new AppException(ErrorCode.EMAIL_SEND_FAILED);
         }
+
         return userMapper.toUserResponse(user);
     }
+
 }
