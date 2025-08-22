@@ -59,7 +59,14 @@ public class SecurityConfig {
             "api/promotions/**",
             "api/users/*/orders",
             "api/me/order-details/**",
-            "api/reviews/users/*/reviews"
+            "api/reviews/users/*/reviews",
+            "api/permissions",
+            "api/permissions/**",
+            "api/role-permissions",
+            "api/roles/*/permissions/**",
+            "api/role-permissions/**",
+            "api/roles",
+            "api/roles/**"
     };
 
     @Bean
