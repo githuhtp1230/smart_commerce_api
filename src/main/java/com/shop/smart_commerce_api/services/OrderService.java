@@ -44,6 +44,39 @@ public class OrderService {
     private final ProductMapper productMapper;
     private final UserMapper userMapper;
 
+    private boolean isValidStatus(String status) {
+        return OrderStatus.CONFIRMED.equalsIgnoreCase(status)
+                || OrderStatus.CANCELLED.equalsIgnoreCase(status)
+                || OrderStatus.SHIPPING.equalsIgnoreCase(status)
+                || OrderStatus.DELIVERED.equalsIgnoreCase(status);
+    }
+
+    public OrderResponse updateOrderStatus(Integer orderId, String status) {
+        if (!isValidStatus(status)) {
+            ErrorCode code;
+            try {
+                code = ErrorCode.INVALID_ORDER_STATUS;
+            } catch (Exception e) {
+                code = ErrorCode.INTERNAL_SERVER_ERROR;
+            }
+            throw new AppException(code);
+        }
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        order.setStatus(status.toLowerCase());
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toOrderResponse(savedOrder);
+    }
+
+    public OrderResponse cancelOrderByUser(Integer orderId) {
+        User currentUser = userService.getCurrentUser();
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        order.setStatus(OrderStatus.CANCELLED);
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toOrderResponse(savedOrder);
+    }
+
     public Order getCurrentOrder() {
         User currentUser = userService.getCurrentUser();
         // Giả định rằng bạn có một phương thức để lấy đơn hàng hiện tại của người dùng

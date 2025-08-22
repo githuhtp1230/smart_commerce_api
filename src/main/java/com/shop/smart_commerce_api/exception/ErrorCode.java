@@ -40,6 +40,7 @@ public enum ErrorCode {
     INVALID_OTP(HttpStatus.BAD_REQUEST, "Invalid otp"),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "Wrong current password"),
     EMAIL_SEND_FAILED(HttpStatus.BAD_REQUEST, "Email send failed"),
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "Invalid order status"),
 
     FILE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "File upload error"),
 
