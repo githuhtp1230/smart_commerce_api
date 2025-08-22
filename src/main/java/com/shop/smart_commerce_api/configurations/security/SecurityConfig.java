@@ -64,7 +64,9 @@ public class SecurityConfig {
             "api/permissions/**",
             "api/role-permissions",
             "api/roles/*/permissions/**",
-            "api/role-permissions/**"
+            "api/role-permissions/**",
+            "api/roles",
+            "api/roles/**"
     };
 
     @Bean

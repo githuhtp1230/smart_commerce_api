@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.services;
 
+import com.shop.smart_commerce_api.dto.request.role.EnabledRequest;
 import com.shop.smart_commerce_api.entities.Permission;
 import com.shop.smart_commerce_api.entities.Role;
 import com.shop.smart_commerce_api.entities.RolePermission;

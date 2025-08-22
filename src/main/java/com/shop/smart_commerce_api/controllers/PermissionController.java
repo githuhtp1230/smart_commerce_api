@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PermissionController {
     private final PermissionService permissionService;
 
-    @GetMapping
-    public ApiResponse<List<PermissionResponse>> getPermissionsByRole(
-            @RequestParam(value = "role", required = false) Integer roleId) {
-        List<PermissionResponse> permissions;
-        if (roleId == null) {
-            permissions = permissionService.getPermissions();
-        } else {
-            permissions = permissionService.getPermissionsByRole(roleId);
-        }
-        return ApiResponse.<List<PermissionResponse>>builder()
-                .code(200)
-                .message("Permissions retrieved successfully")
-                .data(permissions)
-                .build();
-    }
+    // @GetMapping
+    // public ApiResponse<List<PermissionResponse>> getPermissionsByRole(
+    // @RequestParam(value = "role", required = false) Integer roleId) {
+    // List<PermissionResponse> permissions;
+    // if (roleId == null) {
+    // permissions = permissionService.getPermissions();
+    // } else {
+    // permissions = permissionService.getPermissionsByRole(roleId);
+    // }
+    // return ApiResponse.<List<PermissionResponse>>builder()
+    // .code(200)
+    // .message("Permissions retrieved successfully")
+    // .data(permissions)
+    // .build();
+    // }
 }
