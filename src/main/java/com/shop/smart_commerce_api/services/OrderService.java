@@ -1,7 +1,13 @@
 package com.shop.smart_commerce_api.services;
 
+import com.shop.smart_commerce_api.dto.request.order.CategoryStatisticalRequest;
+import com.shop.smart_commerce_api.dto.request.order.ProductStatisticalRequest;
+import com.shop.smart_commerce_api.dto.response.order.ProductStatisticalResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import com.shop.smart_commerce_api.dto.response.order.StatisticalResponse;
+import com.shop.smart_commerce_api.dto.request.order.StatisticalRequest;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.constant.OrderStatus;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
+import com.shop.smart_commerce_api.dto.response.order.CategoryStatisticalResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderDetailResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
@@ -152,16 +159,82 @@ public class OrderService {
                         orderSummary.setUserId(userResponse);
                     }
                     return orderSummary;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
 
-        return PageResponse.<OrderSummaryResponse>builder()
-                .currentPage(orderPage.getNumber() + 1)
-                .totalPages(orderPage.getTotalPages())
-                .limit(orderPage.getSize())
-                .totalElements((int) orderPage.getTotalElements())
-                .isLast(orderPage.isLast())
-                .data(res)
+        return PageResponse.<OrderSummaryResponse>builder().currentPage(orderPage.getNumber() + 1)
+                .totalPages(orderPage.getTotalPages()).limit(orderPage.getSize())
+                .totalElements((int) orderPage.getTotalElements()).isLast(orderPage.isLast()).data(res).build();
+
+    }
+
+    private LocalDateTime getFromDate(String time) {
+        if (time == null)
+            return null;
+        LocalDateTime now = LocalDateTime.now();
+        switch (time.toLowerCase()) {
+            case "week":
+                return now.minusWeeks(1);
+            case "month":
+                return now.minusMonths(1);
+            case "year":
+                return now.minusYears(1);
+            default:
+                return null;
+        }
+    }
+
+    private int safeInt(Object value) {
+        return value != null ? ((Number) value).intValue() : 0;
+    }
+
+    private double safeDouble(Object value) {
+        return value != null ? ((Number) value).doubleValue() : 0.0;
+    }
+
+    private Object[] safeStats(Object statsObj) {
+        return (statsObj instanceof Object[]) ? (Object[]) statsObj : new Object[] { 0, 0 };
+    }
+
+    public StatisticalResponse getUserOrderStatistics(Integer userId, StatisticalRequest request) {
+        String time = request != null ? request.getTime() : null;
+        LocalDateTime from = getFromDate(time);
+
+        Object[] stats = safeStats(orderRepository.getUserOrderStatistics(userId, from));
+
+        return StatisticalResponse.builder()
+                .totalProducts(safeInt(stats[0]))
+                .totalAmount(safeDouble(stats[1]))
+                .time(time != null ? time : "all")
+                .build();
+    }
+
+    public ProductStatisticalResponse getProductStatistical(ProductStatisticalRequest request) {
+        String time = request != null ? request.getTime() : null;
+        Integer productId = request != null ? request.getProductId() : null;
+        LocalDateTime from = getFromDate(time);
+
+        Object[] stats = safeStats(orderRepository.getProductStatistical(productId, from));
+
+        return ProductStatisticalResponse.builder()
+                .totalSold(safeInt(stats[0]))
+                .totalRevenue(safeDouble(stats[1]))
+                .time(time != null ? time : "all")
+                .productId(productId)
+                .build();
+    }
+
+    public CategoryStatisticalResponse getCategoryStatistical(CategoryStatisticalRequest request) {
+        String time = request != null ? request.getTime() : null;
+        Integer categoryId = request != null ? request.getCategoryId() : null;
+        LocalDateTime from = getFromDate(time);
+
+        Object[] stats = safeStats(orderRepository.getCategoryStatistical(categoryId, from));
+
+        return CategoryStatisticalResponse.builder()
+                .totalSold(safeInt(stats[0]))
+                .totalRevenue(safeDouble(stats[1]))
+                .time(time != null ? time : "all")
+                .categoryId(categoryId)
                 .build();
     }
 

@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.shop.smart_commerce_api.dto.request.order.StatisticalRequest;
+import com.shop.smart_commerce_api.dto.response.order.StatisticalResponse;
 
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.PageResponse;
@@ -33,6 +35,17 @@ public class MeController {
         private final UserService userService;
         private final OrderService orderService;
         private final OrderDetailService orderDetailService;
+
+        @GetMapping("/statistical")
+        public ApiResponse<StatisticalResponse> getStatistical(@ModelAttribute StatisticalRequest request) {
+                Integer userId = userService.getCurrentUser().getId();
+                StatisticalResponse result = orderService.getUserOrderStatistics(userId, request);
+                return ApiResponse.<StatisticalResponse>builder()
+                                .code(200)
+                                .message("Statistical data fetched successfully")
+                                .data(result)
+                                .build();
+        }
 
         @GetMapping("/profile")
         public ApiResponse<UserResponse> getProfile() {

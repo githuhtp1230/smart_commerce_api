@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -34,4 +35,18 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     Page<Order> findByStatusAndUserId(String status, Integer userId, Pageable pageable);
 
+    // Returns Object[]{totalProducts, totalAmount}
+    @Query("SELECT COALESCE(SUM(od.quantity),0), COALESCE(SUM(od.quantity * od.price),0) FROM Order o JOIN o.orderDetails od WHERE o.user.id = :userId AND (:from IS NULL OR o.createdAt >= :from)")
+    Object getUserOrderStatistics(@Param("userId") Integer userId,
+            @Param("from") LocalDateTime from);
+
+    // Returns Object[]{totalSold, totalRevenue}
+    @Query("SELECT COALESCE(SUM(od.quantity),0), COALESCE(SUM(od.quantity * od.price),0) FROM Order o JOIN o.orderDetails od WHERE (:productId IS NULL OR od.product.id = :productId) AND (:from IS NULL OR o.createdAt >= :from)")
+    Object getProductStatistical(@Param("productId") Integer productId,
+            @Param("from") java.time.LocalDateTime from);
+
+    // Returns Object[]{totalSold, totalRevenue}
+    @org.springframework.data.jpa.repository.Query("SELECT COALESCE(SUM(od.quantity),0), COALESCE(SUM(od.quantity * od.price),0) FROM Order o JOIN o.orderDetails od JOIN od.product p WHERE (:categoryId IS NULL OR p.category.id = :categoryId) AND (:from IS NULL OR o.createdAt >= :from)")
+    Object getCategoryStatistical(@org.springframework.data.repository.query.Param("categoryId") Integer categoryId,
+            @org.springframework.data.repository.query.Param("from") java.time.LocalDateTime from);
 }
