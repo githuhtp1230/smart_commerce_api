@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.services;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -178,5 +179,11 @@ public class ProductService {
         public String getFirstProductNameByOrder(int orderId) {
                 List<String> name = productRepository.findProductNamesByOrderId(orderId);
                 return name.isEmpty() ? null : name.get(0);
+        }
+
+        public List<ProductResponse> getRandomProducts(int count) {
+                List<ProductResponse> all = getAllProducts();
+                Collections.shuffle(all);
+                return all.stream().limit(count).toList();
         }
 }

@@ -123,4 +123,13 @@ public class ProductController {
                 .build();
     }
 
+    @GetMapping("/random")
+    public ApiResponse<List<ProductResponse>> getRandomProducts() {
+        return ApiResponse.<List<ProductResponse>>builder()
+                .code(200)
+                .message("Get 5 random products successfully")
+                .data(productService.getRandomProducts(5))
+                .build();
+    }
+
 }
