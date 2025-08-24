@@ -67,7 +67,6 @@ public class AuthenticationService {
         OtpSession otpSession = OtpSession.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .phone(request.getPhone())
                 .password(encodedPassword)
                 .otp(otp)
                 .build();
@@ -90,7 +89,6 @@ public class AuthenticationService {
                 User user = User.builder()
                         .name(otpSession.getUsername())
                         .email(otpSession.getEmail())
-                        .phone(otpSession.getPhone())
                         .password(otpSession.getPassword())
                         .build();
                 userRepository.save(user);
