@@ -5,6 +5,7 @@ import com.shop.smart_commerce_api.dto.response.attribute.AttributeResponse;
 import com.shop.smart_commerce_api.dto.response.category.CategoryResponse;
 import com.shop.smart_commerce_api.dto.response.product.ImageProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
+import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
 import com.shop.smart_commerce_api.entities.Attribute;
 import com.shop.smart_commerce_api.entities.Category;
 import com.shop.smart_commerce_api.entities.ImageProduct;
@@ -30,4 +31,6 @@ public interface ProductMapper {
     List<ProductResponse> toProductResponses(List<Product> list);
 
     Product toProduct(CreateProductRequest request);
+
+    ProductSummaryResponse toProductSummaryResponse(Product product);
 }

@@ -124,11 +124,18 @@ public class ProductController {
     }
 
     @GetMapping("/random")
-    public ApiResponse<List<ProductResponse>> getRandomProducts() {
-        return ApiResponse.<List<ProductResponse>>builder()
+    public ApiResponse<List<ProductSummaryResponse>> getRandomProducts(
+            @RequestParam(defaultValue = "5") int limit,
+            @ModelAttribute ProductSummaryFilterRequest filterRequest) {
+
+        if (limit <= 0) {
+            limit = 5;
+        }
+
+        return ApiResponse.<List<ProductSummaryResponse>>builder()
                 .code(200)
-                .message("Get 5 random products successfully")
-                .data(productService.getRandomProducts(5))
+                .message("Get random products successfully")
+                .data(productService.getProductRandom(filterRequest, limit))
                 .build();
     }
 

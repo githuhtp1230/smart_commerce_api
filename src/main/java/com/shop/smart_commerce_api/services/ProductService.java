@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.services;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.shop.smart_commerce_api.dto.response.product.ImageProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
@@ -40,7 +40,7 @@ public class ProductService {
         private final ProductRepository productRepository;
         private final CategoryRepository categoryRepository;
         private final ProductImageRepository productImageRepository;
-        private final AttributeMapper attributeMapper;
+        // Removed unused AttributeMapper
         private final ProductMapper productMapper;
         private final PromotionMapper promotionMapper;
         private final AttributeService attributeService;
@@ -181,9 +181,26 @@ public class ProductService {
                 return name.isEmpty() ? null : name.get(0);
         }
 
-        public List<ProductResponse> getRandomProducts(int count) {
-                List<ProductResponse> all = getAllProducts();
-                Collections.shuffle(all);
-                return all.stream().limit(count).toList();
+        public List<ProductSummaryResponse> getProductRandom(ProductSummaryFilterRequest filterRequest, int limit) {
+                Pageable pageable = PageRequest.of(0, limit);
+                List<ProductSummaryResponse> products = productRepository.findRandomProduct(
+                                filterRequest.getCategoryId(),
+                                filterRequest.getQuery(),
+                                filterRequest.getMin(),
+                                filterRequest.getMax(),
+                                pageable);
+
+                products.forEach(productSummary -> {
+                        Product product = productRepository.findById(productSummary.getId()).orElse(null);
+                        if (product != null) {
+                                productSummary.setPromotion(
+                                                promotionMapper.toPromotionResponse(product.getPromotion()));
+                                productSummary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+                                productSummary.setCreatedAt(product.getCreatedAt());
+                        }
+                });
+
+                return products;
         }
+
 }
