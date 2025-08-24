@@ -65,12 +65,12 @@ public class UserController {
                 .build();
     }
 
-    @PutMapping
-    public ApiResponse<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
+    @PutMapping("/{userId}")
+    public ApiResponse<UserResponse> updateUser(@PathVariable Integer userId, @RequestBody UpdateUserRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .code(200)
                 .message("Update user successfully")
-                .data(userService.updateUser(request))
+                .data(userService.updateUser(userId, request))
                 .build();
     }
 

@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UpdateUserRequest {
-    private Integer id;
-
     private String name;
 
     @Email(message = "Email is invalid")

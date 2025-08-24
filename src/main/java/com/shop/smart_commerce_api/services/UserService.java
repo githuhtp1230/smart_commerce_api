@@ -117,11 +117,8 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse updateUser(UpdateUserRequest request) {
-        if (request.getId() == null) {
-            throw new AppException(ErrorCode.USER_NOT_FOUND);
-        }
-        User user = userRepository.findById(request.getId())
+    public UserResponse updateUser(Integer userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         if (request.getName() != null)
