@@ -17,10 +17,6 @@ public class RegisterRequest {
     @Email(message = "Email is invalid")
     private String email;
 
-    @NotBlank(message = "Phone is required")
-    @Size(min = 10, max = 15, message = "Numbers phone is invalid")
-    private String phone;
-
     @NotBlank(message = "Password is required")
     @Size(min = 3, message = "password length must be longer than 3 characters")
     private String password;
