@@ -17,12 +17,14 @@ import com.shop.smart_commerce_api.dto.request.auth.RegisterRequest;
 import com.shop.smart_commerce_api.dto.request.auth.ResetPasswordRequest;
 import com.shop.smart_commerce_api.dto.request.otp.RegisterOtpRequest;
 import com.shop.smart_commerce_api.dto.response.auth.LoginResponse;
+import com.shop.smart_commerce_api.entities.Role;
 import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.exception.AppException;
 import com.shop.smart_commerce_api.exception.ErrorCode;
 import com.shop.smart_commerce_api.mapper.UserMapper;
 import com.shop.smart_commerce_api.model.ForgotPassword;
 import com.shop.smart_commerce_api.model.OtpSession;
+import com.shop.smart_commerce_api.repositories.RoleRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
     public LoginResponse login(LoginRequest request) {
         try {
@@ -86,10 +89,12 @@ public class AuthenticationService {
                 throw new AppException(ErrorCode.OTP_WRONG);
             }
             if (request.getEmail().equals(otpSession.getEmail())) {
+                Role role = roleRepository.findByName("USER");
                 User user = User.builder()
                         .name(otpSession.getUsername())
                         .email(otpSession.getEmail())
                         .password(otpSession.getPassword())
+                        .role(role)
                         .build();
                 userRepository.save(user);
             }
