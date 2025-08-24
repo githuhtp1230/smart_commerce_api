@@ -10,6 +10,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
+import com.shop.smart_commerce_api.dto.response.review.ProductReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.entities.Review;
 import com.shop.smart_commerce_api.entities.Role;
@@ -25,9 +26,9 @@ public interface ReviewMapper {
     @Mapping(source = "user.name", target = "name")
     @Mapping(source = "parentReview.user.name", target = "parentReviewName")
     @Mapping(source = "user.avatar", target = "avatar")
-    ReviewResponse toResponse(Review review);
+    ProductReviewResponse toResponse(Review review);
 
-    List<ReviewResponse> toResponseList(List<Review> reviews);
+    List<ProductReviewResponse> toResponseList(List<Review> reviews);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
@@ -44,4 +45,6 @@ public interface ReviewMapper {
     }
 
     HistoryReviewResponse toHistoryReviewResponse(Review review);
+
+    ReviewResponse toReviewResponse(Review review);
 }

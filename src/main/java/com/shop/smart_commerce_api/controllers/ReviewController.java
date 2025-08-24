@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
+import com.shop.smart_commerce_api.dto.response.review.ProductReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.repositories.ReviewRepository;
 import com.shop.smart_commerce_api.services.ReviewService;
@@ -29,8 +30,9 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PutMapping("/{reviewId}")
-    ApiResponse<ReviewResponse> updateReview(@PathVariable Integer reviewId, @RequestBody ReviewRequest request) {
-        return ApiResponse.<ReviewResponse>builder()
+    ApiResponse<ProductReviewResponse> updateReview(@PathVariable Integer reviewId,
+            @RequestBody ReviewRequest request) {
+        return ApiResponse.<ProductReviewResponse>builder()
                 .code(200)
                 .message("Update successfully")
                 .data(reviewService.updateReView(reviewId, request))
@@ -38,8 +40,8 @@ public class ReviewController {
     }
 
     @GetMapping("/{reviewId}/replies")
-    ApiResponse<List<ReviewResponse>> getListReviews(@PathVariable Integer reviewId) {
-        return ApiResponse.<List<ReviewResponse>>builder()
+    ApiResponse<List<ProductReviewResponse>> getListReviews(@PathVariable Integer reviewId) {
+        return ApiResponse.<List<ProductReviewResponse>>builder()
                 .code(200)
                 .message("Get list reviews successfully")
                 .data(reviewService.getListReviewReply(reviewId))
@@ -52,6 +54,15 @@ public class ReviewController {
                 .code(200)
                 .message("Get review history successfully")
                 .data(reviewService.getReviewHistoryByUser(userId))
+                .build();
+    }
+
+    @GetMapping
+    public ApiResponse<List<ReviewResponse>> getAllRootReviews() {
+        return ApiResponse.<List<ReviewResponse>>builder()
+                .code(200)
+                .message("Get all root reviews successfully")
+                .data(reviewService.getAllRootReviews())
                 .build();
     }
 }
