@@ -36,13 +36,14 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                 LEFT JOIN product_variations pr ON pr.product_id = p.id
                 WHERE p.is_deleted = 0
                   AND (:categoryId IS NULL OR (p.category_id IS NOT NULL AND p.category_id = :categoryId))
+                  AND (:query IS NULL OR p.name LIKE CONCAT('%', :query, '%'))
                 GROUP BY p.id, p.name, ip.image_url
             """, countQuery = """
                 SELECT COUNT(DISTINCT p.id)
                 FROM products p
                 WHERE p.is_deleted = 0
                   AND (:categoryId IS NULL OR (p.category_id IS NOT NULL AND p.category_id = :categoryId))
-                  AND (:query IS NULL OR (p.name LIKE CONCAT('%', :query, '%')))
+                  AND (:query IS NULL OR p.name LIKE CONCAT('%', :query, '%'))
             """, nativeQuery = true)
     Page<ProductSummaryResponse> findProductSummaries(@Param("categoryId") Integer categoryId,
             @Param("query") String query, @Param("min") Integer min, @Param("max") Integer max,
