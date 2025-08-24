@@ -34,4 +34,5 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     Page<Order> findByStatusAndUserId(String status, Integer userId, Pageable pageable);
 
+    Page<Order> findByStatus(String status, Pageable pageable);
 }

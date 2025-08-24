@@ -44,37 +44,63 @@ public class OrderService {
     private final ProductMapper productMapper;
     private final UserMapper userMapper;
 
-    private boolean isValidStatus(String status) {
-        return OrderStatus.CONFIRMED.equalsIgnoreCase(status)
-                || OrderStatus.CANCELLED.equalsIgnoreCase(status)
-                || OrderStatus.SHIPPING.equalsIgnoreCase(status)
-                || OrderStatus.DELIVERED.equalsIgnoreCase(status);
-    }
+    public PageResponse<OrderSummaryResponse> getAllOrders(String status, int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Order> orderPage;
 
-    public OrderResponse updateOrderStatus(Integer orderId, String status) {
-        if (!isValidStatus(status)) {
-            ErrorCode code;
-            try {
-                code = ErrorCode.INVALID_ORDER_STATUS;
-            } catch (Exception e) {
-                code = ErrorCode.INTERNAL_SERVER_ERROR;
-            }
-            throw new AppException(code);
+        if (status == null || status.isEmpty()) {
+            orderPage = orderRepository.findAll(pageable);
+        } else {
+            orderPage = orderRepository.findByStatus(status.toLowerCase(), pageable);
         }
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-        order.setStatus(status.toLowerCase());
-        Order savedOrder = orderRepository.save(order);
-        return orderMapper.toOrderResponse(savedOrder);
-    }
 
-    public OrderResponse cancelOrderByUser(Integer orderId) {
-        User currentUser = userService.getCurrentUser();
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-        order.setStatus(OrderStatus.CANCELLED);
-        Order savedOrder = orderRepository.save(order);
-        return orderMapper.toOrderResponse(savedOrder);
+        List<OrderSummaryResponse> res = orderPage.getContent().stream()
+                .map(order -> {
+                    OrderSummaryResponse orderSummary = orderMapper.toOrderSummaryResponse(order);
+
+                    List<OrderDetailResponse> detailResponses = order.getOrderDetails().stream()
+                            .map(orderDetail -> {
+                                OrderDetailResponse detailResponse = orderMapper.toOrderDetailResponse(orderDetail);
+                                detailResponse.setProduct(productMapper.toProductResponse(orderDetail.getProduct()));
+
+                                if (orderDetail.getProductVariation() != null) {
+                                    detailResponse.setProductVariation(
+                                            productVariationService
+                                                    .mapToVariationResponse(orderDetail.getProductVariation().getId()));
+                                }
+
+                                orderDetail.getProduct().getImageProducts().stream().findFirst()
+                                        .ifPresent(img -> detailResponse.setImage(img.getImageUrl()));
+
+                                return detailResponse;
+                            })
+                            .collect(Collectors.toList());
+
+                    orderSummary.setOrderDetails(detailResponses);
+
+                    order.getOrderDetails().stream().findFirst().ifPresent(orderDetail -> {
+                        orderDetail.getProduct().getImageProducts().stream().findFirst()
+                                .ifPresent(img -> orderSummary.setProductImage(img.getImageUrl()));
+                    });
+
+                    // Map thông tin user
+                    if (order.getUser() != null) {
+                        UserResponse userResponse = userMapper.toUserResponse(order.getUser());
+                        orderSummary.setUserId(userResponse);
+                    }
+
+                    return orderSummary;
+                })
+                .collect(Collectors.toList());
+
+        return PageResponse.<OrderSummaryResponse>builder()
+                .currentPage(orderPage.getNumber() + 1)
+                .totalPages(orderPage.getTotalPages())
+                .limit(orderPage.getSize())
+                .totalElements((int) orderPage.getTotalElements())
+                .isLast(orderPage.isLast())
+                .data(res)
+                .build();
     }
 
     public Order getCurrentOrder() {
@@ -163,6 +189,79 @@ public class OrderService {
                 .isLast(orderPage.isLast())
                 .data(res)
                 .build();
+    }
+
+    public Map<String, Long> getOrderStats() {
+        List<Order> orders = orderRepository.findAll();
+
+        Map<String, Long> stats = orders.stream()
+                .collect(Collectors.groupingBy(
+                        Order::getStatus,
+                        Collectors.counting()));
+
+        List<String> allStatuses = List.of(
+                OrderStatus.CONFIRMED,
+                OrderStatus.CANCELLED,
+                OrderStatus.SHIPPING,
+                OrderStatus.DELIVERED);
+
+        allStatuses.forEach(status -> stats.putIfAbsent(status, 0L));
+
+        return stats;
+    }
+
+    public OrderSummaryResponse updateOrderStatus(Integer orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        String normalized = status.toLowerCase();
+        if (!List.of("confirmed", "cancelled", "shipping", "delivered").contains(normalized)) {
+            throw new AppException(ErrorCode.ORDER_NOT_FOUND);
+        }
+
+        order.setStatus(normalized);
+        Order updatedOrder = orderRepository.save(order);
+
+        return mapToSummary(updatedOrder);
+    }
+
+    private OrderSummaryResponse mapToSummary(Order order) {
+        OrderSummaryResponse orderSummary = orderMapper.toOrderSummaryResponse(order);
+
+        // Map order details
+        List<OrderDetailResponse> detailResponses = order.getOrderDetails().stream()
+                .map(orderDetail -> {
+                    OrderDetailResponse detailResponse = orderMapper.toOrderDetailResponse(orderDetail);
+                    detailResponse.setProduct(productMapper.toProductResponse(orderDetail.getProduct()));
+
+                    if (orderDetail.getProductVariation() != null) {
+                        detailResponse.setProductVariation(
+                                productVariationService
+                                        .mapToVariationResponse(orderDetail.getProductVariation().getId()));
+                    }
+
+                    orderDetail.getProduct().getImageProducts().stream().findFirst()
+                            .ifPresent(img -> detailResponse.setImage(img.getImageUrl()));
+
+                    return detailResponse;
+                })
+                .toList();
+
+        orderSummary.setOrderDetails(detailResponses);
+
+        // Map ảnh chính (lấy từ sản phẩm đầu tiên)
+        order.getOrderDetails().stream().findFirst().ifPresent(orderDetail -> {
+            orderDetail.getProduct().getImageProducts().stream().findFirst()
+                    .ifPresent(img -> orderSummary.setProductImage(img.getImageUrl()));
+        });
+
+        // Map user
+        if (order.getUser() != null) {
+            UserResponse userResponse = userMapper.toUserResponse(order.getUser());
+            orderSummary.setUserId(userResponse);
+        }
+
+        return orderSummary;
     }
 
 }
