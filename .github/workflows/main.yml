@@ -22,7 +22,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /root/wwwroot/smart-commerce-api
+            cd /www/wwwroot/smart-commerce-api
             git pull origin main
 
             echo "🔨 Build Spring Boot JAR..."
