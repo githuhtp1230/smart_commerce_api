@@ -54,6 +54,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
                 SELECT new com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse (
                     p.id,
                     p.name,
+                    p.description,
                     CAST(COALESCE(AVG(r.rating * 1.0), 0.0) AS double),
                     COUNT(DISTINCT r.id),
                     p.createdAt,

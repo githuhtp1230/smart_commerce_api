@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class ProductDetailResponse {
     private Integer id;
     private String name;
+    private String description;
     private Double averageRating;
     private Long reviewCount;
     private Instant createdAt;
@@ -27,10 +28,11 @@ public class ProductDetailResponse {
     private List<AttributeValueResponse> attributeValues;
     private List<ProductVariationResponse> variations;
 
-    public ProductDetailResponse(Integer id, String name, Double averageRating, Long reviewCount, Instant createdAt,
-            Double price) {
+    public ProductDetailResponse(Integer id, String name, String description, Double averageRating, Long reviewCount,
+            Instant createdAt, Double price) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.averageRating = averageRating;
         this.reviewCount = reviewCount;
         this.createdAt = createdAt;
