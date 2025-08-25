@@ -1,0 +1,42 @@
+name: Deploy to VPS (Docker)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH & Deploy Code via Docker
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 22
+          script: |
+            cd /root/wwwroot/smart-commerce-api
+
+            git pull origin main
+
+            echo "🔨 Build Spring Boot JAR..."
+            ./mvnw clean package -DskipTests
+
+            echo "🔨 Build Docker Image for Spring Boot..."
+            docker build -t smart-commerce-api .
+
+            echo "🚀 Run Docker Container..."
+            docker stop smart-commerce-api || true
+            docker rm smart-commerce-api || true
+            docker run -d --name smart-commerce-api \
+              -p 8080:8080 \
+              smart-commerce-api
