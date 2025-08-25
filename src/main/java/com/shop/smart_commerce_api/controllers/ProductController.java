@@ -140,4 +140,13 @@ public class ProductController {
                 .build();
     }
 
+    @GetMapping("/random-hot")
+    public ApiResponse<List<ProductSummaryResponse>> getHotProducts() {
+        return ApiResponse.<List<ProductSummaryResponse>>builder()
+                .code(200)
+                .message("Random 7 products by show at home and active")
+                .data(productService.getRandomTopHotProducts())
+                .build();
+    }
+
 }

@@ -12,6 +12,8 @@ import com.shop.smart_commerce_api.mapper.ProductMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
@@ -47,7 +49,8 @@ public class ProductService {
 
         public PageResponse<ProductSummaryResponse> getProductSummaries(ProductSummaryFilterRequest request,
                         int currentPage, int limit) {
-                Pageable pageable = PageRequest.of(currentPage, limit);
+                Pageable pageable = PageRequest.of(currentPage, limit, Sort
+                                .by(Direction.DESC, "id"));
                 Page<ProductSummaryResponse> page = productRepository.findProductSummaries(request.getCategoryId(),
                                 request.getQuery(),
                                 request.getMin(),
@@ -201,6 +204,58 @@ public class ProductService {
                 });
 
                 return products;
+        }
+
+        public List<ProductSummaryResponse> getRandomTopHotProducts() {
+                List<Product> products = productRepository.findRandomTop7ByPromotion();
+                List<ProductSummaryResponse> result = new ArrayList<>();
+                for (Product product : products) {
+                        ProductSummaryResponse summary = productMapper.toProductSummaryResponse(product);
+                        // Lấy ảnh đầu tiên nếu có
+                        String image = null;
+                        if (product.getImageProducts() != null && !product.getImageProducts().isEmpty()) {
+                                image = product.getImageProducts().stream().findFirst().map(img -> img.getImageUrl())
+                                                .orElse(null);
+                        }
+                        summary.setImage(image);
+
+                        // Tính averageRating và reviewCount
+                        if (product.getReviews() != null && !product.getReviews().isEmpty()) {
+                                double avg = product.getReviews().stream()
+                                                .filter(r -> r.getRating() != null)
+                                                .mapToInt(r -> r.getRating())
+                                                .average().orElse(0.0);
+                                long count = product.getReviews().stream()
+                                                .filter(r -> r.getRating() != null)
+                                                .count();
+                                summary.setAverageRating(avg);
+                                summary.setReviewCount(count);
+                        } else {
+                                summary.setAverageRating(0.0);
+                                summary.setReviewCount(0L);
+                        }
+
+                        // Tính maxPrice từ product variations
+                        if (product.getProductVariations() != null && !product.getProductVariations().isEmpty()) {
+                                Integer maxPrice = product.getProductVariations().stream()
+                                                .filter(v -> v.getPrice() != null)
+                                                .mapToInt(v -> v.getPrice())
+                                                .max().orElse(product.getPrice() != null ? product.getPrice() : 0);
+                                summary.setMaxPrice(maxPrice);
+                        } else {
+                                summary.setMaxPrice(product.getPrice());
+                        }
+
+                        if (product.getPromotion() != null) {
+                                summary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
+                        }
+                        if (product.getCategory() != null) {
+                                summary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+                        }
+                        summary.setCreatedAt(product.getCreatedAt());
+                        result.add(summary);
+                }
+                return result;
         }
 
 }

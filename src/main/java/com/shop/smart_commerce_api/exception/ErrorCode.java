@@ -3,9 +3,6 @@ package com.shop.smart_commerce_api.exception;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.security.access.method.P;
-
-import com.shop.smart_commerce_api.entities.Payment;
 
 @Getter
 @AllArgsConstructor
@@ -33,6 +30,7 @@ public enum ErrorCode {
     PRODUCT_EXISTS(HttpStatus.CONFLICT, "Product is exists"),
     USER_EXISTS(HttpStatus.CONFLICT, "User is exists"),
     PROMOTION_EXISTS(HttpStatus.CONFLICT, "Promotion is exists"),
+    PROMOTION_HOME_ALREADY_SET(HttpStatus.CONFLICT, "Another promotion is already shown at home"),
 
     EMAIL_OR_PASSWORD_INVALID(HttpStatus.BAD_REQUEST, "Email or password is invalid"),
 

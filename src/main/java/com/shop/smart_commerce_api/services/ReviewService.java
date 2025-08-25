@@ -4,10 +4,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
+import com.shop.smart_commerce_api.dto.response.PageResponse;
 import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ProductReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
@@ -18,6 +21,10 @@ import com.shop.smart_commerce_api.mapper.ReviewMapper;
 import com.shop.smart_commerce_api.repositories.ProductRepository;
 import com.shop.smart_commerce_api.repositories.ReviewRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 
@@ -101,14 +108,26 @@ public class ReviewService {
                 .toList();
     }
 
-    public List<ReviewResponse> getAllRootReviews() {
-        List<Review> rootReviews = reviewRepository.findByParentReviewIsNullOrderByCreatedAtDesc();
-        Integer productId = rootReviews.get(0).getProduct().getId();
-        return rootReviews.stream().map(review -> {
-            ReviewResponse response = reviewMapper.toReviewResponse(review);
-            response.setProductId(productId);
-            return response;
-        }).toList();
+    public PageResponse<ReviewResponse> getAllRootReviews(int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Review> rootReviews = reviewRepository.findByParentReviewIsNullOrderByCreatedAtDesc(pageable);
+
+        List<ReviewResponse> responses = rootReviews.stream()
+                .map(review -> {
+                    ReviewResponse response = reviewMapper.toReviewResponse(review);
+                    response.setProductId(review.getProduct().getId());
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return PageResponse.<ReviewResponse>builder()
+                .currentPage(rootReviews.getNumber() + 1)
+                .totalPages(rootReviews.getTotalPages())
+                .limit(rootReviews.getSize())
+                .totalElements((int) rootReviews.getTotalElements())
+                .isLast(rootReviews.isLast())
+                .data(responses)
+                .build();
     }
 
     // private ReviewResponse mapReviewToResponseWithReplies(Review review) {

@@ -56,4 +56,21 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
         Integer countOrdersByDateRange(@Param("startDate") LocalDateTime startDate,
                         @Param("endDate") LocalDateTime endDate);
 
+   
+
+    @Query("""
+        SELECT o FROM Order o
+        WHERE o.createdAt BETWEEN :start AND :end
+        AND o.status = :status
+    """)
+    List<Order> findOrdersByDateRangeAndStatus(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") String status 
+    );
+
+
+
+
+
 }

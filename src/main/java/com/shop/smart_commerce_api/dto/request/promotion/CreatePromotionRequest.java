@@ -1,4 +1,4 @@
-package com.shop.smart_commerce_api.dto.response.promotion;
+package com.shop.smart_commerce_api.dto.request.promotion;
 
 import java.time.Instant;
 
@@ -11,12 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PromotionResponse {
-    private Integer id;
+public class CreatePromotionRequest {
     private String description;
     private Instant startDate;
     private Instant endDate;
     private Integer discountValuePercent;
-    private Boolean isShowAtHome;
     private Boolean isActive;
 }
