@@ -17,9 +17,9 @@ jobs:
       - name: SSH & Deploy Code via Docker
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
             cd /root/wwwroot/smart-commerce-api
