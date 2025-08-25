@@ -65,8 +65,12 @@ public class UserController {
                 .build();
     }
 
-    @PutMapping
-    public ApiResponse<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
+    @PutMapping("/{id}")
+    public ApiResponse<UserResponse> updateUser(
+            @PathVariable Integer id,           // Nhận id từ URL
+            @RequestBody UpdateUserRequest request) {
+
+        request.setId(id);                     // Gán id vào request
         return ApiResponse.<UserResponse>builder()
                 .code(200)
                 .message("Update user successfully")
