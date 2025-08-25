@@ -11,7 +11,7 @@ import com.shop.smart_commerce_api.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class StatisticController {
     private final StatisticService statisticService;
 
-    @GetMapping("/user-participation")
+    @PostMapping("/user-participation")
     public ApiResponse<TotalStatisticResponse> getTotalUserParticipation(
             @RequestBody TotalStatisticRequest request) {
         return ApiResponse.<TotalStatisticResponse>builder()

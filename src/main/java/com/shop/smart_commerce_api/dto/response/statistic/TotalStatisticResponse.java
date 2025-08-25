@@ -1,4 +1,4 @@
-package com.shop.smart_commerce_api.dto.response.statistic;
+    package com.shop.smart_commerce_api.dto.response.statistic;
 
 import lombok.Builder;
 import lombok.Data;
