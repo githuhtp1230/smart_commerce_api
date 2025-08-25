@@ -13,7 +13,7 @@ import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductResponse;
 import com.shop.smart_commerce_api.dto.response.product.ProductSummaryResponse;
-import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
+import com.shop.smart_commerce_api.dto.response.review.ProductReviewResponse;
 import com.shop.smart_commerce_api.services.ProductService;
 import com.shop.smart_commerce_api.services.ReviewService;
 
@@ -88,8 +88,9 @@ public class ProductController {
     }
 
     @PostMapping("/{productId}/reviews")
-    ApiResponse<ReviewResponse> create(@PathVariable("productId") int productId, @RequestBody ReviewRequest request) {
-        return ApiResponse.<ReviewResponse>builder()
+    ApiResponse<ProductReviewResponse> create(@PathVariable("productId") int productId,
+            @RequestBody ReviewRequest request) {
+        return ApiResponse.<ProductReviewResponse>builder()
                 .code(200)
                 .message("Create review successfully")
                 .data(reviewService.create(request, productId))
@@ -97,8 +98,8 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/reviews")
-    ApiResponse<List<ReviewResponse>> getListReviews(@PathVariable Integer productId) {
-        return ApiResponse.<List<ReviewResponse>>builder()
+    ApiResponse<List<ProductReviewResponse>> getListReviews(@PathVariable Integer productId) {
+        return ApiResponse.<List<ProductReviewResponse>>builder()
                 .code(200)
                 .message("Get list reviews successfully")
                 .data(reviewService.getListReviewsByProductId(productId))

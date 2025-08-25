@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
+import com.shop.smart_commerce_api.dto.response.review.ProductReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
 import com.shop.smart_commerce_api.entities.Product;
 import com.shop.smart_commerce_api.entities.Review;
@@ -29,7 +30,7 @@ public class ReviewService {
     private final UserService userService;
     private final ReviewMapper reviewMapper;
 
-    public ReviewResponse create(ReviewRequest request, Integer productId) {
+    public ProductReviewResponse create(ReviewRequest request, Integer productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy id sản phẩm"));
         // Lấy user từ SecurityContext
@@ -53,34 +54,34 @@ public class ReviewService {
         return reviewMapper.toResponse(review);
     }
 
-    public List<ReviewResponse> getListReviewsByProductId(Integer productId) {
+    public List<ProductReviewResponse> getListReviewsByProductId(Integer productId) {
         // Lấy tất cả comment gốc (parentReviewId = null)
         List<Review> rootReviews = reviewRepository.findByProductIdAndParentReviewIsNullOrderByCreatedAtDesc(productId);
-        List<ReviewResponse> responses = rootReviews.stream().map(review -> {
+        List<ProductReviewResponse> responses = rootReviews.stream().map(review -> {
             boolean isRepliesExisting = review.getReviews().size() > 0;
-            ReviewResponse response = reviewMapper.toResponse(review);
+            ProductReviewResponse response = reviewMapper.toResponse(review);
             response.setIsRepliesExisting(isRepliesExisting);
             return response;
         }).toList();
         return responses;
     }
 
-    public List<ReviewResponse> getListReviewReply(Integer reviewId) {
+    public List<ProductReviewResponse> getListReviewReply(Integer reviewId) {
         List<Review> reviewReplies = reviewRepository.findByParentReviewId(reviewId);
 
         return reviewReplies.stream().map(reply -> {
-            ReviewResponse response = reviewMapper.toResponse(reply);
+            ProductReviewResponse response = reviewMapper.toResponse(reply);
             boolean hasSubReplies = reply.getReviews().size() > 0;
             response.setIsRepliesExisting(hasSubReplies);
             return response;
         }).toList();
     }
 
-    public List<ReviewResponse> mapToReviewResponseList(Set<Review> reviews) {
+    public List<ProductReviewResponse> mapToReviewResponseList(Set<Review> reviews) {
         return reviews.stream().map(reviewMapper::toResponse).toList();
     }
 
-    public ReviewResponse updateReView(Integer reviewId, ReviewRequest request) {
+    public ProductReviewResponse updateReView(Integer reviewId, ReviewRequest request) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Không tồn tại reviewId"));
         reviewMapper.updateEntityFromRequest(request, review);
@@ -99,6 +100,17 @@ public class ReviewService {
                 .map(reviewMapper::toHistoryReviewResponse)
                 .toList();
     }
+
+    public List<ReviewResponse> getAllRootReviews() {
+        List<Review> rootReviews = reviewRepository.findByParentReviewIsNullOrderByCreatedAtDesc();
+        Integer productId = rootReviews.get(0).getProduct().getId();
+        return rootReviews.stream().map(review -> {
+            ReviewResponse response = reviewMapper.toReviewResponse(review);
+            response.setProductId(productId);
+            return response;
+        }).toList();
+    }
+
     // private ReviewResponse mapReviewToResponseWithReplies(Review review) {
     // ReviewResponse reviewResponse = reviewMapper.toResponse(review);
     // if (review.getReviews() != null && !review.getReviews().isEmpty()) {
