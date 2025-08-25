@@ -91,7 +91,6 @@ public class PromotionService {
                 && promotionRepository.existsByIsShowAtHomeTrueAndIdNot(promotion.getId())) {
             throw new AppException(ErrorCode.PROMOTION_HOME_ALREADY_SET);
         }
-
         if (request.getDescription() != null)
             promotion.setDescription(request.getDescription());
         if (request.getStartDate() != null)
