@@ -17,7 +17,7 @@ jobs:
       - name: SSH & Deploy Code via Docker
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
+          host: ${{ secrets.SSH_PRIVATE_KEY }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           port: 22
