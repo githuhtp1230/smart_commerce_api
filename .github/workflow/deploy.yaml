@@ -1,11 +1,14 @@
 name: Deploy to VPS (Docker)
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types:
       - closed
     branches:
-      - develop
+      - main
 
 jobs:
   deploy:
