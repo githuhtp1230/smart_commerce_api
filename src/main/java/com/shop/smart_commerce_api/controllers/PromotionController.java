@@ -3,7 +3,8 @@ package com.shop.smart_commerce_api.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shop.smart_commerce_api.dto.request.promotion.PromotionRequest;
+import com.shop.smart_commerce_api.dto.request.promotion.CreatePromotionRequest;
+import com.shop.smart_commerce_api.dto.request.promotion.UpdatePromotionRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.promotion.PromotionResponse;
 import com.shop.smart_commerce_api.services.PromotionService;
@@ -12,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +43,7 @@ public class PromotionController {
     }
 
     @PostMapping
-    public ApiResponse<PromotionResponse> create(@RequestBody PromotionRequest request) {
+    public ApiResponse<PromotionResponse> create(@RequestBody CreatePromotionRequest request) {
         return ApiResponse.<PromotionResponse>builder()
                 .code(200)
                 .message("Promotion created successfully")
@@ -61,7 +61,7 @@ public class PromotionController {
     }
 
     @PutMapping("/{id}")
-    ApiResponse<PromotionResponse> update(@PathVariable("id") int id, @RequestBody PromotionRequest request) {
+    ApiResponse<PromotionResponse> update(@PathVariable("id") int id, @RequestBody UpdatePromotionRequest request) {
         return ApiResponse.<PromotionResponse>builder()
                 .code(200)
                 .message("Promotion updated successfully")
