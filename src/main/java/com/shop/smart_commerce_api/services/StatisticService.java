@@ -22,37 +22,46 @@ public class StatisticService {
 
     public TotalStatisticResponse getTotalUserParticipation(TotalStatisticRequest request) {
         LocalDateTime startDate = null;
-        LocalDateTime endDate = null;
+        LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime previousStart = null;
         LocalDateTime previousEnd = null;
 
         if (request.getCategory() != null) {
-            endDate = LocalDateTime.now();
-            startDate = switch (request.getCategory()) {
-                case WEEKLY -> endDate.minus(7, ChronoUnit.DAYS);
-                case MONTHLY -> endDate.minus(1, ChronoUnit.MONTHS);
-                case YEARLY -> endDate.minus(1, ChronoUnit.YEARS);
-            };
-
-            previousEnd = startDate;
-            previousStart = switch (request.getCategory()) {
-                case WEEKLY -> startDate.minus(7, ChronoUnit.DAYS);
-                case MONTHLY -> startDate.minus(1, ChronoUnit.MONTHS);
-                case YEARLY -> startDate.minus(1, ChronoUnit.YEARS);
-            };
+            switch (request.getCategory()) {
+                case DAY -> {
+                    startDate = endDate.minusDays(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusDays(1);
+                }
+                case WEEK -> {
+                    startDate = endDate.minusWeeks(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusWeeks(1);
+                }
+                case MONTH -> {
+                    startDate = endDate.minusMonths(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusMonths(1);
+                }
+                case YEAR -> {
+                    startDate = endDate.minusYears(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusYears(1);
+                }
+            }
         }
 
-        List<User> users = userRepository.findUsersByDateRange(
+        // Lấy user trong khoảng thời gian hiện tại
+        int currentTotal = userRepository.findUsersByDateRange(
                 startDate != null ? startDate.toInstant(ZoneOffset.UTC) : null,
-                endDate != null ? endDate.toInstant(ZoneOffset.UTC) : null);
-        List<User> previousUsers = userRepository.findUsersByDateRange(
+                endDate.toInstant(ZoneOffset.UTC)).size();
+
+        // Lấy user trong khoảng thời gian trước đó
+        int previousTotal = userRepository.findUsersByDateRange(
                 previousStart != null ? previousStart.toInstant(ZoneOffset.UTC) : null,
-                previousEnd != null ? previousEnd.toInstant(ZoneOffset.UTC) : null);
+                previousEnd != null ? previousEnd.toInstant(ZoneOffset.UTC) : null).size();
 
-        int currentTotal = users.size();
-        int previousTotal = previousUsers.size();
-
-        final double percentVariation = previousTotal > 0
+        double percentVariation = previousTotal > 0
                 ? ((double) (currentTotal - previousTotal) / previousTotal) * 100
                 : 0.0;
 
