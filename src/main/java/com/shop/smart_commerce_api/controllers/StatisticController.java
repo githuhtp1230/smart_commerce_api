@@ -29,4 +29,21 @@ public class StatisticController {
                 .message("Total user participation")
                 .build();
     }
+
+    @PostMapping("/products-sold")
+    public ApiResponse<TotalStatisticResponse> getTotalProductsSold(
+            @RequestBody TotalStatisticRequest request) {
+        return ApiResponse.<TotalStatisticResponse>builder()
+                .data(statisticService.getTotalProductsSold(request))
+                .message("Total products sold")
+                .build();
+    }
+
+    @PostMapping("/order-total")
+    public ApiResponse<TotalStatisticResponse> getTotalOrder(@RequestBody TotalStatisticRequest request) {
+        return ApiResponse.<TotalStatisticResponse>builder()
+                .data(statisticService.getTotalOrders(request))
+                .message("Total order")
+                .build();
+    }
 }

@@ -13,7 +13,9 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -59,6 +61,6 @@ public class Order {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order")
-    private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
 }

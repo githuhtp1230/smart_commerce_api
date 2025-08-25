@@ -4,9 +4,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/smart_commerce
-    username: root
-    password: 123
+    url: jdbc:mysql://163.61.182.237:3306/smart_commerce
+    username: smart_commerce
+    password: R6casEALw3HHeFsJ
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
