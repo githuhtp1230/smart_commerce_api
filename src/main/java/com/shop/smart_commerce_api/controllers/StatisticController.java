@@ -8,12 +8,10 @@ import com.shop.smart_commerce_api.dto.response.ApiResponse;
 import com.shop.smart_commerce_api.dto.response.statistic.TotalStatisticResponse;
 import com.shop.smart_commerce_api.services.StatisticService;
 
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @RestController
 @RequestMapping("/api/statistics")
@@ -34,8 +32,25 @@ public class StatisticController {
     public ApiResponse<TotalStatisticResponse> getProductRevenue(
             @RequestBody TotalStatisticRequest request) {
         return ApiResponse.<TotalStatisticResponse>builder()
-                .data(statisticService.getProductRevenueStatistic(request))
+                .data(statisticService.getTotalProductsSold(request))
                 .message("Total product revenue")
+                .build();
+    }
+
+    @PostMapping("/products-sold")
+    public ApiResponse<TotalStatisticResponse> getTotalProductsSold(
+            @RequestBody TotalStatisticRequest request) {
+        return ApiResponse.<TotalStatisticResponse>builder()
+                .data(statisticService.getTotalProductsSold(request))
+                .message("Total products sold")
+                .build();
+    }
+
+    @PostMapping("/order-total")
+    public ApiResponse<TotalStatisticResponse> getTotalOrder(@RequestBody TotalStatisticRequest request) {
+        return ApiResponse.<TotalStatisticResponse>builder()
+                .data(statisticService.getTotalOrders(request))
+                .message("Total order")
                 .build();
     }
 }

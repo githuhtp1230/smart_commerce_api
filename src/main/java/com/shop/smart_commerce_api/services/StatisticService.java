@@ -1,5 +1,6 @@
 package com.shop.smart_commerce_api.services;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -10,6 +11,7 @@ import com.shop.smart_commerce_api.constant.OrderStatus;
 import com.shop.smart_commerce_api.dto.request.statistic.TotalStatisticRequest;
 import com.shop.smart_commerce_api.dto.response.statistic.TotalStatisticResponse;
 import com.shop.smart_commerce_api.entities.Order;
+import com.shop.smart_commerce_api.entities.User;
 import com.shop.smart_commerce_api.repositories.OrderRepository;
 import com.shop.smart_commerce_api.repositories.UserRepository;
 
@@ -72,8 +74,54 @@ public class StatisticService {
                 .build();
     }
 
-    
-   public TotalStatisticResponse getProductRevenueStatistic(TotalStatisticRequest request) {
+    public TotalStatisticResponse getTotalProductsSold(TotalStatisticRequest request) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = null;
+        LocalDateTime previousStart = null;
+        LocalDateTime previousEnd = null;
+
+        if (request.getCategory() != null) {
+            switch (request.getCategory()) {
+                case DAY -> {
+                    startDate = endDate.minusDays(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusDays(1);
+                }
+                case WEEK -> {
+                    startDate = endDate.minusWeeks(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusWeeks(1);
+                }
+                case MONTH -> {
+                    startDate = endDate.minusMonths(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusMonths(1);
+                }
+                case YEAR -> {
+                    startDate = endDate.minusYears(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusYears(1);
+                }
+            }
+        }
+
+        // Tổng sản phẩm hiện tại (quantity trong order_details)
+        int currentTotal = orderRepository.countProductsByDateRange(startDate, endDate);
+
+        // Tổng sản phẩm kỳ trước
+        int previousTotal = orderRepository.countProductsByDateRange(previousStart, previousEnd);
+
+        double percentVariation = previousTotal > 0
+                ? ((double) (currentTotal - previousTotal) / previousTotal) * 100
+                : 0.0;
+
+        return TotalStatisticResponse.builder()
+                .total(currentTotal)
+                .percentVariation(percentVariation)
+                .build();
+    }
+
+    public TotalStatisticResponse getProductRevenueStatistic(TotalStatisticRequest request) {
         LocalDateTime startDate = null;
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime previousStart = null;
@@ -108,8 +156,7 @@ public class StatisticService {
         List<Order> currentOrders = orderRepository.findOrdersByDateRangeAndStatus(
                 startDate,
                 endDate,
-                OrderStatus.DELIVERED
-        );
+                OrderStatus.DELIVERED);
         long currentRevenue = currentOrders.stream()
                 .mapToLong(Order::getTotal)
                 .sum();
@@ -118,8 +165,7 @@ public class StatisticService {
         List<Order> previousOrders = orderRepository.findOrdersByDateRangeAndStatus(
                 previousStart,
                 previousEnd,
-                OrderStatus.DELIVERED
-        );
+                OrderStatus.DELIVERED);
         long previousRevenue = previousOrders.stream()
                 .mapToLong(Order::getTotal)
                 .sum();
@@ -134,5 +180,49 @@ public class StatisticService {
                 .build();
     }
 
+    public TotalStatisticResponse getTotalOrders(TotalStatisticRequest request) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = null;
+        LocalDateTime previousStart = null;
+        LocalDateTime previousEnd = null;
+
+        if (request.getCategory() != null) {
+            switch (request.getCategory()) {
+                case DAY -> {
+                    startDate = endDate.minusDays(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusDays(1);
+                }
+                case WEEK -> {
+                    startDate = endDate.minusWeeks(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusWeeks(1);
+                }
+                case MONTH -> {
+                    startDate = endDate.minusMonths(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusMonths(1);
+                }
+                case YEAR -> {
+                    startDate = endDate.minusYears(1);
+                    previousEnd = startDate;
+                    previousStart = startDate.minusYears(1);
+                }
+            }
+        }
+
+        int currentTotal = orderRepository.countOrdersByDateRange(startDate, endDate);
+
+        int previousTotal = orderRepository.countOrdersByDateRange(previousStart, previousEnd);
+
+        double percentVariation = previousTotal > 0
+                ? ((double) (currentTotal - previousTotal) / previousTotal) * 100
+                : 0.0;
+
+        return TotalStatisticResponse.builder()
+                .total(currentTotal)
+                .percentVariation(percentVariation)
+                .build();
+    }
 
 }

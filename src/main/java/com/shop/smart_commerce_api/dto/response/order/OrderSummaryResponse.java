@@ -23,4 +23,5 @@ public class OrderSummaryResponse {
     private String createdAt;
     private String productImage;
     private String address;
+    private Integer totalQuantity;
 }
