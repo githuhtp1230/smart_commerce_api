@@ -1,4 +1,7 @@
+
 package com.shop.smart_commerce_api.services;
+
+import java.time.Instant;
 
 import java.util.List;
 
@@ -21,8 +24,29 @@ public class PromotionService {
     private final PromotionRepository promotionRepository;
     private final PromotionMapper promotionMapper;
 
+    public void promotionCheck() {
+        List<Promotion> promotions = promotionRepository.findAll();
+        Instant now = Instant.now();
+        boolean changed = false;
+        for (Promotion promotion : promotions) {
+            if (promotion.getEndDate() != null && promotion.getEndDate().isBefore(now)
+                    && Boolean.TRUE.equals(promotion.getIsActive())) {
+                promotion.setIsActive(false);
+                changed = true;
+            } else if (promotion.getStartDate() != null && promotion.getStartDate().isBefore(now)
+                    && promotion.getEndDate() != null && promotion.getEndDate().isAfter(now)
+                    && Boolean.FALSE.equals(promotion.getIsActive())) {
+                promotion.setIsActive(true);
+                changed = true;
+            }
+        }
+        if (changed)
+            promotionRepository.saveAll(promotions);
+    }
+
     public List<PromotionResponse> getAll() {
         List<Promotion> promotions = promotionRepository.findAll();
+        promotionCheck();
         return promotions.stream()
                 .map(promotionMapper::toPromotionResponse)
                 .toList();
@@ -30,6 +54,7 @@ public class PromotionService {
 
     public List<PromotionResponse> getAllByIsActive(Boolean isActive) {
         List<Promotion> promotions = promotionRepository.findByIsActive(isActive);
+        promotionCheck();
         return promotions.stream()
                 .map(promotionMapper::toPromotionResponse)
                 .toList();

@@ -193,4 +193,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             @Param("endDate") Instant endDate,
             Pageable pageable);
 
+    @Query(value = """
+                    SELECT p.* FROM products p
+                    LEFT JOIN promotions promo ON p.promotion_id = promo.id
+                    WHERE p.is_deleted = 0
+                        AND promo.discount_value_percent IS NOT NULL
+                        AND promo.is_active = true
+                        AND promo.is_show_at_home = true
+                    ORDER BY RAND()
+                    LIMIT 7
+            """, nativeQuery = true)
+    List<Product> findRandomTop7ByPromotion();
+
 }

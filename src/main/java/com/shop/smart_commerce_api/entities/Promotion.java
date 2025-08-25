@@ -36,6 +36,9 @@ public class Promotion {
     @Column(name = "end_date")
     private Instant endDate;
 
+    @Column(name = "is_show_at_home", nullable = false)
+    private Boolean isShowAtHome = false;
+
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
