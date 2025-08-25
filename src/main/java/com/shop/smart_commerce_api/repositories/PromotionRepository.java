@@ -8,4 +8,8 @@ import com.shop.smart_commerce_api.entities.Promotion;
 
 public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
     List<Promotion> findByIsActive(Boolean isActive);
+
+    boolean existsByIsShowAtHomeTrue();
+
+    boolean existsByIsShowAtHomeTrueAndIdNot(Integer id);
 }
