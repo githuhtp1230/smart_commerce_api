@@ -12,9 +12,7 @@ on:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-
     steps:
       - name: SSH & Deploy Code via Docker
         uses: appleboy/ssh-action@v1.0.3
@@ -25,7 +23,6 @@ jobs:
           port: 22
           script: |
             cd /root/wwwroot/smart-commerce-api
-
             git pull origin main
 
             echo "🔨 Build Spring Boot JAR..."
