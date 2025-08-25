@@ -1,5 +1,7 @@
 package com.shop.smart_commerce_api.repositories;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -34,4 +36,20 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findByStatusAndUserId(String status, Integer userId, Pageable pageable);
 
     Page<Order> findByStatus(String status, Pageable pageable);
+
+    @Query("""
+        SELECT o FROM Order o
+        WHERE o.createdAt BETWEEN :start AND :end
+        AND o.status = :status
+    """)
+    List<Order> findOrdersByDateRangeAndStatus(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") String status 
+    );
+
+
+
+
+
 }
