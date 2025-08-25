@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shop.smart_commerce_api.dto.request.review.ReviewRequest;
 import com.shop.smart_commerce_api.dto.response.ApiResponse;
+import com.shop.smart_commerce_api.dto.response.PageResponse;
 import com.shop.smart_commerce_api.dto.response.review.HistoryReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ProductReviewResponse;
 import com.shop.smart_commerce_api.dto.response.review.ReviewResponse;
@@ -58,11 +59,13 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ApiResponse<List<ReviewResponse>> getAllRootReviews() {
-        return ApiResponse.<List<ReviewResponse>>builder()
+    public ApiResponse<PageResponse<ReviewResponse>> getAllRootReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit) {
+        return ApiResponse.<PageResponse<ReviewResponse>>builder()
                 .code(200)
                 .message("Get all root reviews successfully")
-                .data(reviewService.getAllRootReviews())
+                .data(reviewService.getAllRootReviews(page - 1, limit))
                 .build();
     }
 }
