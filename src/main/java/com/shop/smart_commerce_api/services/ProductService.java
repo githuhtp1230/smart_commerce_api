@@ -208,6 +208,41 @@ public class ProductService {
                 List<ProductSummaryResponse> result = new ArrayList<>();
                 for (Product product : products) {
                         ProductSummaryResponse summary = productMapper.toProductSummaryResponse(product);
+                        // Lấy ảnh đầu tiên nếu có
+                        String image = null;
+                        if (product.getImageProducts() != null && !product.getImageProducts().isEmpty()) {
+                                image = product.getImageProducts().stream().findFirst().map(img -> img.getImageUrl())
+                                                .orElse(null);
+                        }
+                        summary.setImage(image);
+
+                        // Tính averageRating và reviewCount
+                        if (product.getReviews() != null && !product.getReviews().isEmpty()) {
+                                double avg = product.getReviews().stream()
+                                                .filter(r -> r.getRating() != null)
+                                                .mapToInt(r -> r.getRating())
+                                                .average().orElse(0.0);
+                                long count = product.getReviews().stream()
+                                                .filter(r -> r.getRating() != null)
+                                                .count();
+                                summary.setAverageRating(avg);
+                                summary.setReviewCount(count);
+                        } else {
+                                summary.setAverageRating(0.0);
+                                summary.setReviewCount(0L);
+                        }
+
+                        // Tính maxPrice từ product variations
+                        if (product.getProductVariations() != null && !product.getProductVariations().isEmpty()) {
+                                Integer maxPrice = product.getProductVariations().stream()
+                                                .filter(v -> v.getPrice() != null)
+                                                .mapToInt(v -> v.getPrice())
+                                                .max().orElse(product.getPrice() != null ? product.getPrice() : 0);
+                                summary.setMaxPrice(maxPrice);
+                        } else {
+                                summary.setMaxPrice(product.getPrice());
+                        }
+
                         if (product.getPromotion() != null) {
                                 summary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
                         }

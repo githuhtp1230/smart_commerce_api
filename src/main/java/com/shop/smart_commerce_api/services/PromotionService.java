@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import java.util.List;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.request.promotion.CreatePromotionRequest;
@@ -24,6 +25,7 @@ public class PromotionService {
     private final PromotionRepository promotionRepository;
     private final PromotionMapper promotionMapper;
 
+    @Scheduled(fixedRate = 60 * 1000)
     public void promotionCheck() {
         List<Promotion> promotions = promotionRepository.findAll();
         Instant now = Instant.now();
@@ -42,6 +44,7 @@ public class PromotionService {
         }
         if (changed)
             promotionRepository.saveAll(promotions);
+        System.out.println("Promotion status updated at " + now);
     }
 
     public List<PromotionResponse> getAll() {
