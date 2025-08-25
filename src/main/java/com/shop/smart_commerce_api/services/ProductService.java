@@ -12,6 +12,8 @@ import com.shop.smart_commerce_api.mapper.ProductMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.shop.smart_commerce_api.dto.response.product.ProductDetailResponse;
@@ -47,7 +49,8 @@ public class ProductService {
 
         public PageResponse<ProductSummaryResponse> getProductSummaries(ProductSummaryFilterRequest request,
                         int currentPage, int limit) {
-                Pageable pageable = PageRequest.of(currentPage, limit);
+                Pageable pageable = PageRequest.of(currentPage, limit, Sort
+                                .by(Direction.DESC, "id"));
                 Page<ProductSummaryResponse> page = productRepository.findProductSummaries(request.getCategoryId(),
                                 request.getQuery(),
                                 request.getMin(),
