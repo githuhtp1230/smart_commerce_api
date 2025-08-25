@@ -203,4 +203,21 @@ public class ProductService {
                 return products;
         }
 
+        public List<ProductSummaryResponse> getRandomTopHotProducts() {
+                List<Product> products = productRepository.findRandomTop7ByPromotion();
+                List<ProductSummaryResponse> result = new ArrayList<>();
+                for (Product product : products) {
+                        ProductSummaryResponse summary = productMapper.toProductSummaryResponse(product);
+                        if (product.getPromotion() != null) {
+                                summary.setPromotion(promotionMapper.toPromotionResponse(product.getPromotion()));
+                        }
+                        if (product.getCategory() != null) {
+                                summary.setCategory(productMapper.toCategoryResponse(product.getCategory()));
+                        }
+                        summary.setCreatedAt(product.getCreatedAt());
+                        result.add(summary);
+                }
+                return result;
+        }
+
 }
