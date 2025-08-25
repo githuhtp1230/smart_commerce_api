@@ -103,6 +103,22 @@ public class OrderService {
                 .build();
     }
 
+    public OrderResponse cancelOrderByUser(Integer orderId) {
+        User currentUser = userService.getCurrentUser();
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        if (order.getUser() == null || !order.getUser().getId().equals(currentUser.getId())) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+        if (!OrderStatus.CONFIRMED.equalsIgnoreCase(order.getStatus())) {
+            throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toOrderResponse(savedOrder);
+    }
+
     public Order getCurrentOrder() {
         User currentUser = userService.getCurrentUser();
         // Giả định rằng bạn có một phương thức để lấy đơn hàng hiện tại của người dùng
