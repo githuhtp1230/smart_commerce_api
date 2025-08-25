@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.shop.smart_commerce_api.constant.OrderStatus;
-import com.shop.smart_commerce_api.dto.query.order.OrderSummary;
 import com.shop.smart_commerce_api.dto.response.order.OrderResponse;
 import com.shop.smart_commerce_api.dto.response.order.OrderSummaryResponse;
 import com.shop.smart_commerce_api.entities.Order;
